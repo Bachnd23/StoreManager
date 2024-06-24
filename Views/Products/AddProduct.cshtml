@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<body>
+    <!-- Form Start -->
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/Product/List">Danh sách hàng hóa</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới hàng hóa</li>
+            </ol>
+        </nav>
+        <form id="registerForm" asp-action="#" method="post">
+            <div class="row bg-light rounded h-100 p-4">
+                <div>
+                    <h4 class="mb-4">Thêm mới hàng hóa</h4>
+                </div>
+                <div class="col">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="inputProductName" class="required">Tên hàng</label>
+                                <input type="text" name="productName" class="form-control productName" placeholder="Nhập tên hàng..." id="inputProductName">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="inputMeasureValue" class="required">Đơn vị tính</label>
+                                <input type="text" name="measureValue" class="form-control" id="inputMeasureValue" placeholder="Nhập đơn vị tính...">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="selectStatus" class="required">Trạng thái</label>
+                                <select class="form-select" name="status" id="selectStatus">
+                                    <option value="true">Đã kích hoạt</option>
+                                    <option value="false">Chưa kích hoạt</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col">
+                    <div class="bgrow bg-light rounded h-100 p-4 align-items-center">
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Form End -->
+    <!-- Content End -->
+    @section Scripts {
+        <script src="~/js/addUserScript.js"></script>
+    }
+</body>
+</html>

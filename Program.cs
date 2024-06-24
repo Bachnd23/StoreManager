@@ -1,7 +1,25 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using COCOApp.Models;
+using COCOApp.Services;
 
+var builder = WebApplication.CreateBuilder(args);
+string connectionStr = builder.Configuration.GetConnectionString("MyConStr");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddMvc();
+builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<StoreManagerContext>(
+    opt => opt.UseSqlServer("connectionStr")
+    );
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
