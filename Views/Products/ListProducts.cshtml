@@ -1,4 +1,7 @@
-﻿@page
+﻿@{
+    ViewData["Title"] = "Product List";
+    var getListUrl = Url.Action("GetList", "Product");
+}
 @using System.Globalization
 @using System.Text.Json
 <!DOCTYPE html>
@@ -37,6 +40,7 @@
                                     <th scope="col">Đơn vị tính</th>
                                     <th scope="col">Giá hiện tại</th>
                                     <th scope="col">Cập nhật ngày</th>
+                                    <th scope="col">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
@@ -56,18 +60,11 @@
             </div>
         </div>
     </div>
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/easing/easing.min.js"></script>
-    <script src="~/lib/waypoints/waypoints.min.js"></script>
-    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="~/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="~/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Template Javascript -->
-    <script src="~/js/main.js"></script>
-    <script src="~/js/viewUsersScript.js"></script>
+    @section Scripts {
+        <script>
+            var getListUrl = '@getListUrl';
+        </script>
+        <script src="~/js/viewProductsScript.js"></script>
+    }
 </body>
 </html>
