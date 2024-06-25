@@ -1,9 +1,8 @@
-var nameQuery = "";
+﻿var nameQuery = "";
 var roleId = "";
 var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
-
 $(document).ready(function () {
     fetchCustomersResults();
 });
@@ -31,8 +30,7 @@ function fetchCustomersResults() {
     nameQuery = $('.nameQuery').val();
     isFetchingData = true;
     $.ajax({
-        url: '@Url.Action("List", "Customer")',
-        dataType: "json",
+        url: getListUrl,
         type: 'GET',
         data: {
             nameQuery: nameQuery,
@@ -42,12 +40,13 @@ function fetchCustomersResults() {
             generateCustomersTable(data);
         },
         error: function (xhr, status, error) {
-            console.error('Error fetching offer results:', error);
+            console.error('Error fetching customer data:', error);
         },
         complete: function () {
             isFetchingData = false; // Reset the flag after data fetch is complete
         }
     });
+
 }
 
 function generateCustomersTable(data) {
@@ -94,29 +93,29 @@ function generateCustomersTable(data) {
         row.append($('<td>').text(customer.name));
         row.append($('<td>').text(customer.address));
         row.append($('<td>').text(customer.phone));
-        row.append($('<td>').text(customer.note));
         if (customer.active) {
-            row.append($('<td>').text('Active'));
+            row.append($('<td>').text('Đã kích hoạt'));
         } else {
-            row.append($('<td>').text('Inactive'));
+            row.append($('<td>').text('Chưa kích hoạt'));
         }
 
-        /*const actionCell = $('<td>');
+        const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: '/InterviewManager/ViewUserDetail?id=' + user.id,
+            href: '#',
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
         const editButton = $('<a>', {
-            href: '/InterviewManager/EditUser?id=' + user.id,
+            href: '#',
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-pen"></i>'
         });
         actionCell.append($('<div>', { class: 'input-group flex-nowrap' })
             .append($('<div>', { class: 'ps-2' }).append(viewButton))
             .append($('<div>', { class: 'ps-2' }).append(editButton)));
-        row.append(actionCell);*/
+        row.append(actionCell);
 
         $('.resultTableBody').append(row);
     });
+
 }
