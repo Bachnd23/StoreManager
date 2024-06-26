@@ -34,8 +34,8 @@
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="~/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
-    <!-- Chosen CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap -->
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
@@ -43,6 +43,7 @@
     <!-- Template Styles -->
     <link href="~/css/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Additional Section for Custom Styles -->
     @RenderSection("Styles", false)
 </head>
@@ -123,20 +124,13 @@
     <script src="~/lib/tempusdominus/js/moment.min.js"></script>
     <script src="~/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Chosen JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
-
-    <!-- Initialize Chosen -->
-    <script>
-        $(document).ready(function () {
-            $('.chosen-select').chosen();
-        });
-    </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
