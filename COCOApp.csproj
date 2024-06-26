@@ -14,7 +14,6 @@
     <None Include="wwwroot\css\bootstrap.min.css" />
     <None Include="wwwroot\css\style.css" />
     <None Include="wwwroot\js\addOrderScript.js" />
-    <None Include="wwwroot\js\addUserScript.js" />
     <None Include="wwwroot\js\main.js" />
     <None Include="wwwroot\lib\chart\chart.min.js" />
     <None Include="wwwroot\lib\easing\easing.js" />

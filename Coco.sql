@@ -23,7 +23,7 @@ CREATE TABLE Customers (
     name NVARCHAR(MAX) NOT NULL,
     address NVARCHAR(MAX) NOT NULL,
     phone NVARCHAR(MAX) NOT NULL,
-    note NVARCHAR(MAX) NOT NULL,
+    note NVARCHAR(MAX) NULL,
     active BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL

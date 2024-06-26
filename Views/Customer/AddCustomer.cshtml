@@ -1,8 +1,13 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<body>
+﻿@model COCOApp.Models.Customer
 
-    <!-- Form Start -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm mới khách hàng</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -10,7 +15,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Thêm mới khách hàng</li>
             </ol>
         </nav>
-        <form id="registerForm" asp-action="AddUser" method="post">
+        <form id="registerForm" asp-action="AddCustomer" method="post">
             <div class="row bg-light rounded h-100 p-4">
                 <div>
                     <h4 class="mb-4">Thêm mới khách hàng</h4>
@@ -19,23 +24,26 @@
                     <div class="bg-light rounded h-100 p-4">
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputFullName" class="required">Tên khách hàng</label>
-                                <input type="text" name="fullname" class="form-control fullname" placeholder="Nhập tên khách hàng..." id="inputFullName">
+                                <label asp-for="Name" class="required"> Tên khách hàng</label>
+                                <input asp-for="Name" class="form-control" placeholder="Nhập tên khách hàng..." />
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputPhone" class="required">Số điện thoại</label>
-                                <input type="text" name="phone" class="form-control" id="inputPhone" placeholder="Nhập số điện thoại...">
+                                <label asp-for="Phone" class="required">Số điện thoại</label>
+                                <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại..." />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="selectStatus" class="required">Trạng thái</label>
-                                <select class="form-select" name="status" id="selectStatus">
+                                <label asp-for="Active" class="required">Trạng thái</label>
+                                <select asp-for="Active" class="form-select">
                                     <option value="true">Đã kích hoạt</option>
                                     <option value="false">Chưa kích hoạt</option>
                                 </select>
+                                <span asp-validation-for="Active" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -44,31 +52,28 @@
                     <div class="bg-light rounded h-100 p-4">
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputAddress" class="required">Địa chỉ</label>
-                                <input type="text" name="address" class="form-control" id="inputAddress" placeholder="Nhập địa chỉ ...">
+                                <label asp-for="Address" class="required">Địa chỉ</label>
+                                <input asp-for="Address" class="form-control" placeholder="Nhập địa chỉ ..." />34444444
+                                <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputNote">Ghi chú</label>
-                                <input type="text" name="note" class="form-control" id="inputNote" placeholder="Nhập ghi chú ...">
+                                <label asp-for="Note">Ghi chú</label>
+                                <input asp-for="Note" class="form-control" placeholder="Nhập ghi chú ..." />
+                                <span asp-validation-for="Note" class="text-danger">ok</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="col">
-                    <div class="bgrow bg-light rounded h-100 p-4 align-items-center">
+                    <div class="bg-light rounded h-100 p-4 d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary">Thêm</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
-    <!-- Form End -->
-    <!-- Content End -->
-    @section Scripts {
-        <script src="~/js/addUserScript.js"></script>
-    }
 </body>
 </html>

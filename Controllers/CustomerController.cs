@@ -25,16 +25,43 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
-
+        public IActionResult ViewAdd()
+        {
+            return View("/Views/Customer/AddCustomer.cshtml");
+        }
         public IActionResult ViewList()
         {
             return View("/Views/Customer/ListCustomers.cshtml");
         }
 
-        public IActionResult Add()
+        [HttpPost]
+        public IActionResult AddCustomer(Customer model)
         {
-            return View("/Views/Customer/AddCustomer.cshtml");
+            if (ModelState.IsValid)
+            {
+                // Convert the model to your domain entity
+                var customer = new Customer
+                {
+                    Name = model.Name,
+                    Phone = model.Phone,
+                    Address = model.Address,
+                    Note = model.Note,  // Note property is nullable
+                    Active = model.Active,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                // Use the service to insert the customer
+                _customerService.AddCustormer(customer);
+
+                // Redirect to the customer list or a success page
+                return RedirectToAction("ViewList");
+            }
+
+            // If the model state is not valid, return the same view with validation errors
+            return View("/Views/Customer/AddCustomer.cshtml", model);
         }
+
     }
 
 }

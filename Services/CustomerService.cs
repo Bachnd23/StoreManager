@@ -33,5 +33,11 @@ namespace COCOApp.Services
 
             return query.Count();
         }
+        public void AddCustormer(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
+        }
+
     }
 }
