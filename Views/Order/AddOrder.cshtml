@@ -1,87 +1,165 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@model List<COCOApp.Models.Order>
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Order</title>
+    <title>Thêm mới đơn hàng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-group {
+            margin-bottom: 0;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Order/ViewList">Danh sách đơn hàng</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Order" asp-action="ViewList">Danh sách đơn hàng</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Thêm mới đơn hàng</li>
             </ol>
         </nav>
-        <div class="row g-4">
-            <div class="col-sm-12 col-xl-12">
-                <div class="bg-light rounded h-100 p-4">
-                    <div>
-                        <h4 class="mb-4">Thêm mới đơn hàng</h4>
-                    </div>
-                    <div class="row g-4 input-group">
-                        <div class="col-sm-4">
-                            <label for="selectCustomer" class="form-label">Chọn khách hàng</label>
-                            <select class="form-select form-select-sm mb-3 form-control customerId"
-                                    aria-label=".form-select-sm example" name="customerId" id="selectCustomer">
-                            </select>
+        <form asp-controller="Order" asp-action="AddOrders" method="post">
+            <div class="row bg-light rounded h-100 p-4">
+                <div>
+                    <h4 class="mb-4">Thêm mới đơn hàng</h4>
+                </div>
+                <!-- Top input fields for Khách hàng and Ngày đặt -->
+                <div class="col-12 mb-3">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="topSelectCustomer" class="form-label required">Chọn khách hàng</label>
+                                    <input type="text" list="topCustomersList" class="form-control" id="topSelectCustomer" placeholder="Chọn khách hàng...">
+                                    <datalist id="topCustomersList">
+                                        <!-- Populate options dynamically from ViewBag -->
+                                        @foreach (var customer in ViewBag.Customers)
+                                        {
+                                            <option value="@customer.Value">@customer.Text</option>
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="topSelectOrderDate" class="form-label required">Chọn Ngày đặt</label>
+                                    <input type="date" class="form-control" id="topSelectOrderDate">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="g-4 input-group flex-nowrap justify-content-end">
-                        <button id="addRow" type="button" class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                    <form id="addOrderForm" action="#" method="post">
-                        <div id="rowsContainer">
-                            <!-- Initial row -->
-                            <div class="row bg-light rounded h-100 p-4 align-items-center">
+                </div>
 
-                                <div class="col-md-4">
+                <div id="order-rows">
+                    <div class="order-row">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
                                     <div class="mb-3">
-                                        <label for="selectCustomer" class="form-label">Chọn khách hàng</label>
-                                        <select class="form-select" name="customerId" id="selectCustomer">
-                                            <!-- Populate options dynamically if needed -->
-                                        </select>
+                                        <div class="form-group">
+                                            <label for="selectCustomer" class="form-label required">Chọn khách hàng</label>
+                                            <input type="text" list="customersList" class="form-control" name="Orders[0].CustomerId" placeholder="Chọn khách hàng...">
+                                            <datalist id="customersList">
+                                                <!-- Populate options dynamically from ViewBag -->
+                                                @foreach (var customer in ViewBag.Customers)
+                                                {
+                                                    <option value="@customer.Value">@customer.Text</option>
+                                                }
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <label for="selectItem" class="form-label required">Chọn mặt hàng</label>
+                                            <input type="text" list="productsList" class="form-control" name="Orders[0].ProductId" placeholder="Chọn mặt hàng...">
+                                            <datalist id="productsList">
+                                                <!-- Populate options dynamically from ViewBag -->
+                                                @foreach (var product in ViewBag.Products)
+                                                {
+                                                    <option value="@product.Value">@product.Text</option>
+                                                }
+                                            </datalist>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="bg-light rounded h-100 p-4">
                                     <div class="mb-3">
-                                        <label for="selectItem" class="form-label">Chọn mặt hàng</label>
-                                        <select class="form-select" name="itemId" id="selectItem">
-                                            <!-- Populate options dynamically if needed -->
-                                        </select>
+                                        <div class="form-group">
+                                            <label for="inputQuantity" class="form-label required">Số lượng</label>
+                                            <input type="number" class="form-control" name="Orders[0].Volume" placeholder="Nhập số lượng...">
+                                            <span asp-validation-for="Volume" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="col-md-2">
                                     <div class="mb-3">
-                                        <label for="inputQuantity" class="form-label">Số lượng</label>
-                                        <input type="number" name="quantity" class="form-control" id="inputQuantity" value="">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="mb-3">
-                                        <label for="inputOrderDate" class="form-label">Ngày đặt</label>
-                                        <input type="date" name="orderDate" class="form-control" id="inputOrderDate" value="">
+                                        <div class="form-group">
+                                            <label for="inputOrderDate" class="form-label required">Ngày đặt</label>
+                                            <input type="date" class="form-control" name="Orders[0].Date">
+                                            <span asp-validation-for="Date" class="text-danger"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col text-center">
-                            <div class="bgrow bg-light rounded h-100 p-4 align-items-center">
-                                <button type="submit" class="btn btn-primary">Thêm</button>
-                            </div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-danger remove-order-row">Xóa</button>
                         </div>
-                    </form>
+                        <hr>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="bg-light rounded h-100 p-4 align-items-center">
+                        <button type="button" class="btn btn-secondary" id="add-order-row">Thêm đơn hàng mới</button>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
     <!-- Content End -->
+    <script>
+        $(document).ready(function () {
+            var orderIndex = 1;
+
+            $('#add-order-row').click(function () {
+                var newOrderRow = $('.order-row:first').clone();
+                newOrderRow.find('input, select').each(function () {
+                    var name = $(this).attr('name');
+                    if (name) {
+                        name = name.replace('Orders[0]', 'Orders[' + orderIndex + ']');
+                        $(this).attr('name', name).val('');
+                    }
+                });
+
+                $('#order-rows').append(newOrderRow);
+
+                orderIndex++;
+            });
+
+            $(document).on('click', '.remove-order-row', function () {
+                if ($('.order-row').length > 1) {
+                    $(this).closest('.order-row').remove();
+                }
+            });
+
+            $('#topSelectCustomer').change(function () {
+                var selectedCustomer = $(this).val();
+                $('input[name^="Orders"][name$=".CustomerId"]').val(selectedCustomer);
+            });
+
+            $('#topSelectOrderDate').change(function () {
+                var selectedDate = $(this).val();
+                $('input[name^="Orders"][name$=".Date"]').val(selectedDate);
+            });
+        });
+    </script>
     @section Scripts {
         <script src="~/js/addOrderScript.js"></script>
     }

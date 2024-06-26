@@ -5,6 +5,11 @@ namespace COCOApp.Services
 {
     public class CustomerService : StoreManagerService
     {
+        public List<Customer> GetCustomers()
+        {
+            var query = _context.Customers.AsQueryable();
+            return query.ToList();
+        }
         public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize)
         {
             // Ensure pageNumber is at least 1
@@ -16,7 +21,7 @@ namespace COCOApp.Services
             {
                 query = query.Where(c => c.Name.Contains(nameQuery));
             }
-
+            query = query.OrderByDescending(c => c.Id);
             return query.Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
                         .ToList();
