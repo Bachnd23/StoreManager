@@ -31,7 +31,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="topSelectCustomer" class="form-label required">Chọn khách hàng</label>
-                                    <select id="topSelectCustomer" class="form-control select2">
+                                    <select id="topSelectCustomer" class="form-control ">
                                         <option value="">Chọn khách hàng...</option>
                                         @foreach (var customer in ViewBag.Customers)
                                         {
@@ -51,60 +51,7 @@
                 </div>
 
                 <div id="order-rows">
-                    <div class="order-row">
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="bg-light rounded h-100 p-4">
-                                    <div class="mb-3">
-                                        <div class="form-group">
-                                            <label for="selectCustomer" class="form-label required">Chọn khách hàng</label>
-                                            <input type="text" list="customersList" class="form-control" asp-for="@Model[0].CustomerId" placeholder="Chọn khách hàng...">
-                                            <datalist id="customersList">
-                                                @foreach (var customer in ViewBag.Customers)
-                                                {
-                                                    <option value="@customer.Value">@customer.Text</option>
-                                                }
-                                            </datalist>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="form-group">
-                                            <label asp-for="@Model[0].ProductId" class="form-label">Chọn mặt hàng</label>
-                                            <input type="text" list="productsList" class="form-control" asp-for="@Model[0].ProductId" placeholder="Chọn mặt hàng...">
-                                            <datalist id="productsList">
-                                                @foreach (var product in ViewBag.Products)
-                                                {
-                                                    <option value="@product.Value">@product.Text</option>
-                                                }
-                                            </datalist>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="bg-light rounded h-100 p-4">
-                                    <div class="mb-3">
-                                        <div class="form-group">
-                                            <label asp-for="@Model[0].Volume" class="form-label">Số lượng</label>
-                                            <input asp-for="@Model[0].Volume" class="form-control" />
-                                            <span asp-validation-for="@Model[0].Volume" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="form-group">
-                                            <label asp-for="@Model[0].Date" class="form-label">Ngày đặt</label>
-                                            <input asp-for="@Model[0].Date" class="form-control" />
-                                            <span asp-validation-for="@Model[0].Date" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <button type="button" class="btn btn-danger remove-order-row">Xóa</button>
-                        </div>
-                        <hr>
-                    </div>
+               
                 </div>
                 <div class="col">
                     <div class="bg-light rounded h-100 p-4 align-items-center">
@@ -119,22 +66,72 @@
     @section Scripts {
         <script>
             $(document).ready(function () {
-                $('.select2').select2({
-                    allowClear: true // Optional: Add this if you want a clear button
-                });
-                var orderIndex = 1;
+
+                var orderIndex = 0; // Start index from 0
 
                 $('#add-order-row').click(function () {
-                    var newOrderRow = $('.order-row:first').clone();
-                    newOrderRow.find('input, select').each(function () {
-                        var name = $(this).attr('name');
-                        if (name) {
-                            name = name.replace('Orders[0]', 'Orders[' + orderIndex + ']');
-                            $(this).attr('name', name).val('');
-                        }
-                    });
+                    var newOrderRow = `
+                                <div class="order-row">
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div class="bg-light rounded h-100 p-4">
+                                                <div class="mb-3">
+                                                    <div class="form-group">
+                                                        <label for="selectCustomer_${orderIndex}" class="form-label required">Chọn khách hàng</label>
+                                                        <select id="selectCustomer_${orderIndex}" class="form-control" name="Orders[${orderIndex}].CustomerId">
+                                                            <option value="">Chọn khách hàng...</option>
+            @foreach (var customer in ViewBag.Customers)
+            {
+                                                                    <option value="@customer.Value">@customer.Text</option>
+            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="form-group">
+                                                        <label asp-for="Orders[${orderIndex}].ProductId" class="form-label">Chọn mặt hàng</label>
+                                                        <select id="selectProduct_${orderIndex}" class="form-control" name="Orders[${orderIndex}].ProductId">
+                                                            <option value="">Chọn mặt hàng...</option>
+            @foreach (var product in ViewBag.Products)
+            {
+                                                                    <option value="@product.Value">@product.Text</option>
+            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <div class="bg-light rounded h-100 p-4">
+                                                <div class="mb-3">
+                                                    <div class="form-group">
+                                                        <label asp-for="Orders[${orderIndex}].Volume" class="form-label">Số lượng</label>
+                                                        <input asp-for="Orders[${orderIndex}].Volume" class="form-control" type="number" />
+                                                        <span asp-validation-for="Orders[${orderIndex}].Volume" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="form-group">
+                                                        <label asp-for="Orders[${orderIndex}].Date" class="form-label">Ngày đặt</label>
+                                                        <input asp-for="Orders[${orderIndex}].Date" class="form-control" type="date" />
+                                                        <span asp-validation-for="Orders[${orderIndex}].Date" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-danger remove-order-row">Xóa</button>
+                                    </div>
+                                    <hr>
+                                </div>`;
 
                     $('#order-rows').append(newOrderRow);
+
+                    // Initialize select2 for new select fields
+                    $('#selectCustomer_' + orderIndex + ', #selectProduct_' + orderIndex).addClass('select2').select2({
+                        allowClear: true // Optional: Add this if you want a clear button
+                    });
 
                     orderIndex++;
                 });
