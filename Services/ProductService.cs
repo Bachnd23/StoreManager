@@ -3,18 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace COCOApp.Services
 {
-    public class CustomerService : StoreManagerService
+    public class ProductService : StoreManagerService
     {
-        public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize)
+        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize)
         {
             // Ensure pageNumber is at least 1
             pageNumber = Math.Max(pageNumber, 1);
 
-            var query = _context.Customers.AsQueryable();
+            var query = _context.Products.AsQueryable();
 
             if (!string.IsNullOrEmpty(nameQuery))
             {
-                query = query.Where(c => c.Name.Contains(nameQuery));
+                query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
 
             return query.Skip((pageNumber - 1) * pageSize)
@@ -22,13 +22,14 @@ namespace COCOApp.Services
                         .ToList();
         }
 
-        public int GetTotalCustomers(string nameQuery)
+
+        public int GetTotalProducts(string nameQuery)
         {
-            var query = _context.Customers.AsQueryable();
+            var query = _context.Products.AsQueryable();
 
             if (!string.IsNullOrEmpty(nameQuery))
             {
-                query = query.Where(c => c.Name.Contains(nameQuery));
+                query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
 
             return query.Count();

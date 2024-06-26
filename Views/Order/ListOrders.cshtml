@@ -1,4 +1,7 @@
-﻿@page
+﻿@{
+    ViewData["Title"] = "Order List";
+    var getListUrl = Url.Action("GetList", "Order");
+}
 @using System.Globalization
 @using System.Text.Json
 <!DOCTYPE html>
@@ -37,6 +40,7 @@
                                     <th scope="col">Mặt hàng</th>
                                     <th scope="col">Số lượng</th>
                                     <th scope="col">Ngày mua</th>
+                                    <th scope="col">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
@@ -56,5 +60,11 @@
             </div>
         </div>
     </div>
+    @section Scripts {
+        <script>
+            var getListUrl = '@getListUrl';
+        </script>
+        <script src="~/js/viewOrdersScript.js"></script>
+    }
 </body>
 </html>
