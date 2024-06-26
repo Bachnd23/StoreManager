@@ -24,32 +24,6 @@
                 <div>
                     <h4 class="mb-4">Thêm mới đơn hàng</h4>
                 </div>
-                <!-- Top input fields for Khách hàng and Ngày đặt -->
-                <div class="col-12 mb-3">
-                    <div class="bg-light rounded h-100 p-4">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="topSelectCustomer" class="form-label required">Chọn khách hàng</label>
-                                    <select id="topSelectCustomer" class="form-control ">
-                                        <option value="">Chọn khách hàng...</option>
-                                        @foreach (var customer in ViewBag.Customers)
-                                        {
-                                            <option value="@customer.Value">@customer.Text</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="topSelectOrderDate" class="form-label required">Chọn Ngày đặt</label>
-                                    <input type="date" class="form-control" id="topSelectOrderDate">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="order-rows">
                
                 </div>
@@ -106,14 +80,14 @@
                                                 <div class="mb-3">
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].Volume" class="form-label">Số lượng</label>
-                                                        <input asp-for="Orders[${orderIndex}].Volume" class="form-control" type="number" />
+                                                        <input asp-for="Orders[${orderIndex}].Volume" name="Orders[${orderIndex}].Volume" class="form-control" type="number" />
                                                         <span asp-validation-for="Orders[${orderIndex}].Volume" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].Date" class="form-label">Ngày đặt</label>
-                                                        <input asp-for="Orders[${orderIndex}].Date" class="form-control" type="date" />
+                                                        <input asp-for="Orders[${orderIndex}].Date" name="Orders[${orderIndex}].Date" class="form-control" type="date" />
                                                         <span asp-validation-for="Orders[${orderIndex}].Date" class="text-danger"></span>
                                                     </div>
                                                 </div>

@@ -41,8 +41,7 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddOrders(List<Order> orders)
         {
-            if (ModelState.IsValid)
-            {
+
                 foreach (var model in orders)
                 {
                     // Convert the model to your domain entity
@@ -59,12 +58,7 @@ namespace COCOApp.Controllers
                     _orderService.AddOrder(order);
                 }
                 return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
-            }
 
-            // If model state is not valid, repopulate ViewBag and return the view with errors
-            ViewBag.Customers = _orderService.GetCustomersSelectList();
-            ViewBag.Products = _orderService.GetProductsSelectList();
-            return View("/Views/Order/AddOrder.cshtml", orders); // Pass the orders model back to the view
         }
     }
 }
