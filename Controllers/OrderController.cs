@@ -6,7 +6,8 @@ namespace COCOApp.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly OrderService _orderService=new OrderService();
+        private readonly OrderService _orderService = new OrderService();
+        private readonly ProductService _productService = new ProductService();
         private const int PageSize = 10;
 
 
@@ -42,22 +43,26 @@ namespace COCOApp.Controllers
         public IActionResult AddOrders(List<Order> orders)
         {
 
-                foreach (var model in orders)
+            foreach (var model in orders)
+            {
+                Product product = _productService.GetProductById(model.ProductId);
+                // Convert the model to your domain entity
+                var order = new Order
                 {
-                    // Convert the model to your domain entity
-                    var order = new Order
-                    {
-                        CustomerId = model.CustomerId,
-                        ProductId = model.ProductId,
-                        Volume = model.Volume,
-                        Date = model.Date,
-                        Complete = false,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now
-                    };
-                    _orderService.AddOrder(order);
-                }
-                return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
+                    CustomerId = model.CustomerId,
+                    ProductId = model.ProductId,
+                    Volume = model.Volume,
+                    Date = model.Date,
+                    Complete = false,
+                    OrderProductCost = product.Cost,
+                    OrderTotal = product.Cost * model.Volume,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _orderService.AddOrder(order);
+            }
+            return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         }
         public IActionResult GetOrders(int customerId, string daterange)

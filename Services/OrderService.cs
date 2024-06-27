@@ -95,11 +95,11 @@ namespace COCOApp.Services
                 var dateRangeParts = dateRange.Split(" - ");
                 if (dateRangeParts.Length == 2)
                 {
-                    if (!DateTime.TryParseExact(dateRangeParts[0], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                    if (!DateTime.TryParse(dateRangeParts[0], CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
                     {
                         startDate = DateTime.MinValue;
                     }
-                    if (!DateTime.TryParseExact(dateRangeParts[1], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                    if (!DateTime.TryParse(dateRangeParts[1], CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
                     {
                         endDate = DateTime.MaxValue;
                     }
@@ -112,7 +112,6 @@ namespace COCOApp.Services
                                     .Include(o => o.Customer)
                                     .Include(o => o.Product)
                                     .Where(o => o.CustomerId == customerId && o.Date >= startDate && o.Date <= endDate);
-
                 return query.ToList();
             }
             catch (Exception ex)

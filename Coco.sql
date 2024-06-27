@@ -11,7 +11,7 @@ CREATE TABLE Products (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     ProductName NVARCHAR(255) NOT NULL,
 	MeasureUnit NVARCHAR(255) NOT NULL,
-    cost INT NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL,
 	status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL
@@ -39,6 +39,8 @@ CREATE TABLE Orders (
     volume INT NOT NULL,
     date DATE NOT NULL,
     complete BIT NOT NULL,
+	orderProductCost DECIMAL(10, 2) NOT NULL,
+	orderTotal DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
     FOREIGN KEY (customer_id) REFERENCES Customers(id),

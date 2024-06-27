@@ -16,6 +16,8 @@ namespace COCOApp.Models
         public int Volume { get; set; }
         public DateTime Date { get; set; }
         public bool Complete { get; set; }
+        public decimal OrderProductCost { get; set; }
+        public decimal OrderTotal { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

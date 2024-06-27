@@ -10,6 +10,11 @@ namespace COCOApp.Services
             var query = _context.Products.AsQueryable();
             return query.ToList();
         }
+        public Product GetProductById(int id)
+        {
+            var query = _context.Products.AsQueryable();
+            return query.FirstOrDefault(p=>p.Id==id);
+        }
         public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize)
         {
             // Ensure pageNumber is at least 1

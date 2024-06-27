@@ -13,7 +13,7 @@ namespace COCOApp.Models
         public int Id { get; set; }
         public string ProductName { get; set; } = null!;
         public string MeasureUnit { get; set; } = null!;
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         public bool Status { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

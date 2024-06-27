@@ -2,6 +2,7 @@
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics;
 
 namespace COCOApp.Controllers
 {
@@ -21,11 +22,22 @@ namespace COCOApp.Controllers
             // Assuming _orderService can fetch orders by their IDs
             List<Order> orders = _orderService.GetOrdersByIds(orderIds);
 
-            // Fetch customers select list for dropdown
-            ViewBag.Customers = _orderService.GetCustomersSelectList();
-
             // Pass orders to the view
             return View("/Views/Report/ReportSummary.cshtml", orders);
+        }
+        [HttpPost]
+        public IActionResult CreateInvoice(List<int> orderIds, List<decimal> costs)
+        {
+            List<Order> orders = _orderService.GetOrdersByIds(orderIds);
+            ViewBag.OrderCosts = costs;
+            for (int i=0;i<orders.Count;i++)
+            {
+                Order order = orders[i];
+                order.OrderProductCost = costs[i];
+            }
+
+            // Pass orders to the view
+            return View("/Views/Report/Invoice.cshtml", orders);
         }
     }
 }

@@ -72,6 +72,14 @@ namespace COCOApp.Models
                     .HasColumnType("date")
                     .HasColumnName("date");
 
+                entity.Property(e => e.OrderProductCost)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("orderProductCost");
+
+                entity.Property(e => e.OrderTotal)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("orderTotal");
+
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
                 entity.Property(e => e.UpdatedAt)
@@ -97,7 +105,9 @@ namespace COCOApp.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Cost).HasColumnName("cost");
+                entity.Property(e => e.Cost)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("cost");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
