@@ -20,6 +20,32 @@
             </ol>
         </nav>
         <form asp-controller="Order" asp-action="AddOrders" method="post">
+            <!-- Top input fields for Khách hàng and Ngày đặt -->
+            <div class="col-12 mb-3">
+                <div class="bg-light rounded h-100 p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="topSelectCustomer" class="form-label required">Chọn khách hàng</label>
+                                <select id="topSelectCustomer" class="form-control select2">
+                                    <option value="">Chọn khách hàng...</option>
+                                    @foreach (var customer in ViewBag.Customers)
+                                    {
+                                        <option value="@customer.Value">@customer.Text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="topSelectOrderDate" class="form-label required">Chọn Ngày đặt</label>
+                                <input type="date" class="form-control" id="topSelectOrderDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row bg-light rounded h-100 p-4">
                 <div>
                     <h4 class="mb-4">Thêm mới đơn hàng</h4>
@@ -40,10 +66,17 @@
     @section Scripts {
         <script>
             $(document).ready(function () {
-
+                // Initialize select2 for existing select fields
+                $('.select2').select2({
+                    allowClear: true // Optional: Add this if you want a clear button
+                });
                 var orderIndex = 0; // Start index from 0
 
                 $('#add-order-row').click(function () {
+                    var selectedCustomer = $('#topSelectCustomer').val();
+                    var selectedCustomerText = $('#topSelectCustomer option:selected').text();
+                    var selectedDate = $('#topSelectOrderDate').val();
+
                     var newOrderRow = `
                                 <div class="order-row">
                                     <div class="row">
@@ -53,11 +86,11 @@
                                                     <div class="form-group">
                                                         <label for="selectCustomer_${orderIndex}" class="form-label required">Chọn khách hàng</label>
                                                         <select id="selectCustomer_${orderIndex}" class="form-control" name="Orders[${orderIndex}].CustomerId">
-                                                            <option value="">Chọn khách hàng...</option>
-            @foreach (var customer in ViewBag.Customers)
-            {
+                                                             <option value="${selectedCustomer}" selected>${selectedCustomerText}</option>
+                                                            @foreach (var customer in ViewBag.Customers)
+                                                            {
                                                                     <option value="@customer.Value">@customer.Text</option>
-            }
+                                                            }
                                                         </select>
                                                     </div>
                                                 </div>
@@ -65,11 +98,10 @@
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].ProductId" class="form-label">Chọn mặt hàng</label>
                                                         <select id="selectProduct_${orderIndex}" class="form-control" name="Orders[${orderIndex}].ProductId">
-                                                            <option value="">Chọn mặt hàng...</option>
-            @foreach (var product in ViewBag.Products)
-            {
-                                                                    <option value="@product.Value">@product.Text</option>
-            }
+                                                            @foreach (var product in ViewBag.Products)
+                                                            {
+                                                                <option value="@product.Value">@product.Text</option>
+                                                            }
                                                         </select>
                                                     </div>
                                                 </div>
@@ -87,7 +119,7 @@
                                                 <div class="mb-3">
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].Date" class="form-label">Ngày đặt</label>
-                                                        <input asp-for="Orders[${orderIndex}].Date" name="Orders[${orderIndex}].Date" class="form-control" type="date" />
+                                                        <input asp-for="Orders[${orderIndex}].Date" name="Orders[${orderIndex}].Date" class="form-control" type="date" value="${selectedDate}" />
                                                         <span asp-validation-for="Orders[${orderIndex}].Date" class="text-danger"></span>
                                                     </div>
                                                 </div>
