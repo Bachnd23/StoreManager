@@ -1,5 +1,5 @@
-﻿@* @model COCOApp.Models.Product
-
+﻿@model List<COCOApp.Models.Order>
+@using COCOApp.Models
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -7,47 +7,66 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Tổng kết</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tạo tổng kết</li>
+                <li class="breadcrumb-item">>Tổng kết</li>
             </ol>
         </nav>
-        <form id="registerForm" asp-action="#" method="post">
-            <div class="row bg-light rounded h-100 p-4">
-                <div>
-                    <h4 class="mb-4">Thêm mới hàng hóa</h4>
-                </div>
-                <div class="col">
-                    <div class="bg-light rounded h-100 p-4">
-                        <div class="mb-3">
+        <form asp-controller="Order" asp-action="GetOrders" method="post">
+            <div class="col-12 mb-3">
+                <div class="bg-light rounded h-100 p-4">
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="ProductName" class="required"> Tên hàng</label>
-                                <input asp-for="ProductName" class="form-control" placeholder="Nhập tên hàng..." />
-                                <span asp-validation-for="ProductName" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label asp-for="MeasureUnit" class="required"> Đơn vị tính</label>
-                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính...">
-                                <span asp-validation-for="MeasureUnit" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label asp-for="Status" class="required">Trạng thái</label>
-                                <select asp-for="Status" class="form-select">
-                                    <option value="true">Đã kích hoạt</option>
-                                    <option value="false">Chưa kích hoạt</option>
+                                <label for="topSelectCustomer" class="form-label ">Chọn khách hàng</label>
+                                <select id="topSelectCustomer" class="form-control select2" name="customerId">
+                                    @foreach (var customer in ViewBag.Customers)
+                                    {
+                                        <option value="@customer.Value">@customer.Text</option>
+                                    }
                                 </select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="topSelectOrderDate" class="form-label ">Chọn khoảng thời gian</label>
+                                <input type="text" class="form-control" name="daterange" />
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row bg-light rounded h-100 p-4">
+                <div>
+                    @if (Model == null || Model.Count == 0)
+                    {
+                        <p>Không có đơn hàng nào</p>
+                    }
+                    else
+                    {
+                        <table class="table table-striped w-100 resultTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sản phẩm</th>
+                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Ngày mua</th>
+                                </tr>
+                            </thead>
+                            <tbody class="resultTableBody">
+                                @foreach (Order o in Model)
+                                {
+                                    <tr>
+                                        <td>@o.Product.ProductName</td>
+                                        <td>@o.Volume</td>
+                                        <td>@o.Date</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
                 <div class="w-100"></div>
                 <div class="col">
                     <div class="bgrow bg-light rounded h-100 p-4 align-items-center">
-                        <button type="submit" class="btn btn-primary">Thêm</button>
+                        <button type="submit" class="btn btn-primary">Tạo tổng kết</button>
                     </div>
                 </div>
             </div>
@@ -56,8 +75,19 @@
     <!-- Form End -->
     <!-- Content End -->
     @section Scripts {
-        <script src="~/js/addUserScript.js"></script>
+        <script>
+            $('.select2').select2({
+                placeholder: 'Chọn một trong danh sách',
+                allowClear: true // Optional: Add this if you want a clear button
+            });
+            $(function () {
+                $('input[name="daterange"]').daterangepicker({
+                    opens: 'left'
+                }, function (start, end, label) {
+                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                });
+            });
+        </script>
     }
 </body>
 </html>
- *@

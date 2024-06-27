@@ -60,5 +60,12 @@ namespace COCOApp.Controllers
                 return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         }
+        public IActionResult GetOrders(int customerId, string daterange)
+        {
+            ViewBag.Customers = _orderService.GetCustomersSelectList();
+            List<Order> orders = _orderService.GetOrders(daterange, customerId);
+            return View("/Views/Report/CreateReport.cshtml", orders);
+        }
+
     }
 }
