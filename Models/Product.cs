@@ -14,6 +14,7 @@ namespace COCOApp.Models
         public string ProductName { get; set; } = null!;
         public string MeasureUnit { get; set; } = null!;
         public int Cost { get; set; }
+        public bool Status { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

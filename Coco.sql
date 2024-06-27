@@ -12,6 +12,7 @@ CREATE TABLE Products (
     ProductName NVARCHAR(255) NOT NULL,
 	MeasureUnit NVARCHAR(255) NOT NULL,
     cost INT NOT NULL,
+	status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL
 );
@@ -24,7 +25,7 @@ CREATE TABLE Customers (
     address NVARCHAR(MAX) NOT NULL,
     phone NVARCHAR(MAX) NOT NULL,
     note NVARCHAR(MAX) NULL,
-    active BIT NOT NULL,
+    status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL
 );

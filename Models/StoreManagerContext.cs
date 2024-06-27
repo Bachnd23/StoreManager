@@ -37,8 +37,6 @@ namespace COCOApp.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active).HasColumnName("active");
-
                 entity.Property(e => e.Address).HasColumnName("address");
 
                 entity.Property(e => e.CreatedAt)
@@ -50,6 +48,8 @@ namespace COCOApp.Models
                 entity.Property(e => e.Note).HasColumnName("note");
 
                 entity.Property(e => e.Phone).HasColumnName("phone");
+
+                entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
@@ -106,6 +106,8 @@ namespace COCOApp.Models
                 entity.Property(e => e.MeasureUnit).HasMaxLength(255);
 
                 entity.Property(e => e.ProductName).HasMaxLength(255);
+
+                entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")

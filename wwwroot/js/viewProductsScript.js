@@ -94,7 +94,11 @@ function generateProductsTable(data) {
         row.append($('<td>').text(product.measureUnit));
         row.append($('<td>').text(product.cost));
         row.append($('<td>').text(product.updatedAt));
-
+        if (product.status) {
+            row.append($('<td>').text('Đã kích hoạt'));
+        } else {
+            row.append($('<td>').text('Chưa kích hoạt'));
+        }
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
             href: '#',

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model COCOApp.Models.Product
+
+<!DOCTYPE html>
 <html lang="en">
 <body>
     <!-- Form Start -->
@@ -18,23 +20,26 @@
                     <div class="bg-light rounded h-100 p-4">
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputProductName" class="required">Tên hàng</label>
-                                <input type="text" name="productName" class="form-control productName" placeholder="Nhập tên hàng..." id="inputProductName">
+                                <label asp-for="ProductName" class="required"> Tên hàng</label>
+                                <input asp-for="ProductName" class="form-control" placeholder="Nhập tên hàng..." />
+                                <span asp-validation-for="ProductName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="inputMeasureValue" class="required">Đơn vị tính</label>
-                                <input type="text" name="measureValue" class="form-control" id="inputMeasureValue" placeholder="Nhập đơn vị tính...">
+                                <label asp-for="MeasureUnit" class="required"> Đơn vị tính</label>
+                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính..."> 
+                                <span asp-validation-for="MeasureUnit" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label for="selectStatus" class="required">Trạng thái</label>
-                                <select class="form-select" name="status" id="selectStatus">
+                                <label asp-for="Status" class="required">Trạng thái</label>
+                                <select asp-for="Status" class="form-select">
                                     <option value="true">Đã kích hoạt</option>
                                     <option value="false">Chưa kích hoạt</option>
                                 </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

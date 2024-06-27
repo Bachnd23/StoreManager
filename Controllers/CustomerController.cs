@@ -46,7 +46,7 @@ namespace COCOApp.Controllers
                     Phone = model.Phone,
                     Address = model.Address,
                     Note = model.Note,  // Note property is nullable
-                    Active = model.Active,
+                    Status = model.Status,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
