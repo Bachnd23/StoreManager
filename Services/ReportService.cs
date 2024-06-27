@@ -27,5 +27,19 @@ namespace COCOApp.Services
                 throw new ApplicationException("Error retrieving reports", ex);
             }
         }
+        public void AddReport(Report report)
+        {
+            try
+            {
+                _context.Reports.Add(report);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception as needed
+                Debug.WriteLine($"Error retrieving reports: {ex.Message}");
+                throw new ApplicationException("Error retrieving reports", ex);
+            }
+        }
     }
 }

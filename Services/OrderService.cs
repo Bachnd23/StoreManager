@@ -17,6 +17,16 @@ namespace COCOApp.Services
                                 .AsQueryable();
             return query.ToList();
         }
+        public List<Order> GetOrdersByIds(List<int> orderIds)
+        {
+
+            var query = _context.Orders
+                                .Include(o => o.Customer)
+                                .Include(o => o.Product)
+                                .Where(o=>orderIds.Contains(o.Id))   
+                                .AsQueryable();
+            return query.ToList();
+        }
         public List<Order> GetOrders(string nameQuery, int pageNumber, int pageSize)
         {
             // Ensure pageNumber is at least 1

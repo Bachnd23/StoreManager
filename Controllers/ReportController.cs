@@ -15,12 +15,17 @@ namespace COCOApp.Controllers
             ViewBag.Customers = _orderService.GetCustomersSelectList();
             return View("/Views/Report/CreateReport.cshtml");
         }
-/*        public IActionResult GetReports(int customerId, string daterange)
+        [HttpPost]
+        public IActionResult CreateSummary(List<int> orderIds)
         {
-            ViewBag.Customers = _orderService.GetCustomersSelectList();
-            List<Order> rom = _reportsOrdersMappingService.GetGetReportsOrdersMapping(daterange,customerId);
-            return View("/Views/Report/CreateReport.cshtml", rom);
-        }*/
+            // Assuming _orderService can fetch orders by their IDs
+            List<Order> orders = _orderService.GetOrdersByIds(orderIds);
 
+            // Fetch customers select list for dropdown
+            ViewBag.Customers = _orderService.GetCustomersSelectList();
+
+            // Pass orders to the view
+            return View("/Views/Report/ReportSummary.cshtml", orders);
+        }
     }
 }
