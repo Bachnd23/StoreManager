@@ -1,4 +1,5 @@
-﻿using COCOApp.Services;
+﻿using COCOApp.Models;
+using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace COCOApp.Controllers
@@ -27,9 +28,36 @@ namespace COCOApp.Controllers
         {
             return View("/Views/Products/ListProducts.cshtml");
         }
-        public IActionResult Add()
+        public IActionResult ViewAdd()
         {
             return View("/Views/Products/AddProduct.cshtml");
+        }
+
+        [HttpPost]
+        public IActionResult AddProduct(Product model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Convert the model to your domain entity
+                var product = new Product
+                {
+                    ProductName = model.ProductName,
+                    MeasureUnit = model.MeasureUnit,
+                    Cost = model.Cost,
+                    Status = model.Status,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                // Use the service to insert the customer
+                _productService.AddProduct(product);
+
+                // Redirect to the customer list or a success page
+                return RedirectToAction("ViewList");
+            }
+
+            // If the model state is not valid, return the same view with validation errors
+            return View("/Views/Products/AddProduct.cshtml", model);
         }
     }
 }

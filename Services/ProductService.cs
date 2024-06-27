@@ -39,5 +39,10 @@ namespace COCOApp.Services
 
             return query.Count();
         }
+        public void AddProduct(Product product)
+        {
+            _context.Products.Add(product);
+            _context.SaveChanges();
+        }
     }
 }

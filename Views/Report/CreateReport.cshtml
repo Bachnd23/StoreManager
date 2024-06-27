@@ -1,4 +1,4 @@
-﻿@model COCOApp.Models.Product
+﻿@* @model COCOApp.Models.Product
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,11 +7,11 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Product/ViewList">Danh sách hàng hóa</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Thêm mới hàng hóa</li>
+                <li class="breadcrumb-item"><a href="#">Tổng kết</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tạo tổng kết</li>
             </ol>
         </nav>
-        <form id="registerForm" asp-action="AddProduct" method="post">
+        <form id="registerForm" asp-action="#" method="post">
             <div class="row bg-light rounded h-100 p-4">
                 <div>
                     <h4 class="mb-4">Thêm mới hàng hóa</h4>
@@ -28,15 +28,8 @@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="MeasureUnit" class="required"> Đơn vị tính</label>
-                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính..."> 
+                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính...">
                                 <span asp-validation-for="MeasureUnit" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label asp-for="Cost" class="required"> Giá bán</label>
-                                <input asp-for="Cost" class="form-control" placeholder="Nhập giá bán...">
-                                <span asp-validation-for="Cost" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -67,3 +60,4 @@
     }
 </body>
 </html>
+ *@
