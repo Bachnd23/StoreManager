@@ -7,13 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\addOrderScript.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\css\bootstrap.min.css" />
     <None Include="wwwroot\css\style.css" />
-    <None Include="wwwroot\js\addOrderScript.js" />
     <None Include="wwwroot\js\main.js" />
     <None Include="wwwroot\lib\chart\chart.min.js" />
     <None Include="wwwroot\lib\easing\easing.js" />
@@ -123,6 +118,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Report\" />
   </ItemGroup>
 
 </Project>
