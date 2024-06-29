@@ -22,6 +22,11 @@ namespace COCOApp.Controllers
         {
             return View();
         }
+        public IActionResult ViewRegisterStore()
+        {
+            return View("/Views/Home/RegisterStore.cshtml");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
