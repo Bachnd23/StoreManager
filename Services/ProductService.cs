@@ -10,18 +10,25 @@ namespace COCOApp.Services
             var query = _context.Products.AsQueryable();
             return query.ToList();
         }
-        public Product GetProductById(int id)
+        public Product GetProductById(int id,int sellerId)
         {
             var query = _context.Products.AsQueryable();
+            if(sellerId > 0)
+            {
+                query=query.Where(p=> p.SellerId == sellerId);
+            }
             return query.FirstOrDefault(p=>p.Id==id);
         }
-        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize)
+        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize,int sellerId)
         {
             // Ensure pageNumber is at least 1
             pageNumber = Math.Max(pageNumber, 1);
 
             var query = _context.Products.AsQueryable();
-
+            if (sellerId > 0)
+            {
+                query = query.Where(p => p.SellerId == sellerId);
+            }
             if (!string.IsNullOrEmpty(nameQuery))
             {
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
@@ -33,15 +40,17 @@ namespace COCOApp.Services
         }
 
 
-        public int GetTotalProducts(string nameQuery)
+        public int GetTotalProducts(string nameQuery,int sellerId)
         {
             var query = _context.Products.AsQueryable();
-
+            if (sellerId > 0)
+            {
+                query = query.Where(p => p.SellerId == sellerId);
+            }
             if (!string.IsNullOrEmpty(nameQuery))
             {
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
-
             return query.Count();
         }
         public void AddProduct(Product product)

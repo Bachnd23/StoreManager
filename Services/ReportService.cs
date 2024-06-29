@@ -8,15 +8,19 @@ namespace COCOApp.Services
 {
     public class ReportService : StoreManagerService
     {
-        public List<Report> GetReports(int customerId)
+        public List<Report> GetReports(int customerId,int sellerId)
         {
 
             try
             {
-                var query = _context.Reports
-                                    .Include(r => r.Customer)
-                                    .Include(r => r.ReportsOrdersMappings)
-                                    .Where(r => r.CustomerId == customerId);
+                var query=_context.Reports.AsQueryable();
+                if(sellerId > 0)
+                {
+                    query=query.Where(r=>r.SellerId == sellerId);   
+                }
+                 query = query.Include(r => r.Customer)
+                              .Include(r => r.ReportsOrdersMappings)
+                              .Where(r => r.CustomerId == customerId);
 
                 return query.ToList();
             }

@@ -1,4 +1,5 @@
-﻿using COCOApp.Models;
+﻿using COCOApp.Helpers;
+using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,8 +18,9 @@ namespace COCOApp.Controllers
         [HttpGet]
         public IActionResult GetList(string nameQuery, int pageNumber = 1)
         {
-            var customers = _customerService.GetCustomers(nameQuery, pageNumber, PageSize);
-            var totalCustomers = _customerService.GetTotalCustomers(nameQuery);
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            var customers = _customerService.GetCustomers(nameQuery, pageNumber, PageSize, user.Id);
+            var totalCustomers = _customerService.GetTotalCustomers(nameQuery, user.Id);
 
             var response = new
             {
@@ -41,11 +43,12 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddCustomer(Customer model)
         {
-/*            if (!ModelState.IsValid)
-            {
-                // If the model state is not valid, return the same view with validation errors
-                return View("/Views/Customer/AddCustomer.cshtml", model);
-            }*/
+            /*            if (!ModelState.IsValid)
+                        {
+                            // If the model state is not valid, return the same view with validation errors
+                            return View("/Views/Customer/AddCustomer.cshtml", model);
+                        }*/
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             // Convert the model to your domain entity
             var customer = new Customer
             {
@@ -54,7 +57,7 @@ namespace COCOApp.Controllers
                 Address = model.Address,
                 Note = model.Note,  // Note property is nullable
                 Status = model.Status,
-                SellerId = 1,//to be updated
+                SellerId = user.Id,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };

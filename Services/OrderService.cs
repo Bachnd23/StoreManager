@@ -17,30 +17,32 @@ namespace COCOApp.Services
                                 .AsQueryable();
             return query.ToList();
         }
-        public List<Order> GetOrdersByIds(List<int> orderIds)
+        public List<Order> GetOrdersByIds(List<int> orderIds, int sellerId)
         {
 
-            var query = _context.Orders
-                                .Include(o => o.Customer)
-                                .Include(o => o.Product)
-                                .Where(o=>orderIds.Contains(o.Id))   
-                                .AsQueryable();
+            var query = _context.Orders.AsQueryable();
+
+            query = query.Include(o => o.Customer)
+                         .Include(o => o.Product)
+                         .Where(o => orderIds.Contains(o.Id));
             return query.ToList();
         }
-        public List<Order> GetOrders(string nameQuery, int pageNumber, int pageSize)
+        public List<Order> GetOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             // Ensure pageNumber is at least 1
             pageNumber = Math.Max(pageNumber, 1);
 
-            var query = _context.Orders
-                                .Include(o => o.Customer)
-                                .Include(o => o.Product)
-                                .AsQueryable();
-
+            var query = _context.Orders.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
             if (!string.IsNullOrEmpty(nameQuery))
             {
                 query = query.Where(o => o.Customer.Name.Contains(nameQuery));
             }
+            query = query.Include(o => o.Customer)
+                         .Include(o => o.Product);
             query = query.OrderByDescending(o => o.Id);
             return query.Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
@@ -48,33 +50,44 @@ namespace COCOApp.Services
         }
 
 
-        public int GetTotalOrders(string nameQuery)
+        public int GetTotalOrders(string nameQuery, int sellerId)
         {
 
-            var query = _context.Orders
-                                .Include(o => o.Customer)
-                                .Include(o => o.Product)
-                                .AsQueryable();
-
+            var query = _context.Orders.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
             if (!string.IsNullOrEmpty(nameQuery))
             {
                 query = query.Where(c => c.Customer.Name.Contains(nameQuery));
             }
-
+            query = query.Include(o => o.Customer)
+                         .Include(o => o.Product);
             return query.Count();
         }
-        public List<SelectListItem> GetCustomersSelectList()
+        public List<SelectListItem> GetCustomersSelectList(int sellerId)
         {
-            return _context.Customers.Select(c => new SelectListItem
+            var query = _context.Customers.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(c => c.SellerId == sellerId);
+            }
+            return query.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
                 Text = c.Name
             }).ToList();
         }
 
-        public List<SelectListItem> GetProductsSelectList()
+        public List<SelectListItem> GetProductsSelectList(int sellerId)
         {
-            return _context.Products.Select(i => new SelectListItem
+            var query = _context.Products.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(p => p.SellerId == sellerId);
+            }
+            return query.Select(i => new SelectListItem
             {
                 Value = i.Id.ToString(),
                 Text = i.ProductName
@@ -85,7 +98,7 @@ namespace COCOApp.Services
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
-        public List<Order> GetOrders(string dateRange, int customerId)
+        public List<Order> GetOrders(string dateRange, int customerId, int sellerId)
         {
             DateTime startDate = DateTime.MinValue;
             DateTime endDate = DateTime.MaxValue;
@@ -108,10 +121,14 @@ namespace COCOApp.Services
 
             try
             {
-                var query = _context.Orders
-                                    .Include(o => o.Customer)
-                                    .Include(o => o.Product)
-                                    .Where(o => o.CustomerId == customerId && o.Date >= startDate && o.Date <= endDate);
+                var query = _context.Orders.AsQueryable();
+                if(sellerId> 0)
+                {
+                    query = query.Where(o => o.SellerId == sellerId);
+                }
+                query = query.Include(o => o.Customer)
+                             .Include(o => o.Product)
+                             .Where(o => o.CustomerId == customerId && o.Date >= startDate && o.Date <= endDate);
                 return query.ToList();
             }
             catch (Exception ex)

@@ -1,8 +1,8 @@
 ﻿using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
+using COCOApp.Helpers;
 
 namespace COCOApp.Controllers
 {
@@ -20,28 +20,36 @@ namespace COCOApp.Controllers
         }
         public IActionResult ViewCreate()
         {
-            ViewBag.Customers = _orderService.GetCustomersSelectList();
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             return View("/Views/Report/CreateReport.cshtml");
         }
-        [ValidateAntiForgeryToken]
+        [HttpGet]
+        public IActionResult GetOrders(int customerId, string daterange)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+            List<Order> orders = _orderService.GetOrders(daterange, customerId, user.Id);
+            return View("/Views/Report/CreateReport.cshtml", orders);
+        }
         [HttpPost]
         public IActionResult CreateSummary(List<int> orderIds)
         {
-            if(orderIds==null || orderIds.Count <= 0)
+            if (orderIds == null || orderIds.Count <= 0)
             {
                 return View("/Views/Report/CreateReport.cshtml");
             }
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             // Assuming _orderService can fetch orders by their IDs
-            List<Order> orders = _orderService.GetOrdersByIds(orderIds);
+            List<Order> orders = _orderService.GetOrdersByIds(orderIds, user.Id);
 
-            // Pass orders to the view
             return View("/Views/Report/ReportSummary.cshtml", orders);
         }
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult CreateInvoice(List<int> orderIds, List<decimal> costs)
         {
-            List<Order> orders = _orderService.GetOrdersByIds(orderIds);
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            List<Order> orders = _orderService.GetOrdersByIds(orderIds,user.Id);
             if(orders==null|| orders.Count == 0) {
                 return View("/Views/Report/CreateReport.cshtml");
             }
