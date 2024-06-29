@@ -37,29 +37,29 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddCustomer(Customer model)
         {
-            if (ModelState.IsValid)
+/*            if (!ModelState.IsValid)
             {
-                // Convert the model to your domain entity
-                var customer = new Customer
-                {
-                    Name = model.Name,
-                    Phone = model.Phone,
-                    Address = model.Address,
-                    Note = model.Note,  // Note property is nullable
-                    Status = model.Status,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
-                };
+                // If the model state is not valid, return the same view with validation errors
+                return View("/Views/Customer/AddCustomer.cshtml", model);
+            }*/
+            // Convert the model to your domain entity
+            var customer = new Customer
+            {
+                Name = model.Name,
+                Phone = model.Phone,
+                Address = model.Address,
+                Note = model.Note,  // Note property is nullable
+                Status = model.Status,
+                SellerId = 1,//to be updated
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
 
-                // Use the service to insert the customer
-                _customerService.AddCustormer(customer);
+            // Use the service to insert the customer
+            _customerService.AddCustormer(customer);
 
-                // Redirect to the customer list or a success page
-                return RedirectToAction("ViewList");
-            }
-
-            // If the model state is not valid, return the same view with validation errors
-            return View("/Views/Customer/AddCustomer.cshtml", model);
+            // Redirect to the customer list or a success page
+            return RedirectToAction("ViewList");
         }
 
     }

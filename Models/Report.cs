@@ -15,8 +15,10 @@ namespace COCOApp.Models
         public decimal TotalPrice { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public int SellerId { get; set; }
 
         public virtual Customer Customer { get; set; } = null!;
+        public virtual User Seller { get; set; } = null!;
         public virtual ICollection<ReportsOrdersMapping> ReportsOrdersMappings { get; set; }
     }
 }

@@ -14,7 +14,9 @@ CREATE TABLE Products (
     cost DECIMAL(10, 2) NOT NULL,
 	status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
-    updated_at DATETIME NULL DEFAULT NULL
+    updated_at DATETIME NULL DEFAULT NULL,
+	seller_id INT NOT NULL,
+	FOREIGN KEY (seller_id) REFERENCES Users(id)
 );
 GO
 
@@ -27,7 +29,9 @@ CREATE TABLE Customers (
     note NVARCHAR(MAX) NULL,
     status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
-    updated_at DATETIME NULL DEFAULT NULL
+    updated_at DATETIME NULL DEFAULT NULL,
+	seller_id INT NOT NULL,
+	FOREIGN KEY (seller_id) REFERENCES Users(id)
 );
 GO
 
@@ -43,6 +47,8 @@ CREATE TABLE Orders (
 	orderTotal DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
+	seller_id INT NOT NULL,
+	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id),
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
@@ -58,7 +64,7 @@ GO
 -- Create Users table
 CREATE TABLE Users (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(255) NOT NULL,
+    username NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NOT NULL,
     role INT NOT NULL,
@@ -68,7 +74,17 @@ CREATE TABLE Users (
     FOREIGN KEY (role) REFERENCES UserRoles(id)
 );
 GO
-
+-- Create SellerDetails table
+CREATE TABLE SellerDetails (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    fullname NVARCHAR(255) NOT NULL,
+	address NVARCHAR(255) NOT NULL,
+	phone NVARCHAR(255) NOT NULL,
+	dob DATE NOT NULL,
+	Gender BIT NOT NULL,
+	FOREIGN KEY (id) REFERENCES dbo.Users(id)
+);
+GO
 -- Create Reports table
 CREATE TABLE Reports (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -76,6 +92,8 @@ CREATE TABLE Reports (
     TotalPrice DECIMAL(18, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
+	seller_id INT NOT NULL,
+	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 GO
@@ -85,6 +103,8 @@ CREATE TABLE ReportsOrdersMapping (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     report_id INT NOT NULL,
     order_id INT NOT NULL,
+	seller_id INT NOT NULL,
+	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (report_id) REFERENCES Reports(id),
     FOREIGN KEY (order_id) REFERENCES Orders(id)
 );

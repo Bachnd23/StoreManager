@@ -19,7 +19,9 @@ namespace COCOApp.Models
         public bool Status { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public int SellerId { get; set; }
 
+        public virtual User Seller { get; set; } = null!;
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
     }

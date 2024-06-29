@@ -56,6 +56,7 @@ namespace COCOApp.Controllers
                     Complete = false,
                     OrderProductCost = product.Cost,
                     OrderTotal = product.Cost * model.Volume,
+                    SellerId = 1,//to be updated
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
