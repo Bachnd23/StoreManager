@@ -8,9 +8,16 @@ namespace COCOApp.Controllers
 {
     public class ReportController : Controller
     {
-        private readonly OrderService _orderService = new OrderService();
-        private readonly ReportService _reportService = new ReportService();
-        private readonly ReportsOrdersMappingService _reportsOrdersMappingService = new ReportsOrdersMappingService();
+        private readonly OrderService _orderService;
+        private readonly ReportService _reportService;
+        private readonly ReportsOrdersMappingService _reportsOrdersMappingService;
+
+        public ReportController(OrderService orderService, ReportService reportService, ReportsOrdersMappingService reportsOrdersMappingService)
+        {
+            _orderService = orderService;
+            _reportService = reportService;
+            _reportsOrdersMappingService = reportsOrdersMappingService;
+        }
         public IActionResult ViewCreate()
         {
             ViewBag.Customers = _orderService.GetCustomersSelectList();

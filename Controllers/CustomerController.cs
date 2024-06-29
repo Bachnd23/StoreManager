@@ -7,7 +7,11 @@ namespace COCOApp.Controllers
 {
     public class CustomerController : Controller
     {
-        private CustomerService _customerService = new CustomerService();
+        private CustomerService _customerService;
+        public CustomerController(CustomerService customerService)
+        {
+            _customerService = customerService;
+        }
         private const int PageSize = 10;
 
         [HttpGet]

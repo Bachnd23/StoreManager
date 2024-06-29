@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using COCOApp.Models;
 using Newtonsoft.Json;
+using COCOApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,14 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+// Register your custom services here
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<ReportsOrdersMappingService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<ProductService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +57,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

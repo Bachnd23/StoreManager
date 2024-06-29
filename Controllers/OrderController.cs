@@ -6,8 +6,14 @@ namespace COCOApp.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly OrderService _orderService = new OrderService();
-        private readonly ProductService _productService = new ProductService();
+        private readonly OrderService _orderService;
+        private readonly ProductService _productService;
+
+        public OrderController(OrderService orderService, ProductService productService)
+        {
+            _orderService = orderService;
+            _productService = productService;
+        }
         private const int PageSize = 10;
 
 

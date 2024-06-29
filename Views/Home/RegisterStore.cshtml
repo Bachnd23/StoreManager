@@ -1,14 +1,13 @@
-﻿@page
+﻿@model COCOApp.Models.User
 @{
     Layout = "_Layout";
 }
 
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <!-- Sign In Start -->
     <div class="container-fluid">
         <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
             <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                <form action="#" method="post">
+                <form id="registerForm" asp-controller="User" asp-action="AddUser" method="post">
                     <div class="bg-light rounded p-4 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h3 class="text-primary">
@@ -17,34 +16,34 @@
                             <h3>COCO</h3>
                         </div>
                         <div class="mb-3">
-                            <label for="floatingInput">Tên đăng nhập</label>
-                            <input type="text" name="username" class="form-control" id="floatingInput" required>
+                            <label asp-for="Email" class="required">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder=" Nhập email..." required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
-                        <label for="floatingPassword">Mật khẩu</label>
+                        <div class="mb-3">
+                            <label asp-for="Username" class="required">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control" placeholder=" Nhập tên đăng nhập..." required>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <label asp-for="Password" class="required">Mật khẩu</label>
                         <div class="input-group mb-4" id="show_hide_password">
-                            <input type="password" class="form-control" id="floatingPassword" required>
+                            <input asp-for="Password" class="form-control" placeholder=" Nhập mật khẩu..." required>
                             <div class="input-group-addon">
                                 <a href="#" class="h-100 input-group-text" id="togglePassword">
                                     <i class="fas fa-eye-slash" aria-hidden="true"></i>
                                 </a>
                             </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <label for="confirmPassword">Xác nhận mật khẩu</label>
+                        <label for="ConfirmPassword" class="required">Xác nhận mật khẩu</label>
                         <div class="input-group mb-4" id="show_hide_confirm_password">
-                            <input type="password" class="form-control" id="confirmPassword" required>
+                            <input type="password" id="ConfirmPassword" class="form-control" placeholder=" Xác nhận mật khẩu..." required>
                             <div class="input-group-addon">
                                 <a href="#" class="h-100 input-group-text" id="toggleConfirmPassword">
                                     <i class="fas fa-eye-slash" aria-hidden="true"></i>
                                 </a>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="floatingInput">Điện thoại</label>
-                            <input type="text" class="form-control" id="phoneNumber" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="floatingInput">Địa chỉ</label>
-                            <input type="text" class="form-control" id="address" required>
+                            <span id="confirmPasswordError" class="text-danger"></span>
                         </div>
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <a href="#">Quên mật khẩu</a>
@@ -56,15 +55,14 @@
             </div>
         </div>
     </div>
+    @Html.AntiForgeryToken()
 </div>
-<!-- Sign In End -->
 @section Scripts {
     <script>
         $(document).ready(function () {
-
             $("#togglePassword").on('click', function (event) {
                 event.preventDefault();
-                var passwordField = $('#floatingPassword');
+                var passwordField = $('#Password');
                 var icon = $(this).find('i');
                 if (passwordField.attr("type") == "text") {
                     passwordField.attr('type', 'password');
@@ -77,7 +75,7 @@
 
             $("#toggleConfirmPassword").on('click', function (event) {
                 event.preventDefault();
-                var confirmPasswordField = $('#confirmPassword');
+                var confirmPasswordField = $('#ConfirmPassword');
                 var icon = $(this).find('i');
                 if (confirmPasswordField.attr("type") == "text") {
                     confirmPasswordField.attr('type', 'password');
@@ -85,6 +83,17 @@
                 } else if (confirmPasswordField.attr("type") == "password") {
                     confirmPasswordField.attr('type', 'text');
                     icon.addClass("fa-eye").removeClass("fa-eye-slash");
+                }
+            });
+
+            $("#registerForm").on('submit', function (event) {
+                var password = $("#Password").val();
+                var confirmPassword = $("#ConfirmPassword").val();
+                if (password !== confirmPassword) {
+                    event.preventDefault();
+                    $("#confirmPasswordError").text("Mật khẩu và xác nhận mật khẩu không khớp.");
+                } else {
+                    $("#confirmPasswordError").text("");
                 }
             });
         });

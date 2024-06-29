@@ -7,7 +7,10 @@ namespace COCOApp.Controllers
 {
     public class ProductController : Controller
     {
-        private ProductService _productService = new ProductService();
+        private ProductService _productService;
+        public ProductController(ProductService productService) { 
+            _productService = productService;
+        }
         private const int PageSize = 10;
 
         [HttpGet]
@@ -37,11 +40,11 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddProduct(Product model)
         {
-            if (!ModelState.IsValid)
+/*            if (!ModelState.IsValid)
             {
                 // If the model state is not valid, return the same view with validation errors
                 return View("/Views/Products/AddProduct.cshtml", model);
-            }
+            }*/
 
             // Convert the model to your domain entity
             var product = new Product
