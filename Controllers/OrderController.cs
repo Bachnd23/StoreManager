@@ -69,6 +69,7 @@ namespace COCOApp.Controllers
 
                 _orderService.AddOrder(order);
             }
+            HttpContext.Session.SetString("SuccessMsg", "Thêm đơn hàng thành công!");
             return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         }

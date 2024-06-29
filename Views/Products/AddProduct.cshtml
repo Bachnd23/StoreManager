@@ -23,21 +23,21 @@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="ProductName" class="required"> Tên hàng</label>
-                                <input asp-for="ProductName" class="form-control" placeholder="Nhập tên hàng..." />
+                                <input asp-for="ProductName" class="form-control" placeholder="Nhập tên hàng..." /required>
                                 <span asp-validation-for="ProductName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="MeasureUnit" class="required"> Đơn vị tính</label>
-                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính..."> 
+                                <input asp-for="MeasureUnit" class="form-control" placeholder="Nhập đơn vị tính..." required>
                                 <span asp-validation-for="MeasureUnit" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="Cost" class="required"> Giá bán</label>
-                                <input asp-for="Cost" class="form-control" placeholder="Nhập giá bán...">
+                                <input asp-for="Cost" class="form-control" placeholder="Nhập giá bán..." required>
                                 <span asp-validation-for="Cost" class="text-danger"></span>
                             </div>
                         </div>

@@ -116,14 +116,14 @@
                                                 <div class="mb-3">
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].Volume" class="form-label required">Số lượng</label>
-                                                        <input asp-for="Orders[${orderIndex}].Volume" name="Orders[${orderIndex}].Volume" class="form-control" type="number" />
+                                                        <input asp-for="Orders[${orderIndex}].Volume" name="Orders[${orderIndex}].Volume" class="form-control" type="number"required />
                                                         <span asp-validation-for="Orders[${orderIndex}].Volume" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <div class="form-group">
                                                         <label asp-for="Orders[${orderIndex}].Date" class="form-label required">Ngày đặt</label>
-                                                        <input asp-for="Orders[${orderIndex}].Date" name="Orders[${orderIndex}].Date" class="form-control" type="date" value="${selectedDate}" />
+                                                        <input asp-for="Orders[${orderIndex}].Date" name="Orders[${orderIndex}].Date" class="form-control" type="date" value="${selectedDate}" required/>
                                                         <span asp-validation-for="Orders[${orderIndex}].Date" class="text-danger"></span>
                                                     </div>
                                                 </div>

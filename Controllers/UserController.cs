@@ -17,11 +17,6 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult RegisterUser(User model)
         {
-/*            if (!ModelState.IsValid)
-            {
-                return View("/Views/Products/AddProduct.cshtml", model);
-            }*/
-
             try
             {
                 // Hash the password using BCrypt
@@ -40,12 +35,12 @@ namespace COCOApp.Controllers
                 // Use the service to insert the customer
                 _userService.AddUser(user);
 
+                HttpContext.Session.SetString("SuccessMsg", "Đăng ký tài khoản thành công!");
                 return View("/Views/Home/Index.cshtml");
             }
             catch (ArgumentException ex)
             {
-                // Handle the exception and show the error message
-                ModelState.AddModelError(string.Empty, ex.Message);
+                HttpContext.Session.SetString("ErrorMsg", "Email hoặc tên đăng nhập đã được sử dụng!");
                 return View("/Views/Home/RegisterStore.cshtml", model);
             }
         }
@@ -70,8 +65,7 @@ namespace COCOApp.Controllers
             }
             else
             {
-                // Pass user object back to view on failed login attempt
-                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                HttpContext.Session.SetString("ErrorMsg", "Tên đăng nhập hoặc mật khẩu sai");
                 return View("/Views/Home/SignIn.cshtml", user);
             }
         }

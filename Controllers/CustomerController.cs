@@ -61,7 +61,7 @@ namespace COCOApp.Controllers
 
             // Use the service to insert the customer
             _customerService.AddCustormer(customer);
-
+            HttpContext.Session.SetString("SuccessMsg", "Thêm khách hàng thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }

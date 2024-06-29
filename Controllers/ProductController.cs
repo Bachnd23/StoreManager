@@ -8,7 +8,8 @@ namespace COCOApp.Controllers
     public class ProductController : Controller
     {
         private ProductService _productService;
-        public ProductController(ProductService productService) { 
+        public ProductController(ProductService productService)
+        {
             _productService = productService;
         }
         private const int PageSize = 10;
@@ -43,6 +44,9 @@ namespace COCOApp.Controllers
 /*            if (!ModelState.IsValid)
             {
                 // If the model state is not valid, return the same view with validation errors
+
+                // On error
+                HttpContext.Session.SetString("ErrorMsg", "Something went wrong!");
                 return View("/Views/Products/AddProduct.cshtml", model);
             }*/
 
@@ -59,7 +63,8 @@ namespace COCOApp.Controllers
             };
             // Use the service to insert the customer
             _productService.AddProduct(product);
-
+            // On success
+            HttpContext.Session.SetString("SuccessMsg", "Thêm sản phẩm thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }

@@ -44,30 +44,50 @@
     <link href="~/css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <!-- Additional Section for Custom Styles -->
     @RenderSection("Styles", false)
 </head>
 
 <body>
+    @{
+        var successMsg = Context.Session.GetString("SuccessMsg");
+        var errorMsg = Context.Session.GetString("ErrorMsg");
+
+        Context.Session.Remove("SuccessMsg");
+        Context.Session.Remove("ErrorMsg");
+    }
+
+    @if (!string.IsNullOrEmpty(successMsg))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'Success',
+                    text: '@Html.Raw(successMsg)',
+                    icon: 'success'
+                });
+            });
+        </script>
+    }
+
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'Error',
+                    text: '@Html.Raw(errorMsg)',
+                    icon: 'error'
+                });
+            });
+        </script>
+    }
     <header>
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
             <div class="navbar-nav align-items-center ms-auto">
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-envelope me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Message</span>
-                    </a>
-                    <!-- Message Dropdown Menu -->
-                </div>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-bell me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Notification</span>
-                    </a>
-                    <!-- Notification Dropdown Menu -->
-                </div>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">

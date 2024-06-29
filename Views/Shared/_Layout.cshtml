@@ -39,12 +39,45 @@
 
     <!-- Template Styles -->
     <link href="~/css/style.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Additional Section for Custom Styles -->
     @RenderSection("Styles", false)
 </head>
 
 <body>
+    @{
+        var successMsg = Context.Session.GetString("SuccessMsg");
+        var errorMsg = Context.Session.GetString("ErrorMsg");
+
+        Context.Session.Remove("SuccessMsg");
+        Context.Session.Remove("ErrorMsg");
+    }
+
+    @if (!string.IsNullOrEmpty(successMsg))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'Success',
+                    text: '@Html.Raw(successMsg)',
+                    icon: 'success'
+                });
+            });
+        </script>
+    }
+
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: 'Error',
+                    text: '@Html.Raw(errorMsg)',
+                    icon: 'error'
+                });
+            });
+        </script>
+    }
     <div class="container-fluid pt-4 px-4">
         <div class="row">
             <main role="main">
