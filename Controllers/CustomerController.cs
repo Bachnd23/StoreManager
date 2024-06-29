@@ -37,7 +37,7 @@ namespace COCOApp.Controllers
         {
             return View("/Views/Customer/ListCustomers.cshtml");
         }
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult AddCustomer(Customer model)
         {

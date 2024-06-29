@@ -26,6 +26,10 @@ namespace COCOApp.Controllers
         {
             return View("/Views/Home/RegisterStore.cshtml");
         }
+        public IActionResult ViewSignIn()
+        {
+            return View("/Views/Home/SignIn.cshtml");
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

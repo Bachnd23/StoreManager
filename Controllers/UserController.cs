@@ -2,8 +2,7 @@
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
-using System;
-
+using COCOApp.Helpers;
 namespace COCOApp.Controllers
 {
     public class UserController : Controller
@@ -16,7 +15,7 @@ namespace COCOApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddUser(User model)
+        public IActionResult RegisterUser(User model)
         {
 /*            if (!ModelState.IsValid)
             {
@@ -49,6 +48,38 @@ namespace COCOApp.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View("/Views/Home/RegisterStore.cshtml", model);
             }
+        }
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(User user)
+        {
+            var authenticatedUser = _userService.GetUserByNameAndPass(user.Username, user.Password);
+
+            if (authenticatedUser != null)
+            {
+                // Store authenticated user in session
+                HttpContext.Session.SetObjectInSession("user", authenticatedUser);
+
+                if (authenticatedUser.Role == 2) // Seller
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View("/Views/Home/SignIn.cshtml", user);
+                }
+            }
+            else
+            {
+                // Pass user object back to view on failed login attempt
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                return View("/Views/Home/SignIn.cshtml", user);
+            }
+        }
+
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("ViewSignIn", "Home");
         }
     }
 }

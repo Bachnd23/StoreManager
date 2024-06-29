@@ -23,6 +23,7 @@ namespace COCOApp.Controllers
             ViewBag.Customers = _orderService.GetCustomersSelectList();
             return View("/Views/Report/CreateReport.cshtml");
         }
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult CreateSummary(List<int> orderIds)
         {
@@ -36,6 +37,7 @@ namespace COCOApp.Controllers
             // Pass orders to the view
             return View("/Views/Report/ReportSummary.cshtml", orders);
         }
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult CreateInvoice(List<int> orderIds, List<decimal> costs)
         {

@@ -1,0 +1,64 @@
+﻿@model COCOApp.Models.User
+@{
+    Layout = "_Layout";
+}
+
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <div class="container-fluid">
+        <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                <form id="loginForm" asp-controller="User" asp-action="Login" method="post">
+                    <div class="bg-light rounded p-4 my-4 mx-3">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h3 class="text-primary">
+                                <img alt="" src="img/logo.png" width="100" height="100">
+                            </h3>
+                            <h3>COCO</h3>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Username" class="required">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập..." required>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Password" class="required">Mật khẩu</label>
+                            <div class="input-group" id="show_hide_password">
+                                <input asp-for="Password" class="form-control" placeholder="Nhập mật khẩu..." required >
+                                <div class="input-group-addon">
+                                    <a href="#" class="h-100 input-group-text" id="togglePassword">
+                                        <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <a href="#">Quên mật khẩu</a>
+                            <a href="~/Home/ViewRegisterStore">Đăng ký</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#togglePassword").on('click', function (event) {
+                event.preventDefault();
+                var passwordField = $('#Password');
+                var icon = $(this).find('i');
+                if (passwordField.attr("type") == "text") {
+                    passwordField.attr('type', 'password');
+                    icon.addClass("fa-eye-slash").removeClass("fa-eye");
+                } else if (passwordField.attr("type") == "password") {
+                    passwordField.attr('type', 'text');
+                    icon.addClass("fa-eye").removeClass("fa-eye-slash");
+                }
+            });
+        });
+    </script>
+}

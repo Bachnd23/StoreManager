@@ -44,7 +44,7 @@ namespace COCOApp.Controllers
             ViewBag.Products = _orderService.GetProductsSelectList();
             return View("/Views/Order/AddOrder.cshtml");
         }
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult AddOrders(List<Order> orders)
         {
