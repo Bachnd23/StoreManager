@@ -6,6 +6,43 @@ GO
 USE StoreManager;
 GO
 
+-- Create UserRoles table
+CREATE TABLE UserRoles (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL
+);
+GO
+INSERT INTO dbo.UserRoles
+(
+    name
+)
+VALUES
+('Admin'),('Seller'),('Customer')
+-- Create Users table
+CREATE TABLE Users (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    username NVARCHAR(255) NOT NULL,
+    email NVARCHAR(255) NOT NULL UNIQUE,
+    password NVARCHAR(255) NOT NULL,
+    role INT NOT NULL,
+	status BIT NOT NULL,
+    remember_token NVARCHAR(100) DEFAULT NULL,
+    created_at DATETIME NULL DEFAULT NULL,
+    updated_at DATETIME NULL DEFAULT NULL,
+    FOREIGN KEY (role) REFERENCES UserRoles(id)
+);
+GO
+-- Create SellerDetails table
+CREATE TABLE SellerDetails (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    fullname NVARCHAR(255) NOT NULL,
+	address NVARCHAR(255) NOT NULL,
+	phone NVARCHAR(255) NOT NULL,
+	dob DATE NOT NULL,
+	gender BIT NOT NULL,
+	FOREIGN KEY (id) REFERENCES dbo.Users(id)
+);
+GO
 -- Create Products table
 CREATE TABLE Products (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -51,38 +88,6 @@ CREATE TABLE Orders (
 	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id),
     FOREIGN KEY (product_id) REFERENCES Products(id)
-);
-GO
-
--- Create UserRoles table
-CREATE TABLE UserRoles (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(255) NOT NULL
-);
-GO
-
--- Create Users table
-CREATE TABLE Users (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    username NVARCHAR(255) NOT NULL,
-    email NVARCHAR(255) NOT NULL UNIQUE,
-    password NVARCHAR(255) NOT NULL,
-    role INT NOT NULL,
-    remember_token NVARCHAR(100) DEFAULT NULL,
-    created_at DATETIME NULL DEFAULT NULL,
-    updated_at DATETIME NULL DEFAULT NULL,
-    FOREIGN KEY (role) REFERENCES UserRoles(id)
-);
-GO
--- Create SellerDetails table
-CREATE TABLE SellerDetails (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    fullname NVARCHAR(255) NOT NULL,
-	address NVARCHAR(255) NOT NULL,
-	phone NVARCHAR(255) NOT NULL,
-	dob DATE NOT NULL,
-	Gender BIT NOT NULL,
-	FOREIGN KEY (id) REFERENCES dbo.Users(id)
 );
 GO
 -- Create Reports table

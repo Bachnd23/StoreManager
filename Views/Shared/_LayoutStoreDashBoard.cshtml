@@ -151,6 +151,12 @@
                             <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-table me-2"></i>Tổng kết
                             </a>
+                            @if (user!=null&&user.Role == 1)
+                            {
+                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
+                                    <i class="fa fa-table me-2"></i>Danh sách người dùng
+                                </a>
+                            }
                         </div>
                     </nav>
                 </div>

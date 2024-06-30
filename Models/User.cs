@@ -19,6 +19,7 @@ namespace COCOApp.Models
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public int Role { get; set; }
+        public bool Status { get; set; }
         public string? RememberToken { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

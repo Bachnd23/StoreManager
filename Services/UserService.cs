@@ -12,6 +12,32 @@ namespace COCOApp.Services
             query = query.Include(u => u.SellerDetail);
             return query.ToList();
         }
+        public List<User> GetUsers(string nameQuery, int pageNumber, int pageSize)
+        {
+            // Ensure pageNumber is at least 1
+            pageNumber = Math.Max(pageNumber, 1);
+
+            var query = _context.Users.AsQueryable();
+            if (!string.IsNullOrEmpty(nameQuery))
+            {
+                query = query.Where(c => c.Username.Contains(nameQuery));
+            }
+            query = query.OrderByDescending(p => p.Id);
+            return query.Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+        }
+        public int GetTotalUsers(string nameQuery)
+        {
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(nameQuery))
+            {
+                query = query.Where(c => c.Username.Contains(nameQuery));
+            }
+            return query.Count();
+        }
+
         public void AddUser(User user)
         {
             // Check if the email or username already exists
@@ -31,7 +57,7 @@ namespace COCOApp.Services
         {
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (user != null&&user.Status==true && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 return user;
             }

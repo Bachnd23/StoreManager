@@ -231,6 +231,8 @@ namespace COCOApp.Models
                     .HasMaxLength(255)
                     .HasColumnName("fullname");
 
+                entity.Property(e => e.Gender).HasColumnName("gender");
+
                 entity.Property(e => e.Phone)
                     .HasMaxLength(255)
                     .HasColumnName("phone");
@@ -244,7 +246,7 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164639DACBB")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61648528489D")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -266,6 +268,8 @@ namespace COCOApp.Models
                     .HasColumnName("remember_token");
 
                 entity.Property(e => e.Role).HasColumnName("role");
+
+                entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")

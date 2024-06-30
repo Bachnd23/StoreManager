@@ -14,6 +14,31 @@ namespace COCOApp.Controllers
             _userService = userService;
         }
 
+        private const int PageSize = 10;
+
+        [HttpGet]
+        public IActionResult GetList(string nameQuery, int pageNumber = 1)
+        {
+            var users = _userService.GetUsers(nameQuery, pageNumber, PageSize);
+            var totalUsers = _userService.GetTotalUsers(nameQuery);
+
+            var response = new
+            {
+                userResults = users,
+                pageNumber = pageNumber,
+                totalPages = (int)Math.Ceiling(totalUsers / (double)PageSize)
+            };
+
+            return Json(response);
+        }
+        public IActionResult ViewList()
+        {
+            return View("/Views/User/ListUsers.cshtml");
+        }
+        public IActionResult ViewAdd()
+        {
+            return View("/Views/User/AddUser.cshtml");
+        }
         [HttpPost]
         public IActionResult RegisterUser(User model)
         {
@@ -28,6 +53,8 @@ namespace COCOApp.Controllers
                     Email = model.Email,
                     Username = model.Username,
                     Password = hashedPassword,
+                    Status=true,
+                    Role=2,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -36,7 +63,7 @@ namespace COCOApp.Controllers
                 _userService.AddUser(user);
 
                 HttpContext.Session.SetString("SuccessMsg", "Đăng ký tài khoản thành công!");
-                return View("/Views/Home/Index.cshtml");
+                return View("/Views/Home/SignIn.cshtml");
             }
             catch (ArgumentException ex)
             {
@@ -51,13 +78,20 @@ namespace COCOApp.Controllers
 
             if (authenticatedUser != null)
             {
-                // Store authenticated user in session
-                HttpContext.Session.SetObjectInSession("user", authenticatedUser);
 
                 if (authenticatedUser.Role == 2) // Seller
                 {
+                    // Store authenticated user in session
+                    HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
+                else if(authenticatedUser.Role == 1)// Admin
+                {
+                    authenticatedUser.Id = 0;
+                    // Store authenticated user in session
+                    HttpContext.Session.SetObjectInSession("user", authenticatedUser);
+                    return RedirectToAction("Index", "Home");
+                } 
                 else
                 {
                     return View("/Views/Home/SignIn.cshtml", user);
