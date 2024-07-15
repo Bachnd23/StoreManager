@@ -8,7 +8,7 @@ GO
 
 -- Create UserRoles table
 CREATE TABLE UserRoles (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    id INT NOT NULL IDENTITY(0,1) PRIMARY KEY,
     name NVARCHAR(255) NOT NULL
 );
 GO
