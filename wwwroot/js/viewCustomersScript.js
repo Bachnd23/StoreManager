@@ -101,7 +101,7 @@ function generateCustomersTable(data) {
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: '#',
+            href: '/Customer/GetCustomer?customerId=' + customer.id,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });

@@ -31,6 +31,22 @@ namespace COCOApp.Services
                         .Take(pageSize)
                         .ToList();
         }
+        public Customer GetCustomerById(int customerId,int sellerId)
+        {
+            var query = _context.Customers.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(c => c.SellerId == sellerId);
+            }
+            if (customerId > 0)
+            {
+                return query.FirstOrDefault(u => u.Id == customerId);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         public int GetTotalCustomers(string nameQuery, int sellerId)
         {

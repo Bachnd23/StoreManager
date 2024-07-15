@@ -3,6 +3,7 @@ using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics;
 
 namespace COCOApp.Controllers
 {
@@ -31,6 +32,21 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [HttpGet]
+        public IActionResult GetCustomer(int customerId)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Customer model=_customerService.GetCustomerById(customerId,user.Id);
+            Debug.WriteLine(model);
+            if (model != null)
+            {
+                return View("/Views/Customer/CustomerDetail.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Customer/ListCustomers.cshtml");
+            }
+        }
         public IActionResult ViewAdd()
         {
             return View("/Views/Customer/AddCustomer.cshtml");
@@ -38,6 +54,10 @@ namespace COCOApp.Controllers
         public IActionResult ViewList()
         {
             return View("/Views/Customer/ListCustomers.cshtml");
+        }
+        public IActionResult ViewDetail()
+        {
+            return View("/Views/Customer/CustomerDetail.cshtml");
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
