@@ -116,6 +116,29 @@ namespace COCOApp.Services
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
+        public void EditOrder(int orderId, Order order)
+        {
+            // Retrieve the customer from the database
+            Order? existingOrder = _context.Orders.FirstOrDefault(c => c.Id == orderId);
+
+            // Check if the customer exists
+            if (existingOrder != null)
+            {
+                existingOrder.CustomerId=order.CustomerId;
+                existingOrder.ProductId=order.ProductId;
+                existingOrder.Volume=order.Volume;
+                existingOrder.Date=order.Date;
+                existingOrder.UpdatedAt=order.UpdatedAt;
+
+                // Save the changes to the database
+                _context.SaveChanges();
+            }
+            else
+            {
+                // Handle the case when the product is not found
+                throw new ArgumentException("Order not found");
+            }
+        }
         public List<Order> GetOrders(string dateRange, int customerId, int sellerId)
         {
             DateTime startDate = DateTime.MinValue;

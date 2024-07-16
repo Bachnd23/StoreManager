@@ -40,11 +40,25 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Order model = _orderService.GetOrderById(orderId, user.Id); ;
-            ViewBag.Customer=model.Customer;
-            ViewBag.Product=model.Product;
             if (model != null)
             {
                 return View("/Views/Order/OrderDetail.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Order/ListOrders.cshtml");
+            }
+        }
+        [HttpGet]
+        public IActionResult ViewEdit(int orderId)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Order model = _orderService.GetOrderById(orderId, user.Id); ;
+            ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+            ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+            if (model != null)
+            {
+                return View("/Views/Order/EditOrder.cshtml", model);
             }
             else
             {
@@ -91,6 +105,34 @@ namespace COCOApp.Controllers
             HttpContext.Session.SetString("SuccessMsg", "Thêm đơn hàng thành công!");
             return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
+        }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult EditOrder(Order model)
+        {
+            /*            if (!ModelState.IsValid)
+                        {
+                            // If the model state is not valid, return the same view with validation errors
+                            return View("/Views/Customer/AddCustomer.cshtml", model);
+                        }*/
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Order oldOrder = _orderService.GetOrderById(model.Id, user.Id);
+            // Convert the model to your domain entity
+            var order = new Order
+            {
+                CustomerId = model.CustomerId,
+                ProductId = model.ProductId,
+                Volume = model.Volume,
+                Date = model.Date,
+                SellerId = oldOrder.SellerId,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Use the service to edit the customer
+            _orderService.EditOrder(model.Id, order);
+            HttpContext.Session.SetString("SuccessMsg", "Sửa đơn hàng thành công!");
+            // Redirect to the customer list or a success page
+            return RedirectToAction("ViewList");
         }
     }
 }
