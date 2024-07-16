@@ -61,10 +61,11 @@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="Note">Ghi chú</label>
-                                <input asp-for="Note" class="form-control" placeholder="Nhập ghi chú ..." />
+                                <textarea asp-for="Note" class="form-control" placeholder="Nhập ghi chú ..."></textarea>
                                 <span asp-validation-for="Note" class="text-danger"></span>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="w-100"></div>

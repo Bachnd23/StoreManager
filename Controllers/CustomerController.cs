@@ -47,6 +47,21 @@ namespace COCOApp.Controllers
                 return View("/Views/Customer/ListCustomers.cshtml");
             }
         }
+        [HttpGet]
+        public IActionResult ViewEdit(int customerId)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Customer model = _customerService.GetCustomerById(customerId, user.Id);
+            Debug.WriteLine(model);
+            if (model != null)
+            {
+                return View("/Views/Customer/EditCustomer.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Customer/ListCustomers.cshtml");
+            }
+        }
         public IActionResult ViewAdd()
         {
             return View("/Views/Customer/AddCustomer.cshtml");
@@ -88,7 +103,34 @@ namespace COCOApp.Controllers
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult EditCustomer(Customer model)
+        {
+            /*            if (!ModelState.IsValid)
+                        {
+                            // If the model state is not valid, return the same view with validation errors
+                            return View("/Views/Customer/AddCustomer.cshtml", model);
+                        }*/
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            // Convert the model to your domain entity
+            var customer = new Customer
+            {
+                Name = model.Name,
+                Phone = model.Phone,
+                Address = model.Address,
+                Note = model.Note,  // Note property is nullable
+                Status = model.Status,
+                SellerId = user.Id,
+                UpdatedAt = DateTime.Now
+            };
 
+            // Use the service to edit the customer
+            _customerService.EditCustomer(model.Id,customer);
+            HttpContext.Session.SetString("SuccessMsg", "Sửa khách hàng thành công!");
+            // Redirect to the customer list or a success page
+            return RedirectToAction("ViewList");
+        }
     }
 
 }

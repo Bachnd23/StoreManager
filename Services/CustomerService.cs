@@ -68,6 +68,31 @@ namespace COCOApp.Services
             _context.Customers.Add(customer);
             _context.SaveChanges();
         }
+        public void EditCustomer(int customerId, Customer customer)
+        {
+            // Retrieve the customer from the database
+            Customer? existingCustomer = _context.Customers.FirstOrDefault(c => c.Id == customerId);
+
+            // Check if the customer exists
+            if (existingCustomer != null)
+            {
+                // Update the properties of the existing customer
+                existingCustomer.Name = customer.Name;
+                existingCustomer.Phone = customer.Phone;
+                existingCustomer.Address = customer.Address;
+                existingCustomer.Status = customer.Status;
+                existingCustomer.Note=customer.Note;
+                existingCustomer.UpdatedAt = customer.UpdatedAt;
+
+                // Save the changes to the database
+                _context.SaveChanges();
+            }
+            else
+            {
+                // Handle the case when the customer is not found
+                throw new ArgumentException("Customer not found");
+            }
+        }
 
     }
 }
