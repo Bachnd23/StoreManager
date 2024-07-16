@@ -27,6 +27,24 @@ namespace COCOApp.Services
                          .Where(o => orderIds.Contains(o.Id));
             return query.ToList();
         }
+        public Order GetOrderById(int orderId, int sellerId)
+        {
+            var query = _context.Orders.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
+            query = query.Include(o => o.Customer)
+                         .Include(o => o.Product);
+            if (orderId > 0)
+            {
+                return query.FirstOrDefault(u => u.Id == orderId);
+            }
+            else
+            {
+                return null;
+            }
+        }
         public List<Order> GetOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             // Ensure pageNumber is at least 1
@@ -122,7 +140,7 @@ namespace COCOApp.Services
             try
             {
                 var query = _context.Orders.AsQueryable();
-                if(sellerId> 0)
+                if (sellerId > 0)
                 {
                     query = query.Where(o => o.SellerId == sellerId);
                 }

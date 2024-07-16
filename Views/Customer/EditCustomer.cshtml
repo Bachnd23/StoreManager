@@ -38,21 +38,22 @@
                             <div class="mb-3">
                                 <div class="form-group">
                                     <label asp-for="Name" class="required"> Tên khách hàng</label>
-                                    <input asp-for="Name" class="form-control" placeholder="Nhập tên khách hàng..." value="@Model.Name" required />
+                                    <input asp-for="Name" class="form-control" placeholder="Nhập tên khách hàng..." required />
                                     <span asp-validation-for="Name" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="form-group">
                                     <label asp-for="Phone" class="required">Số điện thoại</label>
-                                    <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại..." value="@Model.Phone" required />
+                                    <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại..."  required />
                                     <span asp-validation-for="Phone" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="form-group">
-                                    <label for="inputPhone" class="required">Địa chỉ</label>
-                                    <input type="text" name="address" class="form-control" id="inputAddress" value="@Model.Address" required>
+                                    <label asp-for="Address" class="required">Địa chỉ</label>
+                                    <input asp-for="Address" class="form-control" placeholder="Nhập địa chỉ..." required />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="mb-3">

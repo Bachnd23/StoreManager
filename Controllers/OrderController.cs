@@ -2,6 +2,7 @@
 using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace COCOApp.Controllers
 {
@@ -22,8 +23,8 @@ namespace COCOApp.Controllers
         public IActionResult GetList(string nameQuery, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var orders = _orderService.GetOrders(nameQuery, pageNumber, PageSize,user.Id);
-            var totalOrders = _orderService.GetTotalOrders(nameQuery,user.Id);
+            var orders = _orderService.GetOrders(nameQuery, pageNumber, PageSize, user.Id);
+            var totalOrders = _orderService.GetTotalOrders(nameQuery, user.Id);
 
             var response = new
             {
@@ -34,7 +35,22 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
-
+        [HttpGet]
+        public IActionResult ViewDetail(int orderId)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Order model = _orderService.GetOrderById(orderId, user.Id); ;
+            ViewBag.Customer=model.Customer;
+            ViewBag.Product=model.Product;
+            if (model != null)
+            {
+                return View("/Views/Order/OrderDetail.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Order/ListOrders.cshtml");
+            }
+        }
         public IActionResult ViewList()
         {
             return View("/Views/Order/ListOrders.cshtml");
@@ -54,7 +70,7 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             foreach (var model in orders)
             {
-                Product product = _productService.GetProductById(model.ProductId,user.Id);
+                Product product = _productService.GetProductById(model.ProductId, user.Id);
                 // Convert the model to your domain entity
                 var order = new Order
                 {
