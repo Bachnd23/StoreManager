@@ -37,7 +37,6 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Customer model=_customerService.GetCustomerById(customerId,user.Id);
-            Debug.WriteLine(model);
             if (model != null)
             {
                 return View("/Views/Customer/CustomerDetail.cshtml", model);
@@ -52,7 +51,6 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Customer model = _customerService.GetCustomerById(customerId, user.Id);
-            Debug.WriteLine(model);
             if (model != null)
             {
                 return View("/Views/Customer/EditCustomer.cshtml", model);
@@ -113,6 +111,7 @@ namespace COCOApp.Controllers
                             return View("/Views/Customer/AddCustomer.cshtml", model);
                         }*/
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Customer oldCustomer=_customerService.GetCustomerById(model.Id, user.Id);
             // Convert the model to your domain entity
             var customer = new Customer
             {
@@ -121,7 +120,7 @@ namespace COCOApp.Controllers
                 Address = model.Address,
                 Note = model.Note,  // Note property is nullable
                 Status = model.Status,
-                SellerId = user.Id,
+                SellerId = oldCustomer.SellerId,
                 UpdatedAt = DateTime.Now
             };
 
