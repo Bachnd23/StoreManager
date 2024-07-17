@@ -10,14 +10,20 @@ namespace COCOApp.Services
             var query = _context.Customers.AsQueryable();
             return query.ToList();
         }
-        public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize, int sellerId,int statusId)
         {
             // Ensure pageNumber is at least 1
             pageNumber = Math.Max(pageNumber, 1);
 
             var query = _context.Customers
                         .AsQueryable();
-
+            bool status = true;
+            if (statusId == 1) status = true;
+            else if (statusId == 2) status = false;
+            if (statusId > 0)
+            {
+                query = query.Where(p => p.Status == status);
+            }
             if (sellerId > 0)
             {
                 query = query.Where(c => c.SellerId == sellerId);
@@ -48,10 +54,17 @@ namespace COCOApp.Services
             }
         }
 
-        public int GetTotalCustomers(string nameQuery, int sellerId)
+        public int GetTotalCustomers(string nameQuery, int sellerId,int statusId)
         {
             var query = _context.Customers
                         .AsQueryable();
+            bool status = true;
+            if (statusId == 1) status = true;
+            else if (statusId == 2) status = false;
+            if (statusId > 0)
+            {
+                query = query.Where(p => p.Status == status);
+            }
             if (sellerId > 0)
             {
                 query = query.Where(c => c.SellerId == sellerId);

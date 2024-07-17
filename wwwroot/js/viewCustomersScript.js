@@ -1,5 +1,6 @@
 ﻿var nameQuery = "";
 var roleId = "";
+var statusId = "";
 var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
@@ -28,12 +29,14 @@ function search() {
 
 function fetchCustomersResults() {
     nameQuery = $('.nameQuery').val();
+    statusId = $('.statusId').val();
     isFetchingData = true;
     $.ajax({
         url: getListUrl,
         type: 'GET',
         data: {
             nameQuery: nameQuery,
+            statusId: statusId,
             pageNumber: pageNumber
         },
         success: function (data) {
