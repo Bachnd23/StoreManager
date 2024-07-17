@@ -76,11 +76,16 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddCustomer(Customer model)
         {
-            /*            if (!ModelState.IsValid)
-                        {
-                            // If the model state is not valid, return the same view with validation errors
-                            return View("/Views/Customer/AddCustomer.cshtml", model);
-                        }*/
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                return View("/Views/Customer/AddCustomer.cshtml", model);
+            }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             // Convert the model to your domain entity
             var customer = new Customer
@@ -105,11 +110,17 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult EditCustomer(Customer model)
         {
-            /*            if (!ModelState.IsValid)
-                        {
-                            // If the model state is not valid, return the same view with validation errors
-                            return View("/Views/Customer/AddCustomer.cshtml", model);
-                        }*/
+
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                return View("/Views/Customer/EditCustomer.cshtml", model);
+            }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Customer oldCustomer=_customerService.GetCustomerById(model.Id, user.Id);
             // Convert the model to your domain entity

@@ -81,6 +81,11 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddOrders(List<Order> orders)
         {
+            if (orders.Count == 0)
+            {
+                HttpContext.Session.SetString("ErrorMsg", "Không có đơn hàng nào!");
+                return RedirectToAction("Add"); // Redirect to action "ViewList" if model state is not valid
+            }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             foreach (var model in orders)
             {
@@ -110,12 +115,19 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult EditOrder(Order model)
         {
-            /*            if (!ModelState.IsValid)
-                        {
-                            // If the model state is not valid, return the same view with validation errors
-                            return View("/Views/Customer/AddCustomer.cshtml", model);
-                        }*/
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                return View("/Views/Order/EditOrder.cshtml", model);
+            }
             Order oldOrder = _orderService.GetOrderById(model.Id, user.Id);
             // Convert the model to your domain entity
             var order = new Order

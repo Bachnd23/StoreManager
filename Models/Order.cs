@@ -39,11 +39,11 @@ namespace COCOApp.Models
 
         public int SellerId { get; set; }
 
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; } = null!;
 
-        public virtual Product Product { get; set; } = null!;
+        public virtual Product? Product { get; set; } = null!;
 
-        public virtual User Seller { get; set; } = null!;
+        public virtual User? Seller { get; set; } = null!;
 
         public virtual ICollection<ReportsOrdersMapping> ReportsOrdersMappings { get; set; }
     }
