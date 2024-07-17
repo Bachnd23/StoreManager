@@ -11,11 +11,13 @@ namespace COCOApp.Controllers
         private readonly UserService _userService;
         private readonly SellerDetailsService _sellerDetailsService;
         private readonly EmailService _emailService;
-        public UserController(UserService userService, SellerDetailsService sellerDetailsService, EmailService emailService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserController(UserService userService, SellerDetailsService sellerDetailsService, EmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
             _sellerDetailsService = sellerDetailsService;
             _emailService = emailService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         private const int PageSize = 10;
@@ -52,6 +54,20 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             return View("/Views/User/UserProfile.cshtml", user);
         }
+        public async Task<IActionResult> ViewChangePassword(string email)
+        {
+            if (await _userService.CheckPasswordResetTokenAsync(email))
+            {
+                User user = _userService.GetUserByEmail(email);
+                return View("/Views/User/ChangePassword.cshtml", user);
+            }
+            else
+            {
+                HttpContext.Session.SetString("ErrorMsg", "Yêu cầu đã hết hạn hoặc không tồn tại!");
+                return View("/Views/Home/SignIn.cshtml");
+            }
+        }
+
         [HttpPost]
         public IActionResult RegisterUser(User model)
         {
@@ -175,23 +191,52 @@ namespace COCOApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string toEmail)
         {
-            var subject = "Password Reset Request";
-            var message = "Please click the link to reset your password.";
+            User user = _userService.GetUserByEmail(toEmail);
+            if (user == null)
+            {
+                HttpContext.Session.SetString("ErrorMsg", "Tài khoản không tồn tại!");
+                return View("/Views/User/ForgotPassword.cshtml");
+            }
+            var subject = "Yêu cầu đổi mật khẩu";
+            string link = $"<a href='https://localhost:7178/User/ViewChangePassword?email={toEmail}'>Bấm vào đây</a>";
+            String htmlMessage = "<html><body>" + "<p>Chúng tôi vừa nhận được yêu cầu đổi mật khẩu cho " + toEmail
+                + "</p>" + "<p>Vui lòng " + link + " để thay đổi mật khẩu của bạn.</p>"
+                + "<p>Vì sự bảo mật của bạn, link trên sẽ hết hạn trong 24 giờ hoặc ngay sau khi bạn thay đổi mật khẩu.</p>"
+                + "<p>Cảm ơn vì đã sử dụng!<br/>CoCo Team.</p>" + "</body></html>";
 
             // Create a list of tasks to showcase asynchronous execution
             var tasks = new List<Task>
-    {
-        // Example of sending an email asynchronously
-        _emailService.SendEmailAsync(toEmail, subject, message),
+                {
+                    // Example of sending an email asynchronously
+                    _emailService.SendEmailAsync(toEmail, subject, htmlMessage),
 
-        // Example of performing another asynchronous operation (e.g., database update)
-/*        UpdateUserPasswordResetTokenAsync(toEmail)*/
-    };
+                    // Example of performing another asynchronous operation (e.g., database update)
+                    _userService.UpdateUserPasswordResetTokenAsync(toEmail)
+                };
 
             // Await all tasks to complete
             await Task.WhenAll(tasks);
+            HttpContext.Session.SetString("SuccessMsg", "Yêu cầu được chấp nhận, vui lòng kiểm tra email của bạn!");
+            return RedirectToAction("ViewSignIn", "Home");
+        }
+        [HttpPost]
+        public IActionResult UpdatePassword(User model)
+        {
+            // Hash the password using BCrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
-            return RedirectToAction("Index");
+            // Use the service to update the user's password
+            _userService.UpdateUser(model.Id, hashedPassword);
+
+            // Delete the password reset token and its expiration from the cookies
+            HttpContext.Response.Cookies.Delete("PasswordResetToken");
+            HttpContext.Response.Cookies.Delete("PasswordResetTokenExpiration");
+
+            // Set a success message in the session
+            HttpContext.Session.SetString("SuccessMsg", "Cập nhật mật khẩu thành công!");
+
+            // Redirect to the sign-in view
+            return RedirectToAction("ViewSignIn", "Home");
         }
 
     }
