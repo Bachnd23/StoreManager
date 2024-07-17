@@ -25,7 +25,7 @@ CREATE TABLE Users (
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NOT NULL,
     role INT NOT NULL,
-	status BIT NOT NULL,
+	  status BIT NOT NULL,
     remember_token NVARCHAR(100) DEFAULT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
@@ -34,26 +34,26 @@ CREATE TABLE Users (
 GO
 -- Create SellerDetails table
 CREATE TABLE SellerDetails (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     fullname NVARCHAR(255) NOT NULL,
-	address NVARCHAR(255) NOT NULL,
-	phone NVARCHAR(255) NOT NULL,
-	dob DATE NOT NULL,
-	gender BIT NOT NULL,
-	FOREIGN KEY (id) REFERENCES dbo.Users(id)
+	  address NVARCHAR(255) NOT NULL,
+	  phone NVARCHAR(255) NOT NULL,
+  	dob DATE NOT NULL,
+  	gender BIT NOT NULL,
+  	FOREIGN KEY (id) REFERENCES dbo.Users(id)
 );
 GO
 -- Create Products table
 CREATE TABLE Products (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     ProductName NVARCHAR(255) NOT NULL,
-	MeasureUnit NVARCHAR(255) NOT NULL,
+  	MeasureUnit NVARCHAR(255) NOT NULL,
     cost DECIMAL(10, 2) NOT NULL,
-	status BIT NOT NULL,
+  	status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-	seller_id INT NOT NULL,
-	FOREIGN KEY (seller_id) REFERENCES Users(id)
+  	seller_id INT NOT NULL,
+  	FOREIGN KEY (seller_id) REFERENCES Users(id)
 );
 GO
 
@@ -78,14 +78,14 @@ CREATE TABLE Orders (
     customer_id INT NOT NULL,
     product_id INT NOT NULL,
     volume INT NOT NULL,
-    date DATE NOT NULL,
+    orderDate DATE NOT NULL,
     complete BIT NOT NULL,
-	orderProductCost DECIMAL(10, 2) NOT NULL,
-	orderTotal DECIMAL(10, 2) NOT NULL,
+  	orderProductCost DECIMAL(10, 2) NOT NULL,
+  	orderTotal DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-	seller_id INT NOT NULL,
-	FOREIGN KEY (seller_id) REFERENCES Users(id),
+	  seller_id INT NOT NULL,
+  	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id),
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
@@ -97,8 +97,8 @@ CREATE TABLE Reports (
     TotalPrice DECIMAL(18, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-	seller_id INT NOT NULL,
-	FOREIGN KEY (seller_id) REFERENCES Users(id),
+  	seller_id INT NOT NULL,
+  	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 GO
@@ -108,8 +108,8 @@ CREATE TABLE ReportsOrdersMapping (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     report_id INT NOT NULL,
     order_id INT NOT NULL,
-	seller_id INT NOT NULL,
-	FOREIGN KEY (seller_id) REFERENCES Users(id),
+	  seller_id INT NOT NULL,
+  	FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (report_id) REFERENCES Reports(id),
     FOREIGN KEY (order_id) REFERENCES Orders(id)
 );

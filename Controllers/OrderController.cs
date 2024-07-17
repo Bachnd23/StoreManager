@@ -91,7 +91,7 @@ namespace COCOApp.Controllers
                     CustomerId = model.CustomerId,
                     ProductId = model.ProductId,
                     Volume = model.Volume,
-                    Date = model.Date,
+                    OrderDate = model.OrderDate,
                     Complete = false,
                     OrderProductCost = product.Cost,
                     OrderTotal = product.Cost * model.Volume,
@@ -123,7 +123,7 @@ namespace COCOApp.Controllers
                 CustomerId = model.CustomerId,
                 ProductId = model.ProductId,
                 Volume = model.Volume,
-                Date = model.Date,
+                OrderDate = model.OrderDate,
                 SellerId = oldOrder.SellerId,
                 UpdatedAt = DateTime.Now
             };

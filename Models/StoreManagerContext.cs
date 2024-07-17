@@ -79,9 +79,9 @@ namespace COCOApp.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.Date)
+                entity.Property(e => e.OrderDate)
                     .HasColumnType("date")
-                    .HasColumnName("date");
+                    .HasColumnName("orderDate");
 
                 entity.Property(e => e.OrderProductCost)
                     .HasColumnType("decimal(10, 2)")
@@ -216,7 +216,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<SellerDetail>(entity =>
             {
                 entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd()
+                    .ValueGeneratedNever()
                     .HasColumnName("id");
 
                 entity.Property(e => e.Address)
@@ -246,7 +246,7 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61648528489D")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61643E33D92E")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");

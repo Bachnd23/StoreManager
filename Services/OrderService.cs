@@ -127,7 +127,7 @@ namespace COCOApp.Services
                 existingOrder.CustomerId=order.CustomerId;
                 existingOrder.ProductId=order.ProductId;
                 existingOrder.Volume=order.Volume;
-                existingOrder.Date=order.Date;
+                existingOrder.OrderDate = order.OrderDate;
                 existingOrder.UpdatedAt=order.UpdatedAt;
 
                 // Save the changes to the database
@@ -169,7 +169,7 @@ namespace COCOApp.Services
                 }
                 query = query.Include(o => o.Customer)
                              .Include(o => o.Product)
-                             .Where(o => o.CustomerId == customerId && o.Date >= startDate && o.Date <= endDate);
+                             .Where(o => o.CustomerId == customerId && o.OrderDate >= startDate && o.OrderDate <= endDate);
                 return query.ToList();
             }
             catch (Exception ex)

@@ -39,6 +39,11 @@ namespace COCOApp.Controllers
         {
             return View("/Views/User/AddUser.cshtml");
         }
+        public IActionResult ViewProfile()
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            return View("/Views/User/UserProfile.cshtml",user);
+        }
         [HttpPost]
         public IActionResult RegisterUser(User model)
         {
@@ -58,7 +63,6 @@ namespace COCOApp.Controllers
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
-
                 // Use the service to insert the customer
                 _userService.AddUser(user);
 

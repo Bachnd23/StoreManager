@@ -14,7 +14,7 @@ namespace COCOApp.Models
         public int CustomerId { get; set; }
         public int ProductId { get; set; }
         public int Volume { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime OrderDate { get; set; }
         public bool Complete { get; set; }
         public decimal OrderProductCost { get; set; }
         public decimal OrderTotal { get; set; }

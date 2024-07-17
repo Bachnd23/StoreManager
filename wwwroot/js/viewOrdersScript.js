@@ -93,7 +93,7 @@ function generateOrdersTable(data) {
         row.append($('<td>').text(order.customer.name));
         row.append($('<td>').text(order.product.productName));
         row.append($('<td>').text(order.volume));
-        row.append($('<td>').text(order.date));
+        row.append($('<td>').text(order.orderDate));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {

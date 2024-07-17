@@ -55,7 +55,8 @@ namespace COCOApp.Services
         }
         public User GetUserByNameAndPass(string username, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+            var user = _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefault(u => u.Username == username);
 
             if (user != null&&user.Status==true && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
