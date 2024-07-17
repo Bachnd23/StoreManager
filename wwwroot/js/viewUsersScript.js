@@ -93,7 +93,13 @@ function generateUsersTable(data) {
         row.append($('<td>').text(user.id));
         row.append($('<td>').text(user.username));
         row.append($('<td>').text(user.email));
-        row.append($('<td>').text(user.role));
+        if (user.role == 1) {
+            row.append($('<td>').text('Admin'));
+        } else if (user.role == 2) {
+            row.append($('<td>').text('Người bán'));
+        } else if (user.role == 3) {
+            row.append($('<td>').text('Người mua'));
+        }
         if (user.status) {
             row.append($('<td>').text('Đã kích hoạt'));
         } else {

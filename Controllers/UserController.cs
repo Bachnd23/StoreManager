@@ -8,10 +8,12 @@ namespace COCOApp.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
+        private readonly SellerDetailsService _sellerDetailsService;
 
         public UserController(UserService userService)
         {
             _userService = userService;
+            _sellerDetailsService = new SellerDetailsService();
         }
 
         private const int PageSize = 10;
@@ -65,7 +67,16 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.AddUser(user);
-
+                var sellerDetail = new SellerDetail
+                {
+                    Id = user.Id,
+                    Fullname = "",
+                    Address = "",
+                    Phone = "",
+                    Dob = DateTime.Now,
+                    Gender = true,
+                };
+                _sellerDetailsService.AddSellerDetails(sellerDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Đăng ký tài khoản thành công!");
                 return View("/Views/Home/SignIn.cshtml");
             }
@@ -112,6 +123,38 @@ namespace COCOApp.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("ViewSignIn", "Home");
+        }
+        [HttpPost]
+        public IActionResult UpdateUser(User model)
+        {
+            try
+            {
+                // Convert the model to your domain entity
+                var user = new User
+                {
+                    Email = model.Email,
+                    Username = model.Username,
+                    UpdatedAt = DateTime.Now
+                };
+                // Use the service to insert the customer
+                _userService.UpdateUser(model.Id,user);
+                var sellerDetail = new SellerDetail
+                {
+                    Fullname = model.SellerDetail.Fullname,
+                    Dob = model.SellerDetail.Dob,
+                    Gender = model.SellerDetail.Gender,
+                    Address= model.SellerDetail.Address,
+                    Phone = model.SellerDetail.Phone,
+                };
+                _sellerDetailsService.UpdateSellerDetails(model.Id,sellerDetail);
+                HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");
+                return View("/Views/User/UserProfile.cshtml", model);
+            }
+            catch (ArgumentException ex)
+            {
+                HttpContext.Session.SetString("ErrorMsg", "Email hoặc tên đăng nhập đã được sử dụng!");
+                return View("/Views/User/UserProfile.cshtml", model);
+            }
         }
     }
 }

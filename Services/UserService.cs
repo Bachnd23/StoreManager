@@ -53,6 +53,25 @@ namespace COCOApp.Services
             _context.Users.Add(user);
             _context.SaveChanges();
         }
+        public void UpdateUser(int userId,User user)
+        {
+            // Find the existing user in the database
+            var existingUser = _context.Users.SingleOrDefault(u => u.Id == userId);
+
+            if (existingUser == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            // Update user properties
+            existingUser.Email = user.Email;
+            existingUser.Username = user.Username;
+            existingUser.UpdatedAt = user.UpdatedAt;
+
+            // Save changes to the database
+            _context.SaveChanges();
+        }
+
         public User GetUserByNameAndPass(string username, string password)
         {
             var user = _context.Users.Include(u => u.SellerDetail)
