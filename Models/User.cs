@@ -40,7 +40,7 @@ namespace COCOApp.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public virtual UserRole RoleNavigation { get; set; } = null!;
+        public virtual UserRole? RoleNavigation { get; set; } = null!;
         public virtual SellerDetail? SellerDetail { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

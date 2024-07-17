@@ -3,6 +3,7 @@ using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 using COCOApp.Helpers;
+using System.Diagnostics;
 namespace COCOApp.Controllers
 {
     public class UserController : Controller
@@ -49,6 +50,16 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult RegisterUser(User model)
         {
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                return View("/Views/Home/RegisterStore.cshtml", model);
+            }
             try
             {
                 // Hash the password using BCrypt
