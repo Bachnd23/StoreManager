@@ -37,6 +37,8 @@ namespace COCOApp.Models
 
         public string? RememberToken { get; set; }
 
+        public string? ResetPasswordToken { get; set; }
+
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

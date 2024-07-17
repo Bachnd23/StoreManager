@@ -64,7 +64,7 @@ namespace COCOApp.Models
                     .WithMany(p => p.Customers)
                     .HasForeignKey(d => d.SellerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customers__selle__49C3F6B7");
+                    .HasConstraintName("FK__Customers__selle__4AB81AF0");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -105,19 +105,19 @@ namespace COCOApp.Models
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__customer__4F7CD00D");
+                    .HasConstraintName("FK__Orders__customer__5070F446");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__product___5070F446");
+                    .HasConstraintName("FK__Orders__product___5165187F");
 
                 entity.HasOne(d => d.Seller)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.SellerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__seller_i__4E88ABD4");
+                    .HasConstraintName("FK__Orders__seller_i__4F7CD00D");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -148,7 +148,7 @@ namespace COCOApp.Models
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.SellerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Products__seller__44FF419A");
+                    .HasConstraintName("FK__Products__seller__45F365D3");
             });
 
             modelBuilder.Entity<Report>(entity =>
@@ -173,13 +173,13 @@ namespace COCOApp.Models
                     .WithMany(p => p.Reports)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Reports__custome__5629CD9C");
+                    .HasConstraintName("FK__Reports__custome__571DF1D5");
 
                 entity.HasOne(d => d.Seller)
                     .WithMany(p => p.Reports)
                     .HasForeignKey(d => d.SellerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Reports__seller___5535A963");
+                    .HasConstraintName("FK__Reports__seller___5629CD9C");
             });
 
             modelBuilder.Entity<ReportsOrdersMapping>(entity =>
@@ -198,19 +198,19 @@ namespace COCOApp.Models
                     .WithMany(p => p.ReportsOrdersMappings)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportsOr__order__5AEE82B9");
+                    .HasConstraintName("FK__ReportsOr__order__5BE2A6F2");
 
                 entity.HasOne(d => d.Report)
                     .WithMany(p => p.ReportsOrdersMappings)
                     .HasForeignKey(d => d.ReportId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportsOr__repor__59FA5E80");
+                    .HasConstraintName("FK__ReportsOr__repor__5AEE82B9");
 
                 entity.HasOne(d => d.Seller)
                     .WithMany(p => p.ReportsOrdersMappings)
                     .HasForeignKey(d => d.SellerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportsOr__selle__59063A47");
+                    .HasConstraintName("FK__ReportsOr__selle__59FA5E80");
             });
 
             modelBuilder.Entity<SellerDetail>(entity =>
@@ -241,12 +241,12 @@ namespace COCOApp.Models
                     .WithOne(p => p.SellerDetail)
                     .HasForeignKey<SellerDetail>(d => d.Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SellerDetail__id__403A8C7D");
+                    .HasConstraintName("FK__SellerDetail__id__412EB0B6");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61643E33D92E")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164955FF748")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -267,6 +267,10 @@ namespace COCOApp.Models
                     .HasMaxLength(100)
                     .HasColumnName("remember_token");
 
+                entity.Property(e => e.ResetPasswordToken)
+                    .HasMaxLength(100)
+                    .HasColumnName("reset_password_token");
+
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.Status).HasColumnName("status");
@@ -283,7 +287,7 @@ namespace COCOApp.Models
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.Role)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Users__role__3D5E1FD2");
+                    .HasConstraintName("FK__Users__role__3E52440B");
             });
 
             modelBuilder.Entity<UserRole>(entity =>
