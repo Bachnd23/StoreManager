@@ -71,15 +71,21 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult AddProduct(Product model)
         {
-            /*            if (!ModelState.IsValid)
-                        {
-                            // If the model state is not valid, return the same view with validation errors
-
-                            // On error
-                            HttpContext.Session.SetString("ErrorMsg", "Something went wrong!");
-                            return View("/Views/Products/AddProduct.cshtml", model);
-                        }*/
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            model.SellerId = user.Id;
+
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+
+                // Return the same view with validation errors
+                return View("/Views/Products/AddProduct.cshtml", model);
+            }
+
             // Convert the model to your domain entity
             var product = new Product
             {
@@ -87,26 +93,37 @@ namespace COCOApp.Controllers
                 MeasureUnit = model.MeasureUnit,
                 Cost = model.Cost,
                 Status = model.Status,
-                SellerId = user.Id,
+                SellerId = model.SellerId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
+
             // Use the service to insert the customer
             _productService.AddProduct(product);
+
             // On success
             HttpContext.Session.SetString("SuccessMsg", "Thêm sản phẩm thành công!");
+
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult EditProduct(Product model)
         {
-            /*            if (!ModelState.IsValid)
-                        {
-                            // If the model state is not valid, return the same view with validation errors
-                            return View("/Views/Customer/AddCustomer.cshtml", model);
-                        }*/
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+
+                // Return the same view with validation errors
+                return View("/Views/Products/EditProduct.cshtml", model);
+            }
+
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Product oldProduct=_productService.GetProductById(model.Id, user.Id);
             // Convert the model to your domain entity
