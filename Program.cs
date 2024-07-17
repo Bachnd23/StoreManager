@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using COCOApp.Models;
 using Newtonsoft.Json;
 using COCOApp.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,11 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
+
+// Correctly get the email settings from the configuration
+var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
+builder.Services.AddSingleton(emailSettings);
+builder.Services.AddTransient<EmailService>();
 
 // Register your custom services here
 builder.Services.AddScoped<OrderService>();

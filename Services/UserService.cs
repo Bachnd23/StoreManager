@@ -4,7 +4,7 @@ using BCrypt.Net;
 
 namespace COCOApp.Services
 {
-    public class UserService: StoreManagerService
+    public class UserService : StoreManagerService
     {
         public List<User> GetUsers()
         {
@@ -53,7 +53,7 @@ namespace COCOApp.Services
             _context.Users.Add(user);
             _context.SaveChanges();
         }
-        public void UpdateUser(int userId,User user)
+        public void UpdateUser(int userId, User user)
         {
             // Find the existing user in the database
             var existingUser = _context.Users.SingleOrDefault(u => u.Id == userId);
@@ -77,12 +77,35 @@ namespace COCOApp.Services
             var user = _context.Users.Include(u => u.SellerDetail)
                 .FirstOrDefault(u => u.Username == username);
 
-            if (user != null&&user.Status==true && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (user != null && user.Status == true && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 return user;
             }
 
             return null; // User not found or password incorrect
         }
+        public async Task UpdateUserPasswordResetTokenAsync(string email)
+        {
+            // Simulate asynchronous database update
+            var user = await _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user != null)
+            {
+                // Generate a new password reset token (this is just an example, you should implement a proper token generation mechanism)
+/*                user.fo = Guid.NewGuid().ToString();
+                user.PasswordResetTokenExpiration = DateTime.UtcNow.AddHours(1);*/
+
+                // Save the changes asynchronously
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine($"Password reset token updated for: {email}");
+            }
+            else
+            {
+                Console.WriteLine($"No user found with email: {email}");
+            }
+        }
+
     }
 }

@@ -10,11 +10,12 @@ namespace COCOApp.Controllers
     {
         private readonly UserService _userService;
         private readonly SellerDetailsService _sellerDetailsService;
-
-        public UserController(UserService userService)
+        private readonly EmailService _emailService;
+        public UserController(UserService userService, SellerDetailsService sellerDetailsService, EmailService emailService)
         {
             _userService = userService;
-            _sellerDetailsService = new SellerDetailsService();
+            _sellerDetailsService = sellerDetailsService;
+            _emailService = emailService;
         }
 
         private const int PageSize = 10;
@@ -42,10 +43,14 @@ namespace COCOApp.Controllers
         {
             return View("/Views/User/AddUser.cshtml");
         }
+        public IActionResult ViewForgotPassword()
+        {
+            return View("/Views/User/ForgotPassword.cshtml");
+        }
         public IActionResult ViewProfile()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            return View("/Views/User/UserProfile.cshtml",user);
+            return View("/Views/User/UserProfile.cshtml", user);
         }
         [HttpPost]
         public IActionResult RegisterUser(User model)
@@ -71,8 +76,8 @@ namespace COCOApp.Controllers
                     Email = model.Email,
                     Username = model.Username,
                     Password = hashedPassword,
-                    Status=true,
-                    Role=2,
+                    Status = true,
+                    Role = 2,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -111,13 +116,13 @@ namespace COCOApp.Controllers
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
-                else if(authenticatedUser.Role == 1)// Admin
+                else if (authenticatedUser.Role == 1)// Admin
                 {
                     authenticatedUser.Id = 0;
                     // Store authenticated user in session
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
-                } 
+                }
                 else
                 {
                     return View("/Views/Home/SignIn.cshtml", user);
@@ -148,16 +153,16 @@ namespace COCOApp.Controllers
                     UpdatedAt = DateTime.Now
                 };
                 // Use the service to insert the customer
-                _userService.UpdateUser(model.Id,user);
+                _userService.UpdateUser(model.Id, user);
                 var sellerDetail = new SellerDetail
                 {
                     Fullname = model.SellerDetail.Fullname,
                     Dob = model.SellerDetail.Dob,
                     Gender = model.SellerDetail.Gender,
-                    Address= model.SellerDetail.Address,
+                    Address = model.SellerDetail.Address,
                     Phone = model.SellerDetail.Phone,
                 };
-                _sellerDetailsService.UpdateSellerDetails(model.Id,sellerDetail);
+                _sellerDetailsService.UpdateSellerDetails(model.Id, sellerDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");
                 return View("/Views/User/UserProfile.cshtml", model);
             }
@@ -167,5 +172,27 @@ namespace COCOApp.Controllers
                 return View("/Views/User/UserProfile.cshtml", model);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string toEmail)
+        {
+            var subject = "Password Reset Request";
+            var message = "Please click the link to reset your password.";
+
+            // Create a list of tasks to showcase asynchronous execution
+            var tasks = new List<Task>
+    {
+        // Example of sending an email asynchronously
+        _emailService.SendEmailAsync(toEmail, subject, message),
+
+        // Example of performing another asynchronous operation (e.g., database update)
+/*        UpdateUserPasswordResetTokenAsync(toEmail)*/
+    };
+
+            // Await all tasks to complete
+            await Task.WhenAll(tasks);
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
