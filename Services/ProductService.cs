@@ -26,12 +26,18 @@ namespace COCOApp.Services
                 return null;
             }
         }
-        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize,int sellerId)
+        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize,int sellerId,int statusId)
         {
             // Ensure pageNumber is at least 1
             pageNumber = Math.Max(pageNumber, 1);
 
             var query = _context.Products.AsQueryable();
+            bool status = true;
+            if (statusId == 1) status = true;
+            else if (statusId == 2) status = false;
+            if(statusId > 0){
+                query = query.Where(p => p.Status==status);
+            }
             if (sellerId > 0)
             {
                 query = query.Where(p => p.SellerId == sellerId);
@@ -47,9 +53,16 @@ namespace COCOApp.Services
         }
 
 
-        public int GetTotalProducts(string nameQuery,int sellerId)
+        public int GetTotalProducts(string nameQuery,int sellerId, int statusId)
         {
             var query = _context.Products.AsQueryable();
+            bool status = true;
+            if (statusId == 1) status = true;
+            else if (statusId == 2) status = false;
+            if (statusId > 0)
+            {
+                query = query.Where(p => p.Status == status);
+            }
             if (sellerId > 0)
             {
                 query = query.Where(p => p.SellerId == sellerId);

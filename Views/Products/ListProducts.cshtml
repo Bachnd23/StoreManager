@@ -22,7 +22,16 @@
                     </div>
                     <div class="row g-4 input-group">
                         <div class="col-sm-4">
-                            <input class="form-control border-0 nameQuery" type="search" name="nameQuery" placeholder="Search">
+                            <input class="form-control border-0 nameQuery" type="search"
+                                   name="nameQuery" placeholder="Search">
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-select form-select-sm mb-3 form-control statusId"
+                                    aria-label=".form-select-sm example" name="statusId">
+                                <option value="0" selected>Trạng thái</option>
+                                <option value="1">Đã kích hoạt</option>
+                                <option value="2">Chưa kích hoạt</option>
+                            </select>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary" onclick="search()">Search</button>

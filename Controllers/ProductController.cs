@@ -16,11 +16,11 @@ namespace COCOApp.Controllers
         private const int PageSize = 10;
 
         [HttpGet]
-        public IActionResult GetList(string nameQuery, int pageNumber = 1)
+        public IActionResult GetList(string nameQuery,int statusId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var products = _productService.GetProducts(nameQuery, pageNumber, PageSize,user.Id);
-            var totalProducts = _productService.GetTotalProducts(nameQuery,user.Id);
+            var products = _productService.GetProducts(nameQuery, pageNumber, PageSize,user.Id,statusId);
+            var totalProducts = _productService.GetTotalProducts(nameQuery,user.Id,statusId);
 
             var response = new
             {
