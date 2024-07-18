@@ -96,6 +96,7 @@ function generateCustomersTable(data) {
         row.append($('<td>').text(customer.name));
         row.append($('<td>').text(customer.address));
         row.append($('<td>').text(customer.phone));
+        row.append($('<td>').text(customer.updatedAt));
         if (customer.status) {
             row.append($('<td>').text('Đã kích hoạt'));
         } else {
