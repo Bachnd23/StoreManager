@@ -107,18 +107,12 @@ function generateUsersTable(data) {
         }
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: '#',
+            href: '/User/GetUser?userId=' + user.id,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
-        const editButton = $('<a>', {
-            href: '#',
-            class: 'btn btn-sm btn-primary ps-2',
-            html: '<i class="fas fa-pen"></i>'
-        });
         actionCell.append($('<div>', { class: 'input-group flex-nowrap' })
-            .append($('<div>', { class: 'ps-2' }).append(viewButton))
-            .append($('<div>', { class: 'ps-2' }).append(editButton)));
+            .append($('<div>', { class: 'ps-2' }).append(viewButton)));
         row.append(actionCell);
 
         $('.resultTableBody').append(row);

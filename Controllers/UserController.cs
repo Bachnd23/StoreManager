@@ -37,6 +37,19 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [HttpGet]
+        public IActionResult GetUser(int userId)
+        {
+            User model = _userService.GetUserById(userId);
+            if (model != null)
+            {
+                return View("/Views/User/UserDetail.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/User/ListUsers.cshtml");
+            }
+        }
         public IActionResult ViewList()
         {
             return View("/Views/User/ListUsers.cshtml");

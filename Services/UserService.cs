@@ -106,6 +106,18 @@ namespace COCOApp.Services
 
             return null; // User not found or password incorrect
         }
+        public User GetUserById(int userId)
+        {
+            var user = _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null; // User not found 
+        }
         public User GetUserByEmail(string email)
         {
             var user = _context.Users.Include(u => u.SellerDetail)
@@ -116,7 +128,7 @@ namespace COCOApp.Services
                 return user;
             }
 
-            return null; // User not found or password incorrect
+            return null; // User not found 
         }
         public async Task UpdateUserPasswordResetTokenAsync(string email)
         {
