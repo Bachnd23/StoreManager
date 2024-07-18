@@ -95,8 +95,10 @@ namespace COCOApp.Controllers
                     // If the model state is not valid, return the same view with validation errors
                     return View("/Views/User/EditUser.cshtml", model);
                 }
+                Debug.WriteLine(model.Role);
                 var user = new User
                 {
+                    Id=model.Id,
                     Email = model.Email,
                     Username = model.Username,
                     Role = model.Role,
