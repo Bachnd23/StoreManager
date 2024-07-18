@@ -134,6 +134,8 @@ namespace COCOApp.Controllers
                 }
                 else if (authenticatedUser.Role == 1)// Admin
                 {
+                    int sellerId=authenticatedUser.Id;
+                    HttpContext.Session.SetObjectInSession("sellerId", sellerId);
                     authenticatedUser.Id = 0;
                     // Store authenticated user in session
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);

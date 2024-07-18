@@ -90,6 +90,11 @@ namespace COCOApp.Controllers
             foreach (var model in orders)
             {
                 Product product = _productService.GetProductById(model.ProductId, user.Id);
+                int sellerId=user.Id;
+                if (sellerId == 0)
+                {
+                    sellerId= HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+                }
                 // Convert the model to your domain entity
                 var order = new Order
                 {
@@ -100,7 +105,7 @@ namespace COCOApp.Controllers
                     Complete = false,
                     OrderProductCost = product.Cost,
                     OrderTotal = product.Cost * model.Volume,
-                    SellerId = user.Id,
+                    SellerId = sellerId,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
