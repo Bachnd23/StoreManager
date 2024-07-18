@@ -87,6 +87,11 @@ namespace COCOApp.Controllers
                 return View("/Views/Customer/AddCustomer.cshtml", model);
             }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            int sellerId = model.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
             // Convert the model to your domain entity
             var customer = new Customer
             {
@@ -95,7 +100,7 @@ namespace COCOApp.Controllers
                 Address = model.Address,
                 Note = model.Note,  // Note property is nullable
                 Status = model.Status,
-                SellerId = user.Id,
+                SellerId = sellerId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };

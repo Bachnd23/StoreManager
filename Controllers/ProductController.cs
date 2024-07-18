@@ -85,7 +85,11 @@ namespace COCOApp.Controllers
                 // Return the same view with validation errors
                 return View("/Views/Products/AddProduct.cshtml", model);
             }
-
+            int sellerId = model.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
             // Convert the model to your domain entity
             var product = new Product
             {
@@ -93,7 +97,7 @@ namespace COCOApp.Controllers
                 MeasureUnit = model.MeasureUnit,
                 Cost = model.Cost,
                 Status = model.Status,
-                SellerId = model.SellerId,
+                SellerId = sellerId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
