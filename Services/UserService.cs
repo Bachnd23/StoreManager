@@ -71,7 +71,7 @@ namespace COCOApp.Services
             }
             User userByName=GetUserByUsername(user.Username);
             User userByEmail=GetUserByEmail(user.Email);
-            Debug.WriteLine(userByName.Id + "," + userByEmail.Id + "," + user.Id);
+/*            Debug.WriteLine(userByName.Id + "," + userByEmail.Id + "," + user.Id);*/
             if (userByEmail!=null&&userByName!=null&&(userByName.Id!=user.Id||userByEmail.Id!=user.Id))
             {
                 throw new ArgumentException("Dupplicated name or email.");
