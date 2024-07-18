@@ -28,6 +28,6 @@ namespace COCOApp.Models
         [Required(ErrorMessage = "Giới tính là bắt buộc")]
         public bool Gender { get; set; }
 
-        public virtual User IdNavigation { get; set; } = null!;
+        public virtual User? IdNavigation { get; set; } = null!;
     }
 }

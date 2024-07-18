@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Http;
-
+using System.Diagnostics;
+using COCOApp.Helpers;
 namespace COCOApp.Services
 {
     public class UserService : StoreManagerService
@@ -68,7 +69,13 @@ namespace COCOApp.Services
             {
                 throw new ArgumentException("User not found.");
             }
-
+            User userByName=GetUserByUsername(user.Username);
+            User userByEmail=GetUserByEmail(user.Email);
+            Debug.WriteLine(userByName.Id + "," + userByEmail.Id + "," + user.Id);
+            if (userByEmail!=null&&userByName!=null&&(userByName.Id!=user.Id||userByEmail.Id!=user.Id))
+            {
+                throw new ArgumentException("Dupplicated name or email.");
+            }
             // Update user properties
             existingUser.Email = user.Email;
             existingUser.Username = user.Username;
@@ -77,7 +84,7 @@ namespace COCOApp.Services
             // Save changes to the database
             _context.SaveChanges();
         }
-        public void UpdateUser(int userId, String password)
+        public void UpdateUserPassword(int userId, String password)
         {
             // Find the existing user in the database
             var existingUser = _context.Users.SingleOrDefault(u => u.Id == userId);
@@ -118,12 +125,36 @@ namespace COCOApp.Services
 
             return null; // User not found 
         }
-        public User GetUserByEmail(string email)
+        public User GetActiveUserByEmail(string email)
         {
             var user = _context.Users.Include(u => u.SellerDetail)
                 .FirstOrDefault(u => u.Email == email);
 
             if (user != null && user.Status == true)
+            {
+                return user;
+            }
+
+            return null; // User not found 
+        }
+        public User GetUserByUsername(string username)
+        {
+            var user = _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefault(u => u.Username == username);
+
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null; // User not found 
+        }
+        public User GetUserByEmail(string email)
+        {
+            var user = _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefault(u => u.Email == email);
+
+            if (user != null)
             {
                 return user;
             }

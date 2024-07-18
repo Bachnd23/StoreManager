@@ -67,11 +67,59 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             return View("/Views/User/UserProfile.cshtml", user);
         }
+        [HttpGet]
+        public IActionResult ViewEdit(int userId)
+        {
+            User model = _userService.GetUserById(userId);
+            if (model != null)
+            {
+                return View("/Views/User/EditUser.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/User/ListUsers.cshtml");
+            }
+        }
+        [HttpPost]
+        public IActionResult EditUser(User model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Log the validation errors
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    string errorMessages = string.Join("; ", errors);
+
+                    Debug.WriteLine(errorMessages);
+                    // If the model state is not valid, return the same view with validation errors
+                    return View("/Views/User/EditUser.cshtml", model);
+                }
+                var user = new User
+                {
+                    Email = model.Email,
+                    Username = model.Username,
+                    Role = model.Role,
+                    Status = model.Status,
+                    UpdatedAt = DateTime.Now
+                };
+                // Use the service to insert the customer
+                _userService.UpdateUser(model.Id, user);
+                HttpContext.Session.SetString("SuccessMsg", "Sửa khách hàng thành công!");
+                // Redirect to the customer list or a success page
+                return RedirectToAction("ViewList");
+            }
+            catch (ArgumentException ex)
+            {
+                HttpContext.Session.SetString("ErrorMsg", "Email hoặc tên đăng nhập đã được sử dụng!");
+                return View("/Views/User/EditUser.cshtml", model);
+            }
+        }
         public async Task<IActionResult> ViewChangePassword(string email)
         {
             if (await _userService.CheckPasswordResetTokenAsync(email))
             {
-                User user = _userService.GetUserByEmail(email);
+                User user = _userService.GetActiveUserByEmail(email);
                 return View("/Views/User/ChangePassword.cshtml", user);
             }
             else
@@ -176,15 +224,31 @@ namespace COCOApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    // Log the validation errors
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    string errorMessages = string.Join("; ", errors);
+
+                    Debug.WriteLine(errorMessages);
+                    // If the model state is not valid, return the same view with validation errors
+                    return View("/Views/User/UserProfile.cshtml", model);
+                }
+                int sellerId = model.Id;
+                if (sellerId == 0)
+                {
+                    sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+                }
                 // Convert the model to your domain entity
                 var user = new User
                 {
+                    Id = sellerId,
                     Email = model.Email,
                     Username = model.Username,
                     UpdatedAt = DateTime.Now
                 };
                 // Use the service to insert the customer
-                _userService.UpdateUser(model.Id, user);
+                _userService.UpdateUser(sellerId, user);
                 var sellerDetail = new SellerDetail
                 {
                     Fullname = model.SellerDetail.Fullname,
@@ -193,7 +257,7 @@ namespace COCOApp.Controllers
                     Address = model.SellerDetail.Address,
                     Phone = model.SellerDetail.Phone,
                 };
-                _sellerDetailsService.UpdateSellerDetails(model.Id, sellerDetail);
+                _sellerDetailsService.UpdateSellerDetails(sellerId, sellerDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");
                 return View("/Views/User/UserProfile.cshtml", model);
             }
@@ -206,7 +270,7 @@ namespace COCOApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string toEmail)
         {
-            User user = _userService.GetUserByEmail(toEmail);
+            User user = _userService.GetActiveUserByEmail(toEmail);
             if (user == null)
             {
                 HttpContext.Session.SetString("ErrorMsg", "Tài khoản không tồn tại!");
@@ -241,7 +305,7 @@ namespace COCOApp.Controllers
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
             // Use the service to update the user's password
-            _userService.UpdateUser(model.Id, hashedPassword);
+            _userService.UpdateUserPassword(model.Id, hashedPassword);
 
             // Delete the password reset token and its expiration from the cookies
             HttpContext.Response.Cookies.Delete("PasswordResetToken");
