@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using COCOApp.Services;
 using Microsoft.Extensions.Configuration;
 using COCOApp.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,12 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<SellerDetailsService>();
-
+// Configure SignalR to handle cyclic references
+builder.Services.AddSignalR().AddJsonProtocol(options =>
+{
+    options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    options.PayloadSerializerOptions.WriteIndented = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,8 +76,11 @@ app.UseAuthorization();
 
 app.UseSession();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=ViewSignIn}");
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=ViewSignIn}");
+    endpoints.MapHub<ProductHub>("/productHub"); // Add this line
+});
 app.Run();

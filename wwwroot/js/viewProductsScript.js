@@ -4,7 +4,24 @@ var statusId = "";
 var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
+var connection;
+
 $(document).ready(function () {
+    // Establish SignalR connection
+    connection = new signalR.HubConnectionBuilder().withUrl("/productHub").build();
+
+    // Define the event handler for ProductAdded
+    connection.on("ProductAdded", function (product) {
+        // Fetch and regenerate the table
+        fetchProductsResults();
+    });
+
+    // Start the SignalR connection
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    // Fetch the initial product results
     fetchProductsResults();
 });
 
@@ -90,7 +107,7 @@ function generateProductsTable(data) {
         return;
     }
 
-    // Iterate over the user results and create table rows
+    // Iterate over the product results and create table rows
     $.each(data.productResults, function (index, product) {
         const row = $('<tr>');
         row.append($('<td>').text(product.productName));
@@ -104,7 +121,7 @@ function generateProductsTable(data) {
         }
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href:'/Product/GetProduct?productId=' + product.id,
+            href: '/Product/GetProduct?productId=' + product.id,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
@@ -114,5 +131,4 @@ function generateProductsTable(data) {
 
         $('.resultTableBody').append(row);
     });
-
 }

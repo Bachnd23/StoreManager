@@ -3,15 +3,18 @@ using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
+using Microsoft.AspNetCore.SignalR;
 
 namespace COCOApp.Controllers
 {
     public class ProductController : Controller
     {
+        private readonly IHubContext<ProductHub> _hubContext;
         private ProductService _productService;
-        public ProductController(ProductService productService)
+        public ProductController(ProductService productService, IHubContext<ProductHub> hubContext)
         {
             _productService = productService;
+            _hubContext = hubContext;
         }
         private const int PageSize = 10;
 
@@ -69,7 +72,7 @@ namespace COCOApp.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult AddProduct(Product model)
+        public async Task<IActionResult> AddProduct(Product model)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             model.SellerId = user.Id;
@@ -85,11 +88,12 @@ namespace COCOApp.Controllers
                 // Return the same view with validation errors
                 return View("/Views/Products/AddProduct.cshtml", model);
             }
-            int sellerId = model.Id;
+            int sellerId = user.Id;
             if (sellerId == 0)
             {
                 sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
             }
+
             // Convert the model to your domain entity
             var product = new Product
             {
@@ -102,15 +106,19 @@ namespace COCOApp.Controllers
                 UpdatedAt = DateTime.Now
             };
 
-            // Use the service to insert the customer
+            // Use the service to insert the product
             _productService.AddProduct(product);
+
+            // Notify all clients about the new product
+            await _hubContext.Clients.All.SendAsync("ProductAdded", product);
 
             // On success
             HttpContext.Session.SetString("SuccessMsg", "Thêm sản phẩm thành công!");
 
-            // Redirect to the customer list or a success page
+            // Redirect to the product list or a success page
             return RedirectToAction("ViewList");
         }
+
 
         [ValidateAntiForgeryToken]
         [HttpPost]

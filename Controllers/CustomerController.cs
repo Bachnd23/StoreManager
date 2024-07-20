@@ -87,7 +87,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Customer/AddCustomer.cshtml", model);
             }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            int sellerId = model.Id;
+            int sellerId = user.Id;
             if (sellerId == 0)
             {
                 sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
