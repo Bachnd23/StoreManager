@@ -109,8 +109,8 @@ namespace COCOApp.Controllers
             // Use the service to insert the product
             _productService.AddProduct(product);
 
-            // Notify all clients about the new product
-            await _hubContext.Clients.All.SendAsync("ProductAdded", product);
+            // Notify admins about changes to the product
+            await _hubContext.Clients.Group("Admin").SendAsync("ProductAdded", product);
 
             // On success
             HttpContext.Session.SetString("SuccessMsg", "Thêm sản phẩm thành công!");
