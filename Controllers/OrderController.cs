@@ -2,6 +2,7 @@
 using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
 
 namespace COCOApp.Controllers
@@ -10,11 +11,13 @@ namespace COCOApp.Controllers
     {
         private readonly OrderService _orderService;
         private readonly ProductService _productService;
+        private readonly IHubContext<OrderHub> _hubContext;
 
-        public OrderController(OrderService orderService, ProductService productService)
+        public OrderController(OrderService orderService, ProductService productService, IHubContext<OrderHub> hubContext)
         {
             _orderService = orderService;
             _productService = productService;
+            _hubContext = hubContext;
         }
         private const int PageSize = 10;
 
@@ -79,7 +82,7 @@ namespace COCOApp.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult AddOrders(List<Order> orders)
+        public async Task<IActionResult> AddOrders(List<Order> orders)
         {
             if (orders.Count == 0)
             {
@@ -111,14 +114,17 @@ namespace COCOApp.Controllers
                 };
 
                 _orderService.AddOrder(order);
+                // Notify admins about changes to the order
+                await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated", order);
             }
+
             HttpContext.Session.SetString("SuccessMsg", "Thêm đơn hàng thành công!");
             return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult EditOrder(Order model)
+        public async Task<IActionResult> EditOrder(Order model)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             if (!ModelState.IsValid)
@@ -147,6 +153,10 @@ namespace COCOApp.Controllers
 
             // Use the service to edit the customer
             _orderService.EditOrder(model.Id, order);
+
+            // Notify admins about changes to the order
+            await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated",order);
+
             HttpContext.Session.SetString("SuccessMsg", "Sửa đơn hàng thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");

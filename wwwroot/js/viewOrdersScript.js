@@ -3,7 +3,21 @@ var roleId = "";
 var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
+var connection;
+
 $(document).ready(function () {
+    // Establish SignalR connection
+    connection = new signalR.HubConnectionBuilder().withUrl("/orderHub").build();
+
+    // Define the event handler for Order
+    connection.on("OrderUpdated", function (order) {
+        // Fetch and regenerate the table
+        fetchOrdersResults();
+    });
+    // Start the SignalR connection
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
     fetchOrdersResults();
 });
 

@@ -82,6 +82,7 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Home}/{action=ViewSignIn}");
     endpoints.MapHub<ProductHub>("/productHub"); 
-    endpoints.MapHub<CustomerHub>("/customerHub"); 
+    endpoints.MapHub<CustomerHub>("/customerHub");
+    endpoints.MapHub<OrderHub>("/orderHub");
 });
 app.Run();
