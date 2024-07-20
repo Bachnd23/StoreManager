@@ -7,43 +7,39 @@
     <div class="container-fluid">
         <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
             <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                <form id="registerForm" asp-controller="User" asp-action="RegisterUser" method="post">
+                <form id="registerForm" asp-controller="User" asp-action="RegisterUser" method="post" class="form-shadow">
                     <div class="bg-light rounded p-4 my-4 mx-3">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h3 class="text-primary">
-                                <img alt="" src="~/img/logo.png" width="100" height="100">
-                            </h3>
-                            <h3>COCO</h3>
+                        <div class="text-center mb-4">
+                            <img alt="Logo" src="~/img/logo.png" width="100" height="100">
+                            <h3 class="text-primary mt-3">COCO</h3>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Email" class="required">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder=" Nhập email..." required>
+                            <label asp-for="Email" class="form-label required">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="Nhập email..." required>
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Username" class="required">Tên đăng nhập</label>
-                            <input asp-for="Username" class="form-control" placeholder=" Nhập tên đăng nhập..." required>
+                            <label asp-for="Username" class="form-label required">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập..." required>
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Password" class="required">Mật khẩu</label>
+                            <label asp-for="Password" class="form-label required">Mật khẩu</label>
                             <div class="input-group" id="show_hide_password">
-                                <input asp-for="Password" type="password" class="form-control" placeholder=" Nhập mật khẩu..." required>
-                                <div class="input-group-addon">
-                                    <a href="#" class="h-100 input-group-text" id="togglePassword">
-                                        <i class="fas fa-eye-slash" aria-hidden="true"></i>
-                                    </a>
-                                </div>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu..." required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
                             </div>
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <label for="ConfirmPassword" class="required">Xác nhận mật khẩu</label>
-                        <div class="input-group mb-4" id="show_hide_confirm_password">
-                            <input type="password" id="ConfirmPassword" class="form-control" placeholder=" Xác nhận mật khẩu..." required>
-                            <div class="input-group-addon">
-                                <a href="#" class="h-100 input-group-text" id="toggleConfirmPassword">
-                                    <i class="fas fa-eye-slash" aria-hidden="true"></i>
-                                </a>
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label required">Xác nhận mật khẩu</label>
+                            <div class="input-group" id="show_hide_confirm_password">
+                                <input type="password" id="ConfirmPassword" class="form-control" placeholder="Xác nhận mật khẩu..." required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
                             </div>
                             <span id="confirmPasswordError" class="text-danger"></span>
                         </div>
@@ -59,6 +55,7 @@
     </div>
     @Html.AntiForgeryToken()
 </div>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -69,7 +66,7 @@
                 if (passwordField.attr("type") == "text") {
                     passwordField.attr('type', 'password');
                     icon.addClass("fa-eye-slash").removeClass("fa-eye");
-                } else if (passwordField.attr("type") == "password") {
+                } else {
                     passwordField.attr('type', 'text');
                     icon.addClass("fa-eye").removeClass("fa-eye-slash");
                 }
@@ -82,7 +79,7 @@
                 if (confirmPasswordField.attr("type") == "text") {
                     confirmPasswordField.attr('type', 'password');
                     icon.addClass("fa-eye-slash").removeClass("fa-eye");
-                } else if (confirmPasswordField.attr("type") == "password") {
+                } else {
                     confirmPasswordField.attr('type', 'text');
                     icon.addClass("fa-eye").removeClass("fa-eye-slash");
                 }
@@ -101,3 +98,8 @@
         });
     </script>
 }
+<style>
+    .form-shadow {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
