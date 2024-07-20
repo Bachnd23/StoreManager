@@ -110,7 +110,7 @@ namespace COCOApp.Controllers
             _productService.AddProduct(product);
 
             // Notify admins about changes to the product
-            await _hubContext.Clients.Group("Admin").SendAsync("ProductAdded", product);
+            await _hubContext.Clients.Group("Admin").SendAsync("ProductUpdated", product);
 
             // On success
             HttpContext.Session.SetString("SuccessMsg", "Thêm sản phẩm thành công!");
@@ -122,7 +122,7 @@ namespace COCOApp.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult EditProduct(Product model)
+        public async Task<IActionResult> EditProduct(Product model)
         {
             if (!ModelState.IsValid)
             {
@@ -149,8 +149,12 @@ namespace COCOApp.Controllers
                 UpdatedAt = DateTime.Now
             };
 
-            // Use the service to edit the customer
+            // Use the service to edit the product
             _productService.EditProduct(model.Id, product);
+
+            // Notify admins about changes to the product
+            await _hubContext.Clients.Group("Admin").SendAsync("ProductUpdated", product);
+
             HttpContext.Session.SetString("SuccessMsg", "Sửa hàng thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");

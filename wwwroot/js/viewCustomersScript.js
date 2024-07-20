@@ -4,7 +4,22 @@ var statusId = "";
 var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
+var connection;
+
 $(document).ready(function () {
+    // Establish SignalR connection
+    connection = new signalR.HubConnectionBuilder().withUrl("/customerHub").build();
+
+    // Define the event handler for Customer
+    connection.on("CustomerUpdated", function (customer) {
+        // Fetch and regenerate the table
+        fetchCustomersResults();
+    });
+
+    // Start the SignalR connection
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
     fetchCustomersResults();
 });
 

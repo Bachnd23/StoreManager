@@ -11,7 +11,7 @@ $(document).ready(function () {
     connection = new signalR.HubConnectionBuilder().withUrl("/productHub").build();
 
     // Define the event handler for ProductAdded
-    connection.on("ProductAdded", function (product) {
+    connection.on("ProductUpdated", function (product) {
         // Fetch and regenerate the table
         fetchProductsResults();
     });

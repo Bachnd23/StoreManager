@@ -3,16 +3,19 @@ using COCOApp.Models;
 using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
 
 namespace COCOApp.Controllers
 {
     public class CustomerController : Controller
     {
+        private readonly IHubContext<CustomerHub> _hubContext;
         private CustomerService _customerService;
-        public CustomerController(CustomerService customerService)
+        public CustomerController(CustomerService customerService, IHubContext<CustomerHub> hubContext)
         {
             _customerService = customerService;
+            _hubContext = hubContext;
         }
         private const int PageSize = 10;
 
@@ -74,7 +77,7 @@ namespace COCOApp.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult AddCustomer(Customer model)
+        public async Task<IActionResult> AddCustomer(Customer model)
         {
             if (!ModelState.IsValid)
             {
@@ -107,13 +110,17 @@ namespace COCOApp.Controllers
 
             // Use the service to insert the customer
             _customerService.AddCustomer(customer);
+
+            // Notify admins about changes to the customer
+            await _hubContext.Clients.Group("Admin").SendAsync("CustomerUpdated", customer);
+
             HttpContext.Session.SetString("SuccessMsg", "Thêm khách hàng thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult EditCustomer(Customer model)
+        public async Task<IActionResult> EditCustomer(Customer model)
         {
 
             if (!ModelState.IsValid)
@@ -142,6 +149,10 @@ namespace COCOApp.Controllers
 
             // Use the service to edit the customer
             _customerService.EditCustomer(model.Id,customer);
+
+            // Notify admins about changes to the customer
+            await _hubContext.Clients.Group("Admin").SendAsync("CustomerUpdated", customer);
+
             HttpContext.Session.SetString("SuccessMsg", "Sửa khách hàng thành công!");
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");

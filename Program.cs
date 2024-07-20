@@ -81,6 +81,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=ViewSignIn}");
-    endpoints.MapHub<ProductHub>("/productHub"); // Add this line
+    endpoints.MapHub<ProductHub>("/productHub"); 
+    endpoints.MapHub<CustomerHub>("/customerHub"); 
 });
 app.Run();
