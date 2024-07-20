@@ -4,6 +4,7 @@ using COCOApp.Models;
 using Newtonsoft.Json;
 using COCOApp.Services;
 using Microsoft.Extensions.Configuration;
+using COCOApp.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,13 @@ var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailS
 builder.Services.AddSingleton(emailSettings);
 builder.Services.AddTransient<EmailService>();
 
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IReportsOrdersMappingRepository, ReportsOrdersMappingRepository>();
+builder.Services.AddScoped<ISellerDetailRepository, SellerDetailRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Register your custom services here
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<ReportService>();

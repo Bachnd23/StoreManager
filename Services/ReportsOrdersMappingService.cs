@@ -1,18 +1,21 @@
 ﻿using COCOApp.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Globalization;
+using COCOApp.Repositories;
+using System.Collections.Generic;
 
 namespace COCOApp.Services
 {
-    public class ReportsOrdersMappingService: StoreManagerService
+    public class ReportsOrdersMappingService : StoreManagerService
     {
-        public List<ReportsOrdersMapping> GetReportsOrdersMapping()
+        private readonly IReportsOrdersMappingRepository _reportsOrdersMappingRepository;
+
+        public ReportsOrdersMappingService(IReportsOrdersMappingRepository reportsOrdersMappingRepository)
         {
-            var query = _context.ReportsOrdersMappings.AsQueryable();
-            query = query.Include(rom => rom.Order);
-            return query.ToList();
+            _reportsOrdersMappingRepository = reportsOrdersMappingRepository;
         }
 
+        public List<ReportsOrdersMapping> GetReportsOrdersMapping()
+        {
+            return _reportsOrdersMappingRepository.GetReportsOrdersMapping();
+        }
     }
 }

@@ -1,105 +1,46 @@
 ﻿using COCOApp.Models;
-using Microsoft.EntityFrameworkCore;
+using COCOApp.Repositories;
+using System.Collections.Generic;
 
 namespace COCOApp.Services
 {
     public class ProductService : StoreManagerService
     {
+        private readonly IProductRepository _productRepository;
+
+        public ProductService(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
+
         public List<Product> GetProducts()
         {
-            var query = _context.Products.AsQueryable();
-            return query.ToList();
-        }
-        public Product GetProductById(int productId,int sellerId)
-        {
-            var query = _context.Products.AsQueryable();
-            if (sellerId > 0)
-            {
-                query = query.Where(c => c.SellerId == sellerId);
-            }
-            if (productId > 0)
-            {
-                return query.FirstOrDefault(u => u.Id == productId);
-            }
-            else
-            {
-                return null;
-            }
-        }
-        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize,int sellerId,int statusId)
-        {
-            // Ensure pageNumber is at least 1
-            pageNumber = Math.Max(pageNumber, 1);
-
-            var query = _context.Products.AsQueryable();
-            bool status = true;
-            if (statusId == 1) status = true;
-            else if (statusId == 2) status = false;
-            if(statusId > 0){
-                query = query.Where(p => p.Status==status);
-            }
-            if (sellerId > 0)
-            {
-                query = query.Where(p => p.SellerId == sellerId);
-            }
-            if (!string.IsNullOrEmpty(nameQuery))
-            {
-                query = query.Where(c => c.ProductName.Contains(nameQuery));
-            }
-            query = query.OrderByDescending(p => p.Id);
-            return query.Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList();
+            return _productRepository.GetProducts();
         }
 
-
-        public int GetTotalProducts(string nameQuery,int sellerId, int statusId)
+        public Product GetProductById(int productId, int sellerId)
         {
-            var query = _context.Products.AsQueryable();
-            bool status = true;
-            if (statusId == 1) status = true;
-            else if (statusId == 2) status = false;
-            if (statusId > 0)
-            {
-                query = query.Where(p => p.Status == status);
-            }
-            if (sellerId > 0)
-            {
-                query = query.Where(p => p.SellerId == sellerId);
-            }
-            if (!string.IsNullOrEmpty(nameQuery))
-            {
-                query = query.Where(c => c.ProductName.Contains(nameQuery));
-            }
-            return query.Count();
+            return _productRepository.GetProductById(productId, sellerId);
         }
+
+        public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
+        {
+            return _productRepository.GetProducts(nameQuery, pageNumber, pageSize, sellerId, statusId);
+        }
+
+        public int GetTotalProducts(string nameQuery, int sellerId, int statusId)
+        {
+            return _productRepository.GetTotalProducts(nameQuery, sellerId, statusId);
+        }
+
         public void AddProduct(Product product)
         {
-            _context.Products.Add(product);
-            _context.SaveChanges();
+            _productRepository.AddProduct(product);
         }
+
         public void EditProduct(int productId, Product product)
         {
-            // Retrieve the customer from the database
-            Product? existingProduct = _context.Products.FirstOrDefault(c => c.Id == productId);
-
-            // Check if the customer exists
-            if (existingProduct != null)
-            {
-                existingProduct.ProductName = product.ProductName;
-                existingProduct.Cost = product.Cost;
-                existingProduct.Status = product.Status;
-                existingProduct.SellerId= product.SellerId; 
-                existingProduct.UpdatedAt = product.UpdatedAt;   
-
-                // Save the changes to the database
-                _context.SaveChanges();
-            }
-            else
-            {
-                // Handle the case when the product is not found
-                throw new ArgumentException("Product not found");
-            }
+            _productRepository.EditProduct(productId, product);
         }
     }
 }
