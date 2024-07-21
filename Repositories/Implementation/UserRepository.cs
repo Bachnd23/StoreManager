@@ -231,7 +231,7 @@ namespace COCOApp.Repositories
 
                 await _context.SaveChangesAsync();
 
-                var expirationTime = DateTime.UtcNow.AddHours(24);
+                var expirationTime = DateTime.UtcNow.AddDays(30);
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,

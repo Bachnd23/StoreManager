@@ -222,6 +222,9 @@ namespace COCOApp.Controllers
         public async Task<IActionResult> LogOut()
         {
             HttpContext.Session.Clear();
+            // Delete the remember me token and its expiration from the cookies
+            HttpContext.Response.Cookies.Delete("RememberMeToken");
+            HttpContext.Response.Cookies.Delete("RememberMeTokenTokenExpiration");
             return RedirectToAction("ViewSignIn", "Home");
         }
         [HttpPost]
