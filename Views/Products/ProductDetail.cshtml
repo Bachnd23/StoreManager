@@ -1,6 +1,7 @@
 ﻿@model COCOApp.Models.Product
 @{
     Layout = "_LayoutStoreDashBoard";
+    var currentPage = ViewData["PageNumber"] ?? 1;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +10,7 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Product/ViewList">Danh sách hàng hóa</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ViewList", "Product", new { pageNumber = currentPage })">Danh sách hàng hóa</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Thông tin hàng hóa</li>
             </ol>
         </nav>
@@ -67,17 +68,19 @@
                 <div class="w-100"></div>
                 <div class="col">
                     <div class="bg-light rounded h-100 p-4 text-center">
-                        <a href="@Url.Action("ViewEdit", "Product", new { productId = Model.Id })" class="btn btn-primary">Đến trang chỉnh sửa</a>
-                        <a href="@Url.Action("ViewList", "Product")" class="btn btn-danger">Quay lại</a>
+                        <a href="@Url.Action("ViewEdit", "Product", new { productId = Model.Id, pageNumber = currentPage })" class="btn btn-primary">Đến trang chỉnh sửa</a>
+                        <a href="@Url.Action("ViewList", "Product", new { pageNumber = currentPage })" class="btn btn-danger">Quay lại</a>
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="PageNumber" value="@currentPage" />
         </form>
     </div>
     <!-- Form End -->
-    <!-- Content End -->
     @section Scripts {
-
+        <script>
+            var pageNumber = @currentPage;
+        </script>
     }
 </body>
 </html>

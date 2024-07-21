@@ -1,7 +1,6 @@
 ﻿var nameQuery = "";
 var roleId = "";
 var statusId = "";
-var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
 var connection;
@@ -121,7 +120,7 @@ function generateProductsTable(data) {
         }
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: '/Product/GetProduct?productId=' + product.id,
+            href: `/Product/GetProduct?productId=${product.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
