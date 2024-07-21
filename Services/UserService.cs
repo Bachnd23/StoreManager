@@ -79,5 +79,14 @@ namespace COCOApp.Services
         {
             return await _userRepository.CheckPasswordResetTokenAsync(email);
         }
+        public async Task UpdateRememberMeTokenAsync(string username)
+        {
+            await _userRepository.UpdateRemembermeTokenAsync(username);
+        }
+
+        public async Task<User> CheckRememberMeTokenAsync()
+        {
+            return await _userRepository.CheckRemembermeTokenAsync();
+        }
     }
 }

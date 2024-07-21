@@ -182,13 +182,16 @@ namespace COCOApp.Controllers
             }
         }
         [ValidateAntiForgeryToken]
-        public IActionResult Login(User user)
+        public async Task<IActionResult> Login(User user)
         {
             var authenticatedUser = _userService.GetUserByNameAndPass(user.Username, user.Password);
 
             if (authenticatedUser != null)
             {
-
+                if (user.RememberToken != null)
+                {
+                    await _userService.UpdateRememberMeTokenAsync(user.Username);
+                }
                 if (authenticatedUser.Role == 2) // Seller
                 {
                     // Store authenticated user in session
@@ -216,7 +219,7 @@ namespace COCOApp.Controllers
             }
         }
 
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("ViewSignIn", "Home");

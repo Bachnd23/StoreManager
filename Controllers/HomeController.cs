@@ -1,4 +1,6 @@
-﻿using COCOApp.Models;
+﻿using COCOApp.Helpers;
+using COCOApp.Models;
+using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,10 +9,12 @@ namespace COCOApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserService _userService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,UserService userService)
         {
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -26,8 +30,28 @@ namespace COCOApp.Controllers
         {
             return View("/Views/Home/RegisterStore.cshtml");
         }
-        public IActionResult ViewSignIn()
+        public async Task<IActionResult> ViewSignIn()
         {
+            User authenticatedUser =await _userService.CheckRememberMeTokenAsync();
+
+            if (authenticatedUser != null)
+            {
+                if (authenticatedUser.Role == 2) // Seller
+                {
+                    // Store authenticated user in session
+                    HttpContext.Session.SetObjectInSession("user", authenticatedUser);
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (authenticatedUser.Role == 1)// Admin
+                {
+                    int sellerId = authenticatedUser.Id;
+                    HttpContext.Session.SetObjectInSession("sellerId", sellerId);
+                    authenticatedUser.Id = 0;
+                    // Store authenticated user in session
+                    HttpContext.Session.SetObjectInSession("user", authenticatedUser);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
             return View("/Views/Home/SignIn.cshtml");
         }
 

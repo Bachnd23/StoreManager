@@ -19,5 +19,7 @@ namespace COCOApp.Repositories
         User GetUserByEmail(string email);
         Task UpdateUserPasswordResetTokenAsync(string email);
         Task<bool> CheckPasswordResetTokenAsync(string email);
+        Task UpdateRemembermeTokenAsync(string username);
+        Task<User> CheckRemembermeTokenAsync();
     }
 }

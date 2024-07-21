@@ -32,6 +32,12 @@
                             <a href="~/User/ViewForgotPassword" class="text-decoration-none">Quên mật khẩu</a>
                             <a href="~/Home/ViewRegisterStore" class="text-decoration-none">Đăng ký</a>
                         </div>
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input asp-for="RememberToken" class="form-check-input" type="checkbox">
+                                <label asp-for="RememberToken" class="form-check-label">Ghi nhớ tôi</label>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary py-3 w-100">Đăng nhập</button>
                     </div>
                 </form>

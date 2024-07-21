@@ -220,5 +220,70 @@ namespace COCOApp.Repositories
             }
             return false;
         }
+        public async Task UpdateRemembermeTokenAsync(String username)
+        {
+            var user = await _context.Users.Include(u => u.SellerDetail)
+                .FirstOrDefaultAsync(u => u.Username==username);
+
+            if (user != null)
+            {
+                user.RememberToken = Guid.NewGuid().ToString();
+
+                await _context.SaveChangesAsync();
+
+                var expirationTime = DateTime.UtcNow.AddHours(24);
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = expirationTime
+                };
+
+                _httpContextAccessor.HttpContext.Response.Cookies.Append("RememberMeToken", user.RememberToken, cookieOptions);
+                _httpContextAccessor.HttpContext.Response.Cookies.Append("RememberMeTokenTokenExpiration", expirationTime.ToString("o"), cookieOptions);
+
+            }
+            else
+            {
+                Console.WriteLine($"No user found with username: {username}");
+            }
+        }
+        public async Task<User> CheckRemembermeTokenAsync()
+        {
+            var tokenExpiration = _httpContextAccessor.HttpContext.Request.Cookies["RememberMeTokenTokenExpiration"];
+            var tokenFromCookie = _httpContextAccessor.HttpContext.Request.Cookies["RememberMeToken"];
+
+            if (tokenExpiration != null && tokenFromCookie != null)
+            {
+                if (DateTime.TryParse(tokenExpiration, out DateTime expirationTime))
+                {
+                    if (DateTime.UtcNow <= expirationTime)
+                    {
+
+                        var user = await _context.Users.Include(u => u.SellerDetail)
+                          .FirstOrDefaultAsync(u => u.RememberToken == tokenFromCookie);
+
+                        if (user != null)
+                        {
+                            Console.WriteLine("Remember me token is valid and matches the database.");
+                            return user;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Remember me token does not match or user not found.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Remember me token has expired.");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Remember me token found.");
+            }
+            return null;
+        }
     }
 }
