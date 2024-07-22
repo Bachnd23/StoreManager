@@ -253,6 +253,7 @@ namespace COCOApp.Controllers
                     Id = sellerId,
                     Email = model.Email,
                     Username = model.Username,
+                    Status = true,
                     UpdatedAt = DateTime.Now
                 };
                 // Use the service to insert the customer
