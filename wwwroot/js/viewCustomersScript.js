@@ -1,7 +1,6 @@
 ﻿var nameQuery = "";
 var roleId = "";
 var statusId = "";
-var pageNumber = 1;
 var totalPages = 1;
 var isFetchingData = false;
 var connection;
@@ -120,7 +119,7 @@ function generateCustomersTable(data) {
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: '/Customer/GetCustomer?customerId=' + customer.id,
+            href: `/Customer/GetCustomer?customerId=${customer.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });

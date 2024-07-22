@@ -2,6 +2,7 @@
     Layout = "_LayoutStoreDashBoard";
     ViewData["Title"] = "Customer List";
     var getListUrl = Url.Action("GetList", "Customer");
+    var currentPage = ViewData["PageNumber"] ?? 1;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +71,7 @@
     </div>
     @section Scripts {
         <script>
+            var pageNumber = @currentPage;
             var getListUrl = '@getListUrl';
         </script>
         <script src="~/js/viewCustomersScript.js"></script>

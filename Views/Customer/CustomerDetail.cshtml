@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "View User Detail";
     Layout = "_LayoutStoreDashBoard";
+    var currentPage = ViewData["PageNumber"] ?? 1;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -85,8 +86,8 @@
                     <div class="w-100"></div>
                     <div class="col">
                         <div class="bg-light rounded h-100 p-4 text-center">
-                            <a href="@Url.Action("ViewEdit", "Customer", new { customerId = Model.Id })" class="btn btn-primary">Đến trang chỉnh sửa</a>
-                            <a href="@Url.Action("ViewList", "Customer")" class="btn btn-danger">Quay lại</a>
+                            <a href="@Url.Action("ViewEdit", "Customer", new { customerId = Model.Id, pageNumber = currentPage })" class="btn btn-primary">Đến trang chỉnh sửa</a>
+                            <a href="@Url.Action("ViewList", "Customer", new { pageNumber = currentPage })" class="btn btn-danger">Quay lại</a>
                         </div>
                     </div>
                 </div>
@@ -94,6 +95,11 @@
         </div>
         <!-- Form End -->
     </div>
+    @section Scripts {
+        <script>
+            var pageNumber = @currentPage;
+        </script>
+    }
     <!-- Content End -->
 </body>
 </html>
