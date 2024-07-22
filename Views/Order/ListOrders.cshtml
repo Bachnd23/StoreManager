@@ -2,6 +2,7 @@
     Layout = "_LayoutStoreDashBoard";
     ViewData["Title"] = "Order List";
     var getListUrl = Url.Action("GetList", "Order");
+    var currentPage = ViewData["PageNumber"] ?? 1;
 }
 @using System.Globalization
 @using System.Text.Json
@@ -64,6 +65,7 @@
     </div>
     @section Scripts {
         <script>
+            var pageNumber = @currentPage;
             var getListUrl = '@getListUrl';
         </script>
         <script src="~/js/viewOrdersScript.js"></script>

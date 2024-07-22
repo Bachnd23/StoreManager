@@ -39,10 +39,11 @@ namespace COCOApp.Controllers
             return Json(response);
         }
         [HttpGet]
-        public IActionResult ViewDetail(int orderId)
+        public IActionResult ViewDetail(int orderId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Order model = _orderService.GetOrderById(orderId, user.Id); ;
+            ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
                 return View("/Views/Order/OrderDetail.cshtml", model);
@@ -53,12 +54,13 @@ namespace COCOApp.Controllers
             }
         }
         [HttpGet]
-        public IActionResult ViewEdit(int orderId)
+        public IActionResult ViewEdit(int orderId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             Order model = _orderService.GetOrderById(orderId, user.Id); ;
             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+            ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
                 return View("/Views/Order/EditOrder.cshtml", model);
@@ -68,8 +70,10 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
-        public IActionResult ViewList()
+        public IActionResult ViewList(int pageNumber = 1)
         {
+            Debug.WriteLine(pageNumber);
+            ViewData["PageNumber"] = pageNumber;
             return View("/Views/Order/ListOrders.cshtml");
         }
 

@@ -1,6 +1,7 @@
 ﻿@model COCOApp.Models.Order
 @{
     Layout = "_LayoutStoreDashBoard";
+    var currentPage = ViewData["PageNumber"] ?? 1;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +73,7 @@
                 <div class="col">
                     <div class="bg-light rounded h-100 p-4 text-center">
                         <button type="submit" class="btn btn-primary">Chỉnh sửa</button>
-                        <a href="@Url.Action("ViewList", "Order")" class="btn btn-danger">Quay lại</a>
+                        <a href="@Url.Action("ViewList", "Order", new { pageNumber = currentPage })" class="btn btn-danger">Quay lại</a>
                     </div>
                 </div>
             </div>
@@ -83,6 +84,7 @@
     <!-- Content End -->
     @section Scripts {
         <script>
+            var pageNumber = @currentPage;
             $(document).ready(function () {
                 // Initialize select2 for existing select fields
                 $('.select2').select2({
