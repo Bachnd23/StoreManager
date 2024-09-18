@@ -3,6 +3,7 @@ using COCOApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace COCOApp.Controllers
 {

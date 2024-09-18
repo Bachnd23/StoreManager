@@ -1,6 +1,7 @@
 ﻿using COCOApp.Helpers;
 using COCOApp.Models;
 using COCOApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
@@ -19,6 +20,7 @@ namespace COCOApp.Controllers
         }
         private const int PageSize = 10;
 
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetList(string nameQuery,int statusId, int pageNumber = 1)
         {
@@ -35,6 +37,8 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetCustomer(int customerId, int pageNumber = 1)
         {
@@ -65,10 +69,14 @@ namespace COCOApp.Controllers
                 return View("/Views/Customer/ListCustomers.cshtml");
             }
         }
+
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewAdd()
         {
             return View("/Views/Customer/AddCustomer.cshtml");
         }
+
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewList(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;

@@ -1,6 +1,7 @@
 ﻿using COCOApp.Helpers;
 using COCOApp.Models;
 using COCOApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -16,7 +17,7 @@ namespace COCOApp.Controllers
             _logger = logger;
             _userService = userService;
         }
-
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult Index()
         {
             return View();
@@ -60,6 +61,12 @@ namespace COCOApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
