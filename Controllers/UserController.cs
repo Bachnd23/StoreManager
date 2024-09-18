@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 using COCOApp.Helpers;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 namespace COCOApp.Controllers
 {
     public class UserController : Controller
@@ -98,7 +101,7 @@ namespace COCOApp.Controllers
                 Debug.WriteLine(model.Role);
                 var user = new User
                 {
-                    Id=model.Id,
+                    Id = model.Id,
                     Email = model.Email,
                     Username = model.Username,
                     Role = model.Role,
@@ -192,18 +195,32 @@ namespace COCOApp.Controllers
                 {
                     await _userService.UpdateRememberMeTokenAsync(user.Username);
                 }
+
+                // Create claims for the authenticated user
+                var claims = new List<Claim>
+                    {
+                    new Claim(ClaimTypes.Name, authenticatedUser.Username),
+                    new Claim(ClaimTypes.Email, authenticatedUser.Email),
+                    new Claim(ClaimTypes.Role, GetRoleName(authenticatedUser.Role)) // Convert role ID to role name
+                    };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                // Sign in the user
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                // Store additional data in session if needed
                 if (authenticatedUser.Role == 2) // Seller
                 {
-                    // Store authenticated user in session
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
-                else if (authenticatedUser.Role == 1)// Admin
+                else if (authenticatedUser.Role == 1) // Admin
                 {
-                    int sellerId=authenticatedUser.Id;
+                    int sellerId = authenticatedUser.Id;
                     HttpContext.Session.SetObjectInSession("sellerId", sellerId);
                     authenticatedUser.Id = 0;
-                    // Store authenticated user in session
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
@@ -217,6 +234,17 @@ namespace COCOApp.Controllers
                 HttpContext.Session.SetString("ErrorMsg", "Tên đăng nhập hoặc mật khẩu sai");
                 return View("/Views/Home/SignIn.cshtml", user);
             }
+        }
+
+        // Helper method to convert role ID to role name
+        private string GetRoleName(int roleId)
+        {
+            return roleId switch
+            {
+                1 => "Admin",
+                2 => "Seller",
+                _ => "Customer"
+            };
         }
 
         public async Task<IActionResult> LogOut()
