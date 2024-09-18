@@ -25,8 +25,9 @@ CREATE TABLE Users (
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NOT NULL,
     role INT NOT NULL,
-	  status BIT NOT NULL,
+	status BIT NOT NULL,
     remember_token NVARCHAR(100) DEFAULT NULL,
+	reset_password_token NVARCHAR(100) DEFAULT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
     FOREIGN KEY (role) REFERENCES UserRoles(id)
