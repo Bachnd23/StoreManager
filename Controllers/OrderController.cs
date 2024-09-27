@@ -32,8 +32,8 @@ namespace COCOApp.Controllers
         public IActionResult GetList(string nameQuery, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var orders = _orderService.GetExportOrders(nameQuery, pageNumber, PageSize, user.Id);
-            var totalOrders = _orderService.GetTotalExportOrders(nameQuery, user.Id);
+            var orders = _itemService.GetExportOrderItems(nameQuery, pageNumber, PageSize, user.Id);
+            var totalOrders = _itemService.GetTotalExportOrderItems(nameQuery, user.Id);
 
             var response = new
             {
