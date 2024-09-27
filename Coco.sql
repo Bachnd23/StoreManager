@@ -46,10 +46,17 @@ CREATE TABLE BuyerDetails (
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 GO
-
+-- Create Categories table
+CREATE TABLE Categories (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    CategoryName NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(255) NULL
+);
+GO
 -- Create Products table (General product information)
 CREATE TABLE Products (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	category_id INT NOT NULL,
     ProductName NVARCHAR(255) NOT NULL,
     MeasureUnit NVARCHAR(255) NOT NULL,
     cost DECIMAL(10, 2) NOT NULL,
@@ -57,10 +64,10 @@ CREATE TABLE Products (
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
     seller_id INT NOT NULL,
-    FOREIGN KEY (seller_id) REFERENCES Users(id)
+    FOREIGN KEY (seller_id) REFERENCES Users(id),
+	FOREIGN KEY (category_id) REFERENCES Categories(id)
 );
 GO
-
 -- Create ProductDetails table (Additional product information)
 CREATE TABLE ProductDetails (
     product_id INT NOT NULL PRIMARY KEY,
@@ -106,7 +113,7 @@ CREATE TABLE ExportOrderItems (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     volume INT NOT NULL,
-    product_cost DECIMAL(10, 2) NOT NULL,
+    product_price DECIMAL(10, 2) NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
