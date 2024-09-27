@@ -1,4 +1,4 @@
-﻿@model COCOApp.Models.Order
+﻿@model COCOApp.Models.ExportOrder
 @{
     Layout = "_LayoutStoreDashBoard";
     var currentPage = ViewData["PageNumber"] ?? 1;
@@ -31,20 +31,20 @@
                                 <span asp-validation-for="Customer.Name" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label asp-for="Product.ProductName" class="required">Mặt hàng </label>
-                                <input asp-for="Product.ProductName" class="form-control" placeholder="Nhập đơn vị tính..." disabled>
-                                <span asp-validation-for="Product.ProductName" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label asp-for="Volume" class="required"> Số lượng</label>
-                                <input asp-for="Volume" class="form-control" placeholder="Nhập giá bán..."  disabled>
-                                <span asp-validation-for="Volume" class="text-danger"></span>
-                            </div>
-                        </div>
+    @*                      <div class="mb-3">
+                             <div class="form-group">
+                                 <label asp-for="Product.ProductName" class="required">Mặt hàng </label>
+                                 <input asp-for="Product.ProductName" class="form-control" placeholder="Nhập đơn vị tính..." disabled>
+                                 <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                             </div>
+                         </div>
+                         <div class="mb-3">
+                             <div class="form-group">
+                                 <label asp-for="Volume" class="required"> Số lượng</label>
+                                 <input asp-for="Volume" class="form-control" placeholder="Nhập giá bán..."  disabled>
+                                 <span asp-validation-for="Volume" class="text-danger"></span>
+                             </div>
+                         </div> *@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="OrderDate" class="required">Ngày mua</label>

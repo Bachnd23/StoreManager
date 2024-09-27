@@ -39,21 +39,21 @@ builder.Services.AddSingleton(emailSettings);
 builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IExportOrderRepository, ExportOrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
-builder.Services.AddScoped<IReportsOrdersMappingRepository, ReportsOrdersMappingRepository>();
-builder.Services.AddScoped<ISellerDetailRepository, SellerDetailRepository>();
+builder.Services.AddScoped<IReportsExportOrdersMappingRepository, ReportsExportOrdersMappingRepository>();
+builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Register your custom services here
-builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ExportOrderService>();
 builder.Services.AddScoped<ReportService>();
-builder.Services.AddScoped<ReportsOrdersMappingService>();
+builder.Services.AddScoped<ReportsExportOrdersMappingService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<SellerDetailsService>();
+builder.Services.AddScoped<UserDetailsService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>

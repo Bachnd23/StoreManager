@@ -26,7 +26,7 @@ namespace COCOApp.Repositories
                     query = query.Where(r => r.SellerId == sellerId);
                 }
                 query = query.Include(r => r.Customer)
-                             .Include(r => r.ReportsOrdersMappings)
+                             .Include(r => r.ReportsExportOrdersMappings)
                              .Where(r => r.CustomerId == customerId);
 
                 return query.ToList();

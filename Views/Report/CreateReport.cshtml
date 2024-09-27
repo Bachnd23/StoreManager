@@ -1,4 +1,4 @@
-﻿@model List<COCOApp.Models.Order>
+﻿@model List<COCOApp.Models.ExportOrder>
 @using COCOApp.Models
 @{
     Layout = "_LayoutStoreDashBoard";
@@ -67,12 +67,12 @@
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
-                                @foreach (Order o in Model)
+                                @foreach (ExportOrder o in Model)
                                 {
                                     <tr>
                                         <th scope="col"><input type="checkbox" class="orderCheckbox" data-order-id="@o.Id"></th>
-                                        <td>@o.Product.ProductName</td>
-                                        <td>@o.Volume</td>
+           @*                              <td>@o.Product.ProductName</td>
+                                        <td>@o.Volume</td> *@
                                         <td>@o.OrderDate</td>
                                     </tr>
                                 }

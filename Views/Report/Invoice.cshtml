@@ -1,4 +1,4 @@
-﻿@model List<COCOApp.Models.Order>
+﻿@model List<COCOApp.Models.ExportOrder>
 @{
     Layout = "_LayoutStoreDashBoard";
 }
@@ -93,9 +93,9 @@
                         {
                             <tr>
                                 <td>@order.Id</td>
-                                <td>@order.Product.ProductName</td>
+@*                                 <td>@order.Product.ProductName</td>
                                 <td>@order.Volume</td>
-                                <td>@order.OrderProductCost.ToString("C")</td>
+                                <td>@order.OrderProductCost.ToString("C")</td> *@
                                 <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
                                 <td>@order.OrderTotal.ToString("C")</td>
                             </tr>
