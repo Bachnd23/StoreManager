@@ -11,15 +11,17 @@ namespace COCOApp.Models
         }
 
         public int Id { get; set; }
+        public int? CategoryId { get; set; }
         public string ProductName { get; set; } = null!;
         public string MeasureUnit { get; set; } = null!;
         public decimal Cost { get; set; }
         public bool Status { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public int SellerId { get; set; }
+        public int? SellerId { get; set; }
 
-        public virtual User Seller { get; set; } = null!;
+        public virtual Category? Category { get; set; }
+        public virtual User? Seller { get; set; }
         public virtual ProductDetail? ProductDetail { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
     }

@@ -18,10 +18,10 @@ namespace COCOApp.Models
         public decimal OrderTotal { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public int SellerId { get; set; }
+        public int? SellerId { get; set; }
 
         public virtual Customer Customer { get; set; } = null!;
-        public virtual User Seller { get; set; } = null!;
+        public virtual User? Seller { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ReportsExportOrdersMapping> ReportsExportOrdersMappings { get; set; }
     }
