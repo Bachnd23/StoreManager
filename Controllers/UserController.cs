@@ -12,13 +12,13 @@ namespace COCOApp.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
-        private readonly SellerDetailsService _sellerDetailsService;
+        private readonly UserDetailsService _userDetailsService;
         private readonly EmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserController(UserService userService, SellerDetailsService sellerDetailsService, EmailService emailService, IHttpContextAccessor httpContextAccessor)
+        public UserController(UserService userService, UserDetailsService userDetailsService, EmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
-            _sellerDetailsService = sellerDetailsService;
+            _userDetailsService = userDetailsService;
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -165,16 +165,16 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.AddUser(user);
-                var sellerDetail = new SellerDetail
+                var userDetail = new BuyerDetail
                 {
-                    Id = user.Id,
+                    UserId = user.Id,
                     Fullname = "",
                     Address = "",
                     Phone = "",
                     Dob = DateTime.Now,
                     Gender = true,
                 };
-                _sellerDetailsService.AddSellerDetails(sellerDetail);
+                _userDetailsService.AddUserDetails(userDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Đăng ký tài khoản thành công!");
                 return View("/Views/Home/SignIn.cshtml");
             }
@@ -286,15 +286,15 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.UpdateUser(sellerId, user);
-                var sellerDetail = new SellerDetail
+                var userDetail = new BuyerDetail
                 {
-                    Fullname = model.SellerDetail.Fullname,
-                    Dob = model.SellerDetail.Dob,
-                    Gender = model.SellerDetail.Gender,
-                    Address = model.SellerDetail.Address,
-                    Phone = model.SellerDetail.Phone,
+                    Fullname = model.BuyerDetail.Fullname,
+                    Dob = model.BuyerDetail.Dob,
+                    Gender = model.BuyerDetail.Gender,
+                    Address = model.BuyerDetail.Address,
+                    Phone = model.BuyerDetail.Phone,
                 };
-                _sellerDetailsService.UpdateSellerDetails(sellerId, sellerDetail);
+                _userDetailsService.UpdateUserDetails(sellerId, userDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");
                 return View("/Views/User/UserProfile.cshtml", model);
             }

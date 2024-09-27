@@ -9,29 +9,32 @@ using System.Linq;
 
 namespace COCOApp.Repositories
 {
-    public class OrderRepository : IOrderRepository
+    public class ExportOrderRepository : IExportOrderRepository
     {
         private readonly StoreManagerContext _context;
 
-        public OrderRepository(StoreManagerContext context)
+        public ExportOrderRepository(StoreManagerContext context)
         {
             _context = context;
         }
 
-        public List<Order> GetOrders()
+        public List<ExportOrder> GetExportOrders()
         {
-            return _context.Orders
-                           .Include(o => o.Customer)
-                           .Include(o => o.Product)
-                           .AsQueryable()
-                           .ToList();
+            return _context.ExportOrders
+                              .Include(o => o.Customer)
+                              .Include(o => o.ExportOrderItems)
+                              .ThenInclude(oi => oi.Product)
+                              .AsQueryable()
+                              .ToList();
         }
 
-        public List<Order> GetOrdersByIds(List<int> orderIds, int sellerId)
+
+        public List<ExportOrder> GetExportOrdersByIds(List<int> orderIds, int sellerId)
         {
-            var query = _context.Orders
-                                .Include(o => o.Customer)
-                                .Include(o => o.Product)
+            var query = _context.ExportOrders
+                                  .Include(o => o.Customer)
+                                  .Include(o => o.ExportOrderItems)
+                                  .ThenInclude(oi => oi.Product)
                                 .Where(o => orderIds.Contains(o.Id))
                                 .AsQueryable();
 
@@ -43,11 +46,12 @@ namespace COCOApp.Repositories
             return query.ToList();
         }
 
-        public Order GetOrderById(int orderId, int sellerId)
+        public ExportOrder GetExportOrderById(int orderId, int sellerId)
         {
-            var query = _context.Orders
-                                .Include(o => o.Customer)
-                                .Include(o => o.Product)
+            var query = _context.ExportOrders
+                                  .Include(o => o.Customer)
+                                  .Include(o => o.ExportOrderItems)
+                                  .ThenInclude(oi => oi.Product)
                                 .AsQueryable();
 
             if (sellerId > 0)
@@ -58,11 +62,11 @@ namespace COCOApp.Repositories
             return orderId > 0 ? query.FirstOrDefault(u => u.Id == orderId) : null;
         }
 
-        public List<Order> GetOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<ExportOrder> GetExportOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             pageNumber = Math.Max(pageNumber, 1);
 
-            var query = _context.Orders.AsQueryable();
+            var query = _context.ExportOrders.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
@@ -72,7 +76,8 @@ namespace COCOApp.Repositories
                 query = query.Where(o => o.Customer.Name.Contains(nameQuery));
             }
             query = query.Include(o => o.Customer)
-                         .Include(o => o.Product)
+                         .Include(o => o.ExportOrderItems)
+                         .ThenInclude(oi => oi.Product)
                          .OrderByDescending(o => o.Id);
 
             return query.Skip((pageNumber - 1) * pageSize)
@@ -80,9 +85,9 @@ namespace COCOApp.Repositories
                         .ToList();
         }
 
-        public int GetTotalOrders(string nameQuery, int sellerId)
+        public int GetTotalExportOrders(string nameQuery, int sellerId)
         {
-            var query = _context.Orders.AsQueryable();
+            var query = _context.ExportOrders.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
@@ -92,7 +97,8 @@ namespace COCOApp.Repositories
                 query = query.Where(c => c.Customer.Name.Contains(nameQuery));
             }
             query = query.Include(o => o.Customer)
-                         .Include(o => o.Product);
+                         .Include(o => o.ExportOrderItems)
+                         .ThenInclude(oi => oi.Product);
 
             return query.Count();
         }
@@ -125,33 +131,33 @@ namespace COCOApp.Repositories
             }).ToList();
         }
 
-        public void AddOrder(Order order)
+        public void AddExportOrder(ExportOrder order)
         {
-            _context.Orders.Add(order);
+            _context.ExportOrders.Add(order);
             _context.SaveChanges();
         }
 
-        public void EditOrder(int orderId, Order order)
-        {
-            var existingOrder = _context.Orders.FirstOrDefault(c => c.Id == orderId);
+        //public void EditExportOrder(int orderId, ExportOrder order)
+        //{
+        //    var existingOrder = _context.ExportOrders.FirstOrDefault(c => c.Id == orderId);
 
-            if (existingOrder != null)
-            {
-                existingOrder.CustomerId = order.CustomerId;
-                existingOrder.ProductId = order.ProductId;
-                existingOrder.Volume = order.Volume;
-                existingOrder.OrderDate = order.OrderDate;
-                existingOrder.UpdatedAt = order.UpdatedAt;
+        //    if (existingOrder != null)
+        //    {
+        //        existingOrder.CustomerId = order.CustomerId;
+        //        existingOrder.ProductId = order.ProductId;
+        //        existingOrder.Volume = order.Volume;
+        //        existingOrder.OrderDate = order.OrderDate;
+        //        existingOrder.UpdatedAt = order.UpdatedAt;
 
-                _context.SaveChanges();
-            }
-            else
-            {
-                throw new ArgumentException("Order not found");
-            }
-        }
+        //        _context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException("Order not found");
+        //    }
+        //}
 
-        public List<Order> GetOrders(string dateRange, int customerId, int sellerId)
+        public List<ExportOrder> GetExportOrders(string dateRange, int customerId, int sellerId)
         {
             DateTime startDate = DateTime.MinValue;
             DateTime endDate = DateTime.MaxValue;
@@ -174,13 +180,14 @@ namespace COCOApp.Repositories
 
             try
             {
-                var query = _context.Orders.AsQueryable();
+                var query = _context.ExportOrders.AsQueryable();
                 if (sellerId > 0)
                 {
                     query = query.Where(o => o.SellerId == sellerId);
                 }
                 query = query.Include(o => o.Customer)
-                             .Include(o => o.Product)
+                             .Include(o => o.ExportOrderItems)
+                             .ThenInclude(oi => oi.Product)
                              .Where(o => o.CustomerId == customerId && o.OrderDate >= startDate && o.OrderDate <= endDate);
 
                 return query.ToList();
@@ -190,6 +197,11 @@ namespace COCOApp.Repositories
                 Debug.WriteLine($"Error retrieving orders: {ex.Message}");
                 throw new ApplicationException("Error retrieving orders", ex);
             }
+        }
+
+        public void EditExportOrder(int orderId, ExportOrder order)
+        {
+            throw new NotImplementedException();
         }
     }
 }

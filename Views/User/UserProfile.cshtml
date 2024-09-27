@@ -40,9 +40,9 @@
                                         <span asp-validation-for="Username" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="SellerDetail.Fullname" class="required"> Họ và tên</label>
-                                        <input asp-for="SellerDetail.Fullname" class="form-control" placeholder="Nhập tên ..." required>
-                                        <span asp-validation-for="SellerDetail.Fullname" class="text-danger"></span>
+                                        <label asp-for="BuyerDetail.Fullname" class="required"> Họ và tên</label>
+                                        <input asp-for="BuyerDetail.Fullname" class="form-control" placeholder="Nhập tên ..." required>
+                                        <span asp-validation-for="BuyerDetail.Fullname" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Email" class="required"> E-mail</label>
@@ -54,14 +54,14 @@
                             <div class="tab-pane fade" id="account-info">
                                 <div class="card-body pb-2">
                                     <div class="form-group">
-                                        <label asp-for="SellerDetail.Dob" class="required">Ngày sinh</label>
-                                        <input asp-for="SellerDetail.Dob" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" required>
-                                        <span asp-validation-for="SellerDetail.Dob" class="text-danger"></span>
+                                        <label asp-for="BuyerDetail.Dob" class="required">Ngày sinh</label>
+                                        <input asp-for="BuyerDetail.Dob" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" required>
+                                        <span asp-validation-for="BuyerDetail.Dob" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="SellerDetail.Gender" class="required">Giới tính</label>
-                                        <select asp-for="SellerDetail.Gender" class="form-select">
-                                            @if (Model.SellerDetail.Gender)
+                                        <label asp-for="BuyerDetail.Gender" class="required">Giới tính</label>
+                                        <select asp-for="BuyerDetail.Gender" class="form-select">
+                                            @if (Model.BuyerDetail.Gender)
                                             {
                                                 <option value="true" selected>Nam</option>
                                                 <option value="false">Nữ</option>
@@ -72,17 +72,17 @@
                                                 <option value="false" selected>Nữ</option>
                                             }
                                         </select>
-                                        <span asp-validation-for="SellerDetail.Gender" class="text-danger"></span>
+                                        <span asp-validation-for="BuyerDetail.Gender" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="SellerDetail.Address" class="required"> Địa chỉ cửa hàng</label>
-                                        <input asp-for="SellerDetail.Address" class="form-control" placeholder="Nhập Địa chỉ cửa hàng ..." required>
-                                        <span asp-validation-for="SellerDetail.Address" class="text-danger"></span>
+                                        <label asp-for="BuyerDetail.Address" class="required"> Địa chỉ cửa hàng</label>
+                                        <input asp-for="BuyerDetail.Address" class="form-control" placeholder="Nhập Địa chỉ cửa hàng ..." required>
+                                        <span asp-validation-for="BuyerDetail.Address" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="SellerDetail.Phone" class="required"> Số điện thoại</label>
-                                        <input asp-for="SellerDetail.Phone" class="form-control" placeholder="Nhập Số điện thoại ..." required>
-                                        <span asp-validation-for="SellerDetail.Phone" class="text-danger"></span>
+                                        <label asp-for="BuyerDetail.Phone" class="required"> Số điện thoại</label>
+                                        <input asp-for="BuyerDetail.Phone" class="form-control" placeholder="Nhập Số điện thoại ..." required>
+                                        <span asp-validation-for="BuyerDetail.Phone" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>

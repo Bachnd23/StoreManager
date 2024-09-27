@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace COCOApp.Repositories
 {
-    public class ReportsOrdersMappingRepository : IReportsOrdersMappingRepository
+    public class ReportsExportOrdersMappingRepository : IReportsExportOrdersMappingRepository
     {
         private readonly StoreManagerContext _context;
 
-        public ReportsOrdersMappingRepository(StoreManagerContext context)
+        public ReportsExportOrdersMappingRepository(StoreManagerContext context)
         {
             _context = context;
         }
 
-        public List<ReportsOrdersMapping> GetReportsOrdersMapping()
+        public List<ReportsExportOrdersMapping> GetReportsOrdersMapping()
         {
-            var query = _context.ReportsOrdersMappings.AsQueryable();
+            var query = _context.ReportsExportOrdersMappings.AsQueryable();
             query = query.Include(rom => rom.Order);
             return query.ToList();
         }

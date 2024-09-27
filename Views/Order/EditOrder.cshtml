@@ -1,4 +1,4 @@
-﻿@model COCOApp.Models.Order
+﻿@model COCOApp.Models.ExportOrder
 @{
     Layout = "_LayoutStoreDashBoard";
     var currentPage = ViewData["PageNumber"] ?? 1;
@@ -40,7 +40,7 @@
                         </div>
 
 
-                        <div class="mb-3">
+                @*         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="ProductId" class="required">Mặt hàng</label>
                                 <select asp-for="ProductId" class="form-control select2" required>
@@ -58,7 +58,7 @@
                                 <input asp-for="Volume" class="form-control" placeholder="Nhập giá bán..." required>
                                 <span asp-validation-for="Volume" class="text-danger"></span>
                             </div>
-                        </div>
+                        </div> *@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="OrderDate" class="required">Ngày mua</label>

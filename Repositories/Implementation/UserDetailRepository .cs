@@ -4,24 +4,23 @@ using System.Linq;
 
 namespace COCOApp.Repositories
 {
-    public class SellerDetailRepository : ISellerDetailRepository
+    public class UserDetailRepository : IUserDetailRepository
     {
         private readonly StoreManagerContext _context;
 
-        public SellerDetailRepository(StoreManagerContext context)
+        public UserDetailRepository(StoreManagerContext context)
         {
             _context = context;
         }
-
-        public void AddSellerDetails(SellerDetail details)
+        public void AddUserDetails(BuyerDetail details)
         {
-            _context.SellerDetails.Add(details);
+            _context.BuyerDetails.Add(details);
             _context.SaveChanges();
         }
 
-        public void UpdateSellerDetails(int userId, SellerDetail detail)
+        public void UpdateUserDetails(int userId, BuyerDetail detail)
         {
-            var existingDetail = _context.SellerDetails.SingleOrDefault(d => d.Id == userId);
+            var existingDetail = _context.BuyerDetails.SingleOrDefault(d => d.UserId == userId);
 
             if (existingDetail == null)
             {

@@ -3,23 +3,23 @@ using COCOApp.Repositories;
 
 namespace COCOApp.Services
 {
-    public class SellerDetailsService : StoreManagerService
+    public class UserDetailsService : StoreManagerService
     {
-        private readonly ISellerDetailRepository _sellerDetailRepository;
+        private readonly IUserDetailRepository _userDetailRepository;
 
-        public SellerDetailsService(ISellerDetailRepository sellerDetailRepository)
+        public UserDetailsService(IUserDetailRepository userDetailRepository)
         {
-            _sellerDetailRepository = sellerDetailRepository;
+            _userDetailRepository = userDetailRepository;
         }
 
-        public void AddSellerDetails(SellerDetail details)
+        public void AddUserDetails(BuyerDetail details)
         {
-            _sellerDetailRepository.AddSellerDetails(details);
+            _userDetailRepository.AddUserDetails(details);
         }
 
-        public void UpdateSellerDetails(int userId, SellerDetail detail)
+        public void UpdateUserDetails(int userId, BuyerDetail detail)
         {
-            _sellerDetailRepository.UpdateSellerDetails(userId, detail);
+            _userDetailRepository.UpdateUserDetails(userId, detail);
         }
     }
 }
