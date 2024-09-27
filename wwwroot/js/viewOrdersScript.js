@@ -101,17 +101,17 @@ function generateOrdersTable(data) {
     }
 
     // Iterate over the user results and create table rows
-    $.each(data.orderResults, function (index, orderItem) {
+    $.each(data.orderResults, function (index, order) {
         const row = $('<tr>');
-        row.append($('<td>').text(orderItem.order.customer.name));
-        row.append($('<td>').text(orderItem.product.productName));
-        row.append($('<td>').text(orderItem.volume));
-        row.append($('<td>').text(orderItem.updatedAt));
-        row.append($('<td>').text(orderItem.order.orderDate));
+        row.append($('<td>').text(order.customer.name));
+        row.append($('<td>').text(order.product.productName));
+        row.append($('<td>').text(order.volume));
+        row.append($('<td>').text(order.updatedAt));
+        row.append($('<td>').text(order.orderDate));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/Order/ViewDetail?orderId=${orderItem.id}&pageNumber=${pageNumber}`,
+            href: `/Order/ViewDetail?orderId=${order.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
