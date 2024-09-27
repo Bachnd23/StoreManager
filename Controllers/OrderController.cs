@@ -1,8 +1,10 @@
 ﻿using COCOApp.Helpers;
 using COCOApp.Models;
 using COCOApp.Services;
+using COCOApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace COCOApp.Controllers
@@ -12,12 +14,16 @@ namespace COCOApp.Controllers
         private readonly ExportOrderService _orderService;
         private readonly ProductService _productService;
         private readonly IHubContext<OrderHub> _hubContext;
+        private readonly StoreManagerContext _context;
+        private readonly ExportOrderItemService _itemService;
 
-        public OrderController(ExportOrderService orderService, ProductService productService, IHubContext<OrderHub> hubContext)
+        public OrderController(ExportOrderService orderService, ProductService productService, IHubContext<OrderHub> hubContext, StoreManagerContext context, ExportOrderItemService itemService)
         {
             _orderService = orderService;
             _productService = productService;
             _hubContext = hubContext;
+            _context = context;
+            _itemService = itemService;
         }
         private const int PageSize = 10;
 
@@ -82,11 +88,87 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
-            return View("/Views/Order/AddOrder.cshtml");
+            var viewModel = new MultiOrderViewModel();
+            return View("/Views/Order/AddOrder.cshtml", viewModel);
         }
+
+        // POST: Order/CreateMultiple
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateMultiple(MultiOrderViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Retrieve the seller ID from session
+                User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+                int sellerId = user?.Id ?? 0;
+                if (sellerId == 0)
+                {
+                    sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+                }
+
+                // Sort Orders by CustomerId and OrderDate
+                var sortedOrders = viewModel.Orders
+                                            .OrderBy(order => order.CustomerId)
+                                            .ThenBy(order => order.OrderDate)
+                                            .ToList();
+
+                int i = 0;
+                while (i < sortedOrders.Count)
+                {
+                    var order = sortedOrders[i];
+                    ExportOrder exportOrder = new ExportOrder
+                    {
+                        CustomerId = order.CustomerId,
+                        OrderDate = order.OrderDate,
+                        Complete = false,
+                        OrderTotal = 0,
+                        SellerId = sellerId,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    };
+                    _orderService.AddExportOrder(exportOrder);
+
+                    // Add items for all orders with the same CustomerId and OrderDate
+                    while (i < sortedOrders.Count && order.CustomerId == sortedOrders[i].CustomerId && order.OrderDate == sortedOrders[i].OrderDate)
+                    {
+                        var currentOrder = sortedOrders[i];
+                        Product product = _productService.GetProductById(currentOrder.ProductId, user.Id);
+
+                        var exportOrderItem = new ExportOrderItem
+                        {
+                            OrderId = exportOrder.Id,
+                            ProductId = currentOrder.ProductId,
+                            Volume = currentOrder.ProductVolume,
+                            ProductPrice = product.Cost,
+                            Total = currentOrder.ProductVolume * product.Cost,
+                            SellerId = sellerId,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now
+                        };
+                        _itemService.AddExportOrderItem(exportOrderItem);
+
+                        i++; // Increment index to process the next order
+                    }
+                }
+
+                _context.SaveChanges();
+                return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
+            }
+
+            // Log the validation errors if any
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            string errorMessages = string.Join("; ", errors);
+            Debug.WriteLine(errorMessages);
+
+            return RedirectToAction("Add"); // Redirect to action "Add" if model state is not valid
+        }
+
+
+
         //[ValidateAntiForgeryToken]
         //[HttpPost]
-        //public async Task<IActionResult> AddOrders(List<ExportOrder> orders)
+        //public async Task<IActionResult> AddOrders(ExportOrder order,List<ExportOrderItem> orders)
         //{
         //    if (orders.Count == 0)
         //    {
@@ -97,10 +179,10 @@ namespace COCOApp.Controllers
         //    foreach (var model in orders)
         //    {
         //        Product product = _productService.GetProductById(model.ProductId, user.Id);
-        //        int sellerId=user.Id;
+        //        int sellerId = user.Id;
         //        if (sellerId == 0)
         //        {
-        //            sellerId= HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+        //            sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
         //        }
         //        // Convert the model to your domain entity
         //        var order = new ExportOrder

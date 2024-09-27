@@ -45,6 +45,7 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IReportsExportOrdersMappingRepository, ReportsExportOrdersMappingRepository>();
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -54,6 +55,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
+builder.Services.AddScoped<ExportOrderItemService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
