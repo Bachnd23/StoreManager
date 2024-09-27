@@ -111,7 +111,7 @@ function generateOrdersTable(data) {
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/Order/ViewDetail?orderId=${orderItem.id}&pageNumber=${pageNumber}`,
+            href: `/Order/ViewDetail?orderItemId=${orderItem.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });

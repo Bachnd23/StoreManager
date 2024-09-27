@@ -45,10 +45,10 @@ namespace COCOApp.Controllers
             return Json(response);
         }
         [HttpGet]
-        public IActionResult ViewDetail(int orderId, int pageNumber = 1)
+        public IActionResult ViewDetail(int orderItemId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            ExportOrder model = _orderService.GetExportOrderById(orderId, user.Id); ;
+            ExportOrderItem model = _itemService.GetExportOrderitemById(orderItemId, user.Id); ;
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {

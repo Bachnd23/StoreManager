@@ -1,4 +1,5 @@
 ﻿using COCOApp.Models;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,7 +22,22 @@ namespace COCOApp.Repositories
         public void addExportOrderItem(ExportOrderItem item)
         {
             _context.ExportOrderItems.Add(item);
-            _context.SaveChanges(); 
+            _context.SaveChanges();
+        }
+
+        public ExportOrderItem GetExportOrderItemById(int orderItemId, int sellerId)
+        {
+            var query = _context.ExportOrderItems
+                                .Include(o => o.Product)
+                                .Include(o => o.Order)
+                                .ThenInclude(c => c.Customer)
+                                .AsQueryable();
+
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
+            return orderItemId > 0 ? query.FirstOrDefault(u => u.Id == orderItemId) : null;
         }
 
         public List<ExportOrderItem> GetExportOrderItems(string nameQuery, int pageNumber, int pageSize, int sellerId)
@@ -29,7 +45,7 @@ namespace COCOApp.Repositories
             pageNumber = Math.Max(pageNumber, 1);
 
             var query = _context.ExportOrderItems.AsQueryable();
-            query = query.Include(o=>o.Product)
+            query = query.Include(o => o.Product)
                          .Include(o => o.Order)
                          .ThenInclude(c => c.Customer);
             if (sellerId > 0)
