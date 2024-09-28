@@ -84,6 +84,7 @@ namespace COCOApp.Repositories
             {
                 existingProduct.ProductName = product.ProductName;
                 existingProduct.Cost = product.Cost;
+                existingProduct.MeasureUnit = product.MeasureUnit;
                 existingProduct.Status = product.Status;
                 existingProduct.SellerId = product.SellerId;
                 existingProduct.UpdatedAt = product.UpdatedAt;

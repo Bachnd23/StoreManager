@@ -29,5 +29,9 @@ namespace COCOApp.Services
         {
             return _orderItemRepository.GetExportOrderItemById(orderId,productId, sellerId);
         }
+        public void EditExportOrderItem(int orderId,int productId, ExportOrderItem order)
+        {
+            _orderItemRepository.EditExportOrderItem(orderId,productId, order);
+        }
     }
 }

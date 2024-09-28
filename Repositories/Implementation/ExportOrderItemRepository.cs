@@ -34,7 +34,7 @@ namespace COCOApp.Repositories
             _context.SaveChanges();
         }
 
-        public ExportOrderItem GetExportOrderItemById(int orderItemId,int productId, int sellerId)
+        public ExportOrderItem GetExportOrderItemById(int orderId,int productId, int sellerId)
         {
             var query = _context.ExportOrderItems
                                 .Include(o => o.Product)
@@ -46,7 +46,8 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(o => o.SellerId == sellerId);
             }
-            return orderItemId > 0 ? query.FirstOrDefault(u => u.OrderId == orderItemId) : null;
+            ExportOrderItem item = query.FirstOrDefault(u => u.OrderId == orderId && u.ProductId == productId);
+            return item;
         }
 
         public List<ExportOrderItem> GetExportOrderItems(string nameQuery, int pageNumber, int pageSize, int sellerId)
@@ -88,6 +89,26 @@ namespace COCOApp.Repositories
             }
 
             return query.Count();
+        }
+        public void EditExportOrderItem(int orderId, int productId, ExportOrderItem order)
+        {
+            var existingOrder = _context.ExportOrderItems.FirstOrDefault(c => c.OrderId == orderId&&c.ProductId==productId);
+
+            if (existingOrder != null)
+            {
+                existingOrder.OrderId = order.OrderId;
+                existingOrder.ProductId = order.ProductId;
+                existingOrder.Volume = order.Volume;
+                existingOrder.SellerId= order.SellerId; 
+                existingOrder.CreatedAt = order.CreatedAt;
+                existingOrder.UpdatedAt = order.UpdatedAt;
+
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentException("Order not found");
+            }
         }
     }
 }
