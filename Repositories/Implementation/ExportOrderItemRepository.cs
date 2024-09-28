@@ -22,19 +22,21 @@ namespace COCOApp.Repositories
 
         public void addExportOrderItem(ExportOrderItem item)
         {
-            ExportOrderItem exportOrderItem=_context.ExportOrderItems.FirstOrDefault(o=>o.OrderId== item.OrderId&&o.ProductId==item.ProductId);
+            ExportOrderItem exportOrderItem = _context.ExportOrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.ProductId == item.ProductId);
             if (exportOrderItem == null)
             {
                 _context.ExportOrderItems.Add(item);
             }
             else
             {
-                exportOrderItem.Volume+=item.Volume;
+                exportOrderItem.Volume += item.Volume;
+                Product product = _context.Products.FirstOrDefault(p => p.Id == exportOrderItem.ProductId);
+                exportOrderItem.Total=exportOrderItem.Volume*product.Cost;
             }
             _context.SaveChanges();
         }
 
-        public ExportOrderItem GetExportOrderItemById(int orderId,int productId, int sellerId)
+        public ExportOrderItem GetExportOrderItemById(int orderId, int productId, int sellerId)
         {
             var query = _context.ExportOrderItems
                                 .Include(o => o.Product)
@@ -50,7 +52,7 @@ namespace COCOApp.Repositories
             return item;
         }
 
-        public List<ExportOrderItem> GetExportOrderItems(string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<ExportOrderItem> GetExportOrderItems(int orderId,string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             pageNumber = Math.Max(pageNumber, 1);
 
@@ -61,6 +63,10 @@ namespace COCOApp.Repositories
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
+            }
+            if (orderId > 0)
+            {
+                query = query.Where(o => o.OrderId == orderId);
             }
             if (!string.IsNullOrEmpty(nameQuery))
             {
@@ -92,14 +98,14 @@ namespace COCOApp.Repositories
         }
         public void EditExportOrderItem(int orderId, int productId, ExportOrderItem order)
         {
-            var existingOrder = _context.ExportOrderItems.FirstOrDefault(c => c.OrderId == orderId&&c.ProductId==productId);
+            var existingOrder = _context.ExportOrderItems.FirstOrDefault(c => c.OrderId == orderId && c.ProductId == productId);
 
             if (existingOrder != null)
             {
                 existingOrder.OrderId = order.OrderId;
                 existingOrder.ProductId = order.ProductId;
                 existingOrder.Volume = order.Volume;
-                existingOrder.SellerId= order.SellerId; 
+                existingOrder.SellerId = order.SellerId;
                 existingOrder.CreatedAt = order.CreatedAt;
                 existingOrder.UpdatedAt = order.UpdatedAt;
 

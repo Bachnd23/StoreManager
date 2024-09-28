@@ -3,6 +3,7 @@
     ViewData["Title"] = "Order List";
     var getListUrl = Url.Action("GetOrderItemsList", "Order");
     var currentPage = ViewData["PageNumber"] ?? 1;
+    var orderId = ViewData["OrderId"]; // Retrieve orderId from ViewData
 }
 @using System.Globalization
 @using System.Text.Json
@@ -12,7 +13,7 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Danh sách đơn hàng</li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm trong đơn hàng</li>
             </ol>
         </nav>
         <div class="row g-4">
@@ -38,11 +39,11 @@
                         <table class="table table-striped w-100 resultTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Khách hàng</th>
                                     <th scope="col">Mặt hàng</th>
                                     <th scope="col">Số lượng</th>
+                                    <th scope="col">Giá hàng</th>
+                                    <th scope="col">Tổng tiền</th>
                                     <th scope="col">Cập nhật ngày</th>
-                                    <th scope="col">Ngày mua</th>
                                     <th scope="col">Hành động</th>
                                 </tr>
                             </thead>
@@ -67,6 +68,7 @@
         <script>
             var pageNumber = @currentPage;
             var getListUrl = '@getListUrl';
+            var orderId=@orderId;
         </script>
         <script src="~/js/viewOrderItemsScript.js"></script>
     }

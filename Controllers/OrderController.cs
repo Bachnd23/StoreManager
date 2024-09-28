@@ -43,10 +43,10 @@ namespace COCOApp.Controllers
             return Json(response);
         }
         [HttpGet]
-        public IActionResult GetOrderItemsList(string nameQuery, int pageNumber = 1)
+        public IActionResult GetOrderItemsList(int orderId,string nameQuery, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var orders = _itemService.GetExportOrderItems(nameQuery, pageNumber, PageSize, user.Id);
+            var orders = _itemService.GetExportOrderItems(orderId,nameQuery, pageNumber, PageSize, user.Id);
             var totalOrders = _itemService.GetTotalExportOrderItems(nameQuery, user.Id);
 
             var response = new
@@ -92,14 +92,13 @@ namespace COCOApp.Controllers
         }
         public IActionResult ViewList(int pageNumber = 1)
         {
-            Debug.WriteLine(pageNumber);
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/Order/ListOrders.cshtml");
         }
         public IActionResult ViewOrderItemsList(int orderId,int pageNumber = 1)
         {
-            Debug.WriteLine(pageNumber);
             ViewData["PageNumber"] = pageNumber;
+            ViewData["OrderId"] = orderId;
             return View("/Views/Order/ListItems.cshtml");
         }
 

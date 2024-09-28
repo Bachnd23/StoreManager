@@ -3,7 +3,6 @@ var roleId = "";
 var totalPages = 1;
 var isFetchingData = false;
 var connection;
-
 $(document).ready(function () {
     // Establish SignalR connection
     connection = new signalR.HubConnectionBuilder().withUrl("/orderHub").build();
@@ -47,7 +46,8 @@ function fetchOrderItemsResults() {
         type: 'GET',
         data: {
             nameQuery: nameQuery,
-            pageNumber: pageNumber
+            pageNumber: pageNumber,
+            orderId: orderId
         },
         success: function (data) {
             generateOrderItemsTable(data);
@@ -103,12 +103,11 @@ function generateOrderItemsTable(data) {
     // Iterate over the user results and create table rows
     $.each(data.orderResults, function (index, orderItem) {
         const row = $('<tr>');
-        row.append($('<td>').text(orderItem.orderId));
         row.append($('<td>').text(orderItem.product.productName));
         row.append($('<td>').text(orderItem.volume));
-        row.append($('<td>').text(orderItem.updatedAt));
         row.append($('<td>').text(orderItem.productPrice));
         row.append($('<td>').text(orderItem.total));
+        row.append($('<td>').text(orderItem.updatedAt));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {

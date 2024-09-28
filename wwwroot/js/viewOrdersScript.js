@@ -115,7 +115,7 @@ function generateOrdersTable(data) {
             html: '<i class="fas fa-eye"></i>'
         });
         const viewItemsButton = $('<a>', {
-            href: `#`,
+            href: `/Order/ViewOrderItemsList?orderId=${order.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-info-circle"></i>'
         });
