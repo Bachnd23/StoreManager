@@ -45,10 +45,10 @@ namespace COCOApp.Controllers
             return Json(response);
         }
         [HttpGet]
-        public IActionResult ViewDetail(int orderItemId, int pageNumber = 1)
+        public IActionResult ViewDetail(int orderItemId,int productId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            ExportOrderItem model = _itemService.GetExportOrderitemById(orderItemId, user.Id); ;
+            ExportOrderItem model = _itemService.GetExportOrderitemById(orderItemId,productId, user.Id); ;
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
@@ -114,21 +114,25 @@ namespace COCOApp.Controllers
                                             .ToList();
 
                 int i = 0;
+                Debug.WriteLine(sortedOrders.Count);
                 while (i < sortedOrders.Count)
                 {
                     var order = sortedOrders[i];
-                    ExportOrder exportOrder = new ExportOrder
+                    ExportOrder exportOrder=_orderService.GetExportOrderByCustomerAndDate(order.CustomerId, order.OrderDate);
+                    if(exportOrder == null)
                     {
-                        CustomerId = order.CustomerId,
-                        OrderDate = order.OrderDate,
-                        Complete = false,
-                        OrderTotal = 0,
-                        SellerId = sellerId,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now
-                    };
-                    _orderService.AddExportOrder(exportOrder);
-
+                        exportOrder = new ExportOrder
+                        {
+                            CustomerId = order.CustomerId,
+                            OrderDate = order.OrderDate,
+                            Complete = false,
+                            OrderTotal = 0,
+                            SellerId = sellerId,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now
+                        };
+                        _orderService.AddExportOrder(exportOrder);
+                    }
                     // Add items for all orders with the same CustomerId and OrderDate
                     while (i < sortedOrders.Count && order.CustomerId == sortedOrders[i].CustomerId && order.OrderDate == sortedOrders[i].OrderDate)
                     {
@@ -155,7 +159,6 @@ namespace COCOApp.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
             }
-
             // Log the validation errors if any
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
             string errorMessages = string.Join("; ", errors);

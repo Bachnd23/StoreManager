@@ -25,7 +25,7 @@ CREATE TABLE Users (
     username NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NOT NULL,
-    role INT NOT NULL,
+    role INT,
     status BIT NOT NULL,
     remember_token NVARCHAR(100) DEFAULT NULL,
     reset_password_token NVARCHAR(100) DEFAULT NULL,
@@ -56,14 +56,14 @@ GO
 -- Create Products table (General product information)
 CREATE TABLE Products (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	category_id INT NOT NULL,
+	category_id INT,
     ProductName NVARCHAR(255) NOT NULL,
     MeasureUnit NVARCHAR(255) NOT NULL,
     cost DECIMAL(10, 2) NOT NULL,
     status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
     FOREIGN KEY (seller_id) REFERENCES Users(id),
 	FOREIGN KEY (category_id) REFERENCES Categories(id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE Customers (
     status BIT NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
     FOREIGN KEY (seller_id) REFERENCES Users(id)
 );
 GO
@@ -101,7 +101,7 @@ CREATE TABLE ExportOrders (
     orderTotal DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
     FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
@@ -109,7 +109,6 @@ GO
 
 -- Create OrderItems table (Details separated from Orders table)
 CREATE TABLE ExportOrderItems (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     volume INT NOT NULL,
@@ -117,7 +116,8 @@ CREATE TABLE ExportOrderItems (
     total DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
+	PRIMARY KEY(order_id,product_id),
     FOREIGN KEY (order_id) REFERENCES ExportOrders(id),
     FOREIGN KEY (product_id) REFERENCES Products(id),
     FOREIGN KEY (seller_id) REFERENCES Users(id)
@@ -131,7 +131,7 @@ CREATE TABLE Reports (
     TotalPrice DECIMAL(18, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
     FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
@@ -150,7 +150,7 @@ CREATE TABLE ReportsExportOrdersMapping (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     report_id INT NOT NULL,
     order_id INT NOT NULL,
-    seller_id INT NOT NULL,
+    seller_id INT,
     FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (report_id) REFERENCES Reports(id),
     FOREIGN KEY (order_id) REFERENCES ExportOrders(id)

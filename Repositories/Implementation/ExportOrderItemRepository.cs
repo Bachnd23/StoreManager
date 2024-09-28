@@ -2,6 +2,7 @@
 using MailKit.Search;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,11 +22,19 @@ namespace COCOApp.Repositories
 
         public void addExportOrderItem(ExportOrderItem item)
         {
-            _context.ExportOrderItems.Add(item);
+            ExportOrderItem exportOrderItem=_context.ExportOrderItems.FirstOrDefault(o=>o.OrderId== item.OrderId&&o.ProductId==item.ProductId);
+            if (exportOrderItem == null)
+            {
+                _context.ExportOrderItems.Add(item);
+            }
+            else
+            {
+                exportOrderItem.Volume+=item.Volume;
+            }
             _context.SaveChanges();
         }
 
-        public ExportOrderItem GetExportOrderItemById(int orderItemId, int sellerId)
+        public ExportOrderItem GetExportOrderItemById(int orderItemId,int productId, int sellerId)
         {
             var query = _context.ExportOrderItems
                                 .Include(o => o.Product)
@@ -37,7 +46,7 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(o => o.SellerId == sellerId);
             }
-            return orderItemId > 0 ? query.FirstOrDefault(u => u.Id == orderItemId) : null;
+            return orderItemId > 0 ? query.FirstOrDefault(u => u.OrderId == orderItemId) : null;
         }
 
         public List<ExportOrderItem> GetExportOrderItems(string nameQuery, int pageNumber, int pageSize, int sellerId)
@@ -56,7 +65,7 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(o => o.Order.Customer.Name.Contains(nameQuery));
             }
-            query = query.OrderByDescending(o => o.Id);
+            query = query.OrderByDescending(o => o.Order.OrderDate);
 
             return query.Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)

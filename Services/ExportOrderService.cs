@@ -29,6 +29,11 @@ namespace COCOApp.Services
             return _orderRepository.GetExportOrderById(orderId, sellerId);
         }
 
+        public ExportOrder GetExportOrderByCustomerAndDate(int customerId,DateTime date)
+        {
+            return _orderRepository.GetExportOrderByCustomerAndDate(customerId, date);
+        }
+
         public List<ExportOrder> GetExportOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             return _orderRepository.GetExportOrders(nameQuery, pageNumber, pageSize, sellerId);

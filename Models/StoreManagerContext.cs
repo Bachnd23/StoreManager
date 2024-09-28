@@ -44,7 +44,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<BuyerDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__BuyerDet__B9BE370F23FE5188");
+                    .HasName("PK__BuyerDet__B9BE370F07364224");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -154,15 +154,16 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<ExportOrderItem>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at");
+                entity.HasKey(e => new { e.OrderId, e.ProductId })
+                    .HasName("PK__ExportOr__022945F66DFA4F9D");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
 
                 entity.Property(e => e.ProductPrice)
                     .HasColumnType("decimal(10, 2)")
@@ -238,7 +239,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ProductDetail>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__ProductD__47027DF545E23A78");
+                    .HasName("PK__ProductD__47027DF5C984E686");
 
                 entity.Property(e => e.ProductId)
                     .ValueGeneratedNever()
@@ -288,7 +289,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ReportDetail>(entity =>
             {
                 entity.HasKey(e => e.ReportId)
-                    .HasName("PK__ReportDe__779B7C5892DBDE31");
+                    .HasName("PK__ReportDe__779B7C58973008D4");
 
                 entity.Property(e => e.ReportId)
                     .ValueGeneratedNever()
@@ -336,7 +337,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<SellerDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__SellerDe__B9BE370FF339CA74");
+                    .HasName("PK__SellerDe__B9BE370F701C9696");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -359,7 +360,7 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61645278A693")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61648926C69B")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -399,7 +400,6 @@ namespace COCOApp.Models
                 entity.HasOne(d => d.RoleNavigation)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.Role)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Users__role__3E52440B");
             });
 

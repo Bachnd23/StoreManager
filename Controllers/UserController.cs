@@ -201,7 +201,7 @@ namespace COCOApp.Controllers
                     {
                     new Claim(ClaimTypes.Name, authenticatedUser.Username),
                     new Claim(ClaimTypes.Email, authenticatedUser.Email),
-                    new Claim(ClaimTypes.Role, GetRoleName(authenticatedUser.Role)) // Convert role ID to role name
+                    new Claim(ClaimTypes.Role, GetRoleName((int)authenticatedUser.Role)) // Convert role ID to role name
                     };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

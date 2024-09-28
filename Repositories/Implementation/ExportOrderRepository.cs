@@ -1,4 +1,5 @@
 ﻿using COCOApp.Models;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -133,8 +134,12 @@ namespace COCOApp.Repositories
 
         public void AddExportOrder(ExportOrder order)
         {
-            _context.ExportOrders.Add(order);
-            _context.SaveChanges();
+            ExportOrder exportOrder=_context.ExportOrders.FirstOrDefault(o => o.CustomerId==order.CustomerId&&o.OrderDate==order.OrderDate);
+            if (exportOrder == null)
+            {
+                _context.ExportOrders.Add(order);
+                _context.SaveChanges();
+            }
         }
 
         //public void EditExportOrder(int orderId, ExportOrder order)
@@ -202,6 +207,17 @@ namespace COCOApp.Repositories
         public void EditExportOrder(int orderId, ExportOrder order)
         {
             throw new NotImplementedException();
+        }
+
+        public ExportOrder GetExportOrderByCustomerAndDate(int customerId, DateTime date)
+        {
+            var query = _context.ExportOrders
+                      .Include(o => o.Customer)
+                      .Include(o => o.ExportOrderItems)
+                      .ThenInclude(oi => oi.Product)
+                    .AsQueryable();
+
+            return query.FirstOrDefault(o=>o.CustomerId==customerId&&o.OrderDate==date);
         }
     }
 }

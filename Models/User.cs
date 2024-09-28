@@ -19,7 +19,7 @@ namespace COCOApp.Models
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public int Role { get; set; }
+        public int? Role { get; set; }
         public bool Status { get; set; }
         public string? RememberToken { get; set; }
         public string? ResetPasswordToken { get; set; }
