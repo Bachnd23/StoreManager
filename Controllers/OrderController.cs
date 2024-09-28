@@ -14,15 +14,13 @@ namespace COCOApp.Controllers
         private readonly ExportOrderService _orderService;
         private readonly ProductService _productService;
         private readonly IHubContext<OrderHub> _hubContext;
-        private readonly StoreManagerContext _context;
         private readonly ExportOrderItemService _itemService;
 
-        public OrderController(ExportOrderService orderService, ProductService productService, IHubContext<OrderHub> hubContext, StoreManagerContext context, ExportOrderItemService itemService)
+        public OrderController(ExportOrderService orderService, ProductService productService, IHubContext<OrderHub> hubContext, ExportOrderItemService itemService)
         {
             _orderService = orderService;
             _productService = productService;
             _hubContext = hubContext;
-            _context = context;
             _itemService = itemService;
         }
         private const int PageSize = 10;
@@ -32,8 +30,8 @@ namespace COCOApp.Controllers
         public IActionResult GetOrdersList(string nameQuery, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var orders = _itemService.GetExportOrderItems(nameQuery, pageNumber, PageSize, user.Id);
-            var totalOrders = _itemService.GetTotalExportOrderItems(nameQuery, user.Id);
+            var orders = _orderService.GetExportOrders(nameQuery, pageNumber, PageSize, user.Id);
+            var totalOrders = _orderService.GetTotalExportOrders(nameQuery, user.Id);
 
             var response = new
             {
@@ -61,10 +59,10 @@ namespace COCOApp.Controllers
             return Json(response);
         }
         [HttpGet]
-        public IActionResult ViewDetail(int orderItemId,int productId, int pageNumber = 1)
+        public IActionResult ViewDetail(int orderId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            ExportOrderItem model = _itemService.GetExportOrderitemById(orderItemId,productId, user.Id); ;
+            ExportOrder model = _orderService.GetExportOrderById(orderId, user.Id); ;
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
@@ -178,7 +176,7 @@ namespace COCOApp.Controllers
                     }
                 }
 
-                _context.SaveChanges();
+                HttpContext.Session.SetString("SuccessMsg", "Thêm đơn hàng thành công!");
                 return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
             }
             // Log the validation errors if any
@@ -233,44 +231,42 @@ namespace COCOApp.Controllers
         //    return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         //}
-        //[ValidateAntiForgeryToken]
-        //[HttpPost]
-        //public async Task<IActionResult> EditOrder(ExportOrder model)
-        //{
-        //    User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // Log the validation errors
-        //        var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-        //        string errorMessages = string.Join("; ", errors);
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> EditOrder(ExportOrder model)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
 
-        //        Debug.WriteLine(errorMessages);
-        //        // If the model state is not valid, return the same view with validation errors
-        //        ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
-        //        ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
-        //        return View("/Views/Order/EditOrder.cshtml", model);
-        //    }
-        //    ExportOrder oldOrder = _orderService.GetOrderById(model.Id, user.Id);
-        //    // Convert the model to your domain entity
-        //    var order = new ExportOrder
-        //    {
-        //        CustomerId = model.CustomerId,
-        //        //ProductId = model.ProductId,
-        //        //Volume = model.Volume,
-        //        OrderDate = model.OrderDate,
-        //        SellerId = oldOrder.SellerId,
-        //        UpdatedAt = DateTime.Now
-        //    };
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                return View("/Views/Order/EditOrder.cshtml", model);
+            }
+            ExportOrder oldOrder = _orderService.GetExportOrderById(model.Id, user.Id);
+            // Convert the model to your domain entity
+            var order = new ExportOrder
+            {
+                CustomerId = model.CustomerId,
+                OrderDate = model.OrderDate,
+                SellerId = oldOrder.SellerId,
+                UpdatedAt = DateTime.Now
+            };
 
-        //    // Use the service to edit the customer
-        //    _orderService.EditOrder(model.Id, order);
+            // Use the service to edit the customer
+            _orderService.EditExportOrder(model.Id, order);
 
-        //    // Notify admins about changes to the order
-        //    await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated",order);
+            // Notify admins about changes to the order
+            await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated", order);
 
-        //    HttpContext.Session.SetString("SuccessMsg", "Sửa đơn hàng thành công!");
-        //    // Redirect to the customer list or a success page
-        //    return RedirectToAction("ViewList");
-        //}
+            HttpContext.Session.SetString("SuccessMsg", "Sửa đơn hàng thành công!");
+            // Redirect to the customer list or a success page
+            return RedirectToAction("ViewList");
+        }
     }
 }

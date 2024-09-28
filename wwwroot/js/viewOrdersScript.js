@@ -101,22 +101,28 @@ function generateOrdersTable(data) {
     }
 
     // Iterate over the user results and create table rows
-    $.each(data.orderResults, function (index, orderItem) {
+    $.each(data.orderResults, function (index, order) {
         const row = $('<tr>');
-        row.append($('<td>').text(orderItem.order.customer.name));
-        row.append($('<td>').text(orderItem.product.productName));
-        row.append($('<td>').text(orderItem.volume));
-        row.append($('<td>').text(orderItem.updatedAt));
-        row.append($('<td>').text(orderItem.order.orderDate));
+        row.append($('<td>').text(order.customer.name));
+        row.append($('<td>').text(order.updatedAt));
+        row.append($('<td>').text(order.orderDate));
+        row.append($('<td>').text(order.complete));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/Order/ViewDetail?orderId=${orderItem.orderId}&productId=${orderItem.productId}&pageNumber=${pageNumber}`,
+            href: `/Order/ViewDetail?orderId=${order.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
+        const viewItemsButton = $('<a>', {
+            href: `#`,
+            class: 'btn btn-sm btn-primary ps-2',
+            html: '<i class="fas fa-info-circle"></i>'
+        });
         actionCell.append($('<div>', { class: 'input-group flex-nowrap' })
-            .append($('<div>', { class: 'ps-2' }).append(viewButton)));
+            .append($('<div>', { class: 'ps-2' }).append(viewButton))
+            .append($('<div>', { class: 'ps-2' }).append(viewItemsButton))
+        );
         row.append(actionCell);
 
         $('.resultTableBody').append(row);

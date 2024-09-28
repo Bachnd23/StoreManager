@@ -142,25 +142,23 @@ namespace COCOApp.Repositories
             }
         }
 
-        //public void EditExportOrder(int orderId, ExportOrder order)
-        //{
-        //    var existingOrder = _context.ExportOrders.FirstOrDefault(c => c.Id == orderId);
+        public void EditExportOrder(int orderId, ExportOrder order)
+        {
+            var existingOrder = _context.ExportOrders.FirstOrDefault(c => c.Id == orderId);
 
-        //    if (existingOrder != null)
-        //    {
-        //        existingOrder.CustomerId = order.CustomerId;
-        //        existingOrder.ProductId = order.ProductId;
-        //        existingOrder.Volume = order.Volume;
-        //        existingOrder.OrderDate = order.OrderDate;
-        //        existingOrder.UpdatedAt = order.UpdatedAt;
+            if (existingOrder != null)
+            {
+                existingOrder.CustomerId = order.CustomerId;
+                existingOrder.OrderDate = order.OrderDate;
+                existingOrder.UpdatedAt = order.UpdatedAt;
 
-        //        _context.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException("Order not found");
-        //    }
-        //}
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentException("Order not found");
+            }
+        }
 
         public List<ExportOrder> GetExportOrders(string dateRange, int customerId, int sellerId)
         {
@@ -203,12 +201,6 @@ namespace COCOApp.Repositories
                 throw new ApplicationException("Error retrieving orders", ex);
             }
         }
-
-        public void EditExportOrder(int orderId, ExportOrder order)
-        {
-            throw new NotImplementedException();
-        }
-
         public ExportOrder GetExportOrderByCustomerAndDate(int customerId, DateTime date)
         {
             var query = _context.ExportOrders

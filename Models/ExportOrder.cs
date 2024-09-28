@@ -12,7 +12,7 @@ namespace COCOApp.Models
         }
 
         public int Id { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public DateTime OrderDate { get; set; }
         public bool Complete { get; set; }
         public decimal OrderTotal { get; set; }
@@ -20,7 +20,7 @@ namespace COCOApp.Models
         public DateTime? UpdatedAt { get; set; }
         public int? SellerId { get; set; }
 
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; }
         public virtual User? Seller { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ReportsExportOrdersMapping> ReportsExportOrdersMappings { get; set; }

@@ -95,7 +95,7 @@ GO
 -- Create Orders table (General order information)
 CREATE TABLE ExportOrders (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    customer_id INT NOT NULL,
+    customer_id INT,
     orderDate DATE NOT NULL,
     complete BIT NOT NULL,
     orderTotal DECIMAL(10, 2) NOT NULL,
@@ -127,7 +127,7 @@ GO
 -- Create Reports table (General report information)
 CREATE TABLE Reports (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    customer_id INT NOT NULL,
+    customer_id INT,
     TotalPrice DECIMAL(18, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
@@ -147,10 +147,10 @@ GO
 
 -- Create ReportsOrdersMapping table
 CREATE TABLE ReportsExportOrdersMapping (
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     report_id INT NOT NULL,
     order_id INT NOT NULL,
     seller_id INT,
+	PRIMARY KEY(report_id,order_id),
     FOREIGN KEY (seller_id) REFERENCES Users(id),
     FOREIGN KEY (report_id) REFERENCES Reports(id),
     FOREIGN KEY (order_id) REFERENCES ExportOrders(id)

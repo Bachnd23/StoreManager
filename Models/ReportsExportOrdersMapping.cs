@@ -5,7 +5,6 @@ namespace COCOApp.Models
 {
     public partial class ReportsExportOrdersMapping
     {
-        public int Id { get; set; }
         public int ReportId { get; set; }
         public int OrderId { get; set; }
         public int? SellerId { get; set; }
