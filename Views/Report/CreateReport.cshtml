@@ -2,6 +2,7 @@
 @using COCOApp.Models
 @{
     Layout = "_LayoutStoreDashBoard";
+    var getListUrl = Url.Action("GetOrderItemsListNoPaging", "Order");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -61,9 +62,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
-                                    <th scope="col">Sản phẩm</th>
-                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Mã đơn hàng</th>
                                     <th scope="col">Ngày mua</th>
+                                    <th scope="col">Thông tin  đơn hàng </th>
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
@@ -71,9 +72,9 @@
                                 {
                                     <tr>
                                         <th scope="col"><input type="checkbox" class="orderCheckbox" data-order-id="@o.Id"></th>
-           @*                              <td>@o.Product.ProductName</td>
-                                        <td>@o.Volume</td> *@
+                                        <td>@o.Id</td>
                                         <td>@o.OrderDate</td>
+                                        <td><button type="button" class="btn btn-primary viewOrderDetailsBtn" data-order-id="@o.Id"><i class="fas fa-info-circle"></i></button></td>
                                     </tr>
                                 }
                             </tbody>
@@ -90,6 +91,38 @@
         </form>
     </div>
     <!-- Form End -->
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Thông tin chi tiết đơn hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Order Details Table -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Mặt hàng</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col">Giá hàng</th>
+                                <th scope="col">Tổng tiền</th>
+                                <th scope="col">Cập nhật ngày</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderItemsTableBody">
+                            <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Content End -->
     @section Scripts {
         <script>
@@ -135,6 +168,49 @@
                     });
                 });
             });
+            // Handle order details modal
+            $('.viewOrderDetailsBtn').click(function () {
+                var orderId = $(this).data('order-id');
+                var getListUrl = '@getListUrl';
+                // AJAX call to fetch order items
+                $.ajax({
+                    url: getListUrl, // Replace with your server-side URL to get order details
+                    type: 'GET',
+                    data: { orderId: orderId }, // Pass the order ID to the server
+                    success: function (data) {
+                        generateOrderItemsTable(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching order details: ", error);
+                        alert("Failed to fetch order details. Please try again.");
+                    }
+                });
+            });
+            function generateOrderItemsTable(data) {
+                // Clear the previous content
+                $('#orderItemsTableBody').empty();
+
+                // Check if there is no data
+                if (data.orderResults.length === 0) {
+                    $('#orderItemsTableBody').append('<tr><td colspan="7"><p>No result found</p></td></tr>');
+                    return;
+                }
+
+                // Iterate over the user results and create table rows
+                $.each(data.orderResults, function (index, orderItem) {
+                    const row = $('<tr>');
+                    row.append($('<td>').text(orderItem.product.productName));
+                    row.append($('<td>').text(orderItem.volume));
+                    row.append($('<td>').text(orderItem.productPrice));
+                    row.append($('<td>').text(orderItem.total));
+                    row.append($('<td>').text(orderItem.updatedAt));
+
+                    $('#orderItemsTableBody').append(row);
+                    // Show the modal
+                    $('#orderDetailsModal').modal('show');
+                });
+
+            }
         </script>
     }
 </body>

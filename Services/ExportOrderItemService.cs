@@ -21,9 +21,13 @@ namespace COCOApp.Services
         {
             return _orderItemRepository.GetExportOrderItems(orderId,nameQuery, pageNumber, pageSize, sellerId);
         }
-        public int GetTotalExportOrderItems(string nameQuery, int sellerId)
+        public List<ExportOrderItem> GetExportOrderItems(int orderId, int sellerId)
         {
-            return _orderItemRepository.GetTotalExportOrderItems(nameQuery, sellerId);
+            return _orderItemRepository.GetExportOrderItems(orderId,sellerId);
+        }
+        public int GetTotalExportOrderItems(int orderId, string nameQuery, int sellerId)
+        {
+            return _orderItemRepository.GetTotalExportOrderItems(orderId,nameQuery, sellerId);
         }
         public ExportOrderItem GetExportOrderitemById(int orderId,int productId, int sellerId)
         {

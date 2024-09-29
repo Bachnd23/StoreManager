@@ -78,8 +78,27 @@ namespace COCOApp.Repositories
                         .Take(pageSize)
                         .ToList();
         }
+        public List<ExportOrderItem> GetExportOrderItems(int orderId,int sellerId)
+        {
 
-        public int GetTotalExportOrderItems(string nameQuery, int sellerId)
+            var query = _context.ExportOrderItems.AsQueryable();
+            query = query.Include(o => o.Product)
+                         .Include(o => o.Order)
+                         .ThenInclude(c => c.Customer);
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
+            if (orderId > 0)
+            {
+                query = query.Where(o => o.OrderId == orderId);
+            }
+            query = query.OrderByDescending(o => o.Order.OrderDate);
+
+            return query.ToList();
+        }
+
+        public int GetTotalExportOrderItems(int orderId,string nameQuery, int sellerId)
         {
             var query = _context.ExportOrderItems.AsQueryable();
             query = query.Include(o => o.Product)
@@ -88,6 +107,10 @@ namespace COCOApp.Repositories
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
+            }
+            if (orderId > 0)
+            {
+                query = query.Where(o => o.OrderId == orderId);
             }
             if (!string.IsNullOrEmpty(nameQuery))
             {

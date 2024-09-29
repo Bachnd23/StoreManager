@@ -8,7 +8,8 @@ namespace COCOApp.Repositories
     {
         void addExportOrderItem(ExportOrderItem item);
         List<ExportOrderItem> GetExportOrderItems(int orderId,string nameQuery, int pageNumber, int pageSize, int sellerId);
-        int GetTotalExportOrderItems(string nameQuery, int sellerId);
+        List<ExportOrderItem> GetExportOrderItems(int orderId,int sellerId);
+        int GetTotalExportOrderItems(int orderId,string nameQuery, int sellerId);
         ExportOrderItem GetExportOrderItemById(int orderItemId,int productId, int sellerId);
         void EditExportOrderItem(int orderId,int productId, ExportOrderItem order);
     }

@@ -47,7 +47,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             var orders = _itemService.GetExportOrderItems(orderId,nameQuery, pageNumber, PageSize, user.Id);
-            var totalOrders = _itemService.GetTotalExportOrderItems(nameQuery, user.Id);
+            var totalOrders = _itemService.GetTotalExportOrderItems(orderId,nameQuery, user.Id);
 
             var response = new
             {
@@ -56,6 +56,18 @@ namespace COCOApp.Controllers
                 totalPages = (int)Math.Ceiling(totalOrders / (double)PageSize)
             };
 
+            return Json(response);
+        }
+        [HttpGet]
+        public IActionResult GetOrderItemsListNoPaging(int orderId)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            var orders = _itemService.GetExportOrderItems(orderId, user.Id);
+
+            var response = new
+            {
+                orderResults = orders,
+            };
             return Json(response);
         }
         [HttpGet]
