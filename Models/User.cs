@@ -10,9 +10,11 @@ namespace COCOApp.Models
             Customers = new HashSet<Customer>();
             ExportOrderItems = new HashSet<ExportOrderItem>();
             ExportOrders = new HashSet<ExportOrder>();
+            ImportOrders = new HashSet<ImportOrder>();
             Products = new HashSet<Product>();
             Reports = new HashSet<Report>();
             ReportsExportOrdersMappings = new HashSet<ReportsExportOrdersMapping>();
+            Suppliers = new HashSet<Supplier>();
         }
 
         public int Id { get; set; }
@@ -32,8 +34,10 @@ namespace COCOApp.Models
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }
+        public virtual ICollection<ImportOrder> ImportOrders { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<ReportsExportOrdersMapping> ReportsExportOrdersMappings { get; set; }
+        public virtual ICollection<Supplier> Suppliers { get; set; }
     }
 }

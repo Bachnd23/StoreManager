@@ -8,6 +8,7 @@ namespace COCOApp.Models
         public Product()
         {
             ExportOrderItems = new HashSet<ExportOrderItem>();
+            ImportOrderItems = new HashSet<ImportOrderItem>();
         }
 
         public int Id { get; set; }
@@ -24,5 +25,6 @@ namespace COCOApp.Models
         public virtual User? Seller { get; set; }
         public virtual ProductDetail? ProductDetail { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
+        public virtual ICollection<ImportOrderItem> ImportOrderItems { get; set; }
     }
 }
