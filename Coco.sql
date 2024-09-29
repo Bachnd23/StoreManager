@@ -123,7 +123,6 @@ CREATE TABLE ExportOrderItems (
     FOREIGN KEY (seller_id) REFERENCES Users(id)
 );
 GO
-
 -- Create Reports table (General report information)
 CREATE TABLE Reports (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -163,5 +162,47 @@ CREATE TABLE SellerDetails (
     business_name NVARCHAR(255) NULL,
     business_address NVARCHAR(255) NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+GO
+-- Create Customers table (General customer information)
+CREATE TABLE Suppliers (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(MAX) NOT NULL,
+    address NVARCHAR(MAX) NOT NULL,
+    phone NVARCHAR(MAX) NOT NULL,
+    note NVARCHAR(MAX) NULL,
+    status BIT NOT NULL,
+    created_at DATETIME NULL DEFAULT NULL,
+    updated_at DATETIME NULL DEFAULT NULL,
+    seller_id INT,
+    FOREIGN KEY (seller_id) REFERENCES Users(id)
+);
+GO
+-- Create Orders table (General order information)
+CREATE TABLE ImportOrders (
+    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    supplier_id INT,
+    orderDate DATE NOT NULL,
+    complete BIT NOT NULL,
+    orderTotal DECIMAL(10, 2) NOT NULL,
+    created_at DATETIME NULL DEFAULT NULL,
+    updated_at DATETIME NULL DEFAULT NULL,
+    seller_id INT,
+    FOREIGN KEY (seller_id) REFERENCES Users(id),
+    FOREIGN KEY (supplier_id) REFERENCES Suppliers(id)
+);
+GO
+
+-- Create OrderItems table (Details separated from Orders table)
+CREATE TABLE ImportOrderItems (
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    volume INT NOT NULL,
+    product_cost DECIMAL(10, 2) NOT NULL,
+    created_at DATETIME NULL DEFAULT NULL,
+    updated_at DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY(order_id,product_id),
+    FOREIGN KEY (order_id) REFERENCES ImportOrders(id),
+    FOREIGN KEY (product_id) REFERENCES Products(id),
 );
 GO
