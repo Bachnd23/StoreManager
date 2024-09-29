@@ -274,6 +274,79 @@ namespace COCOApp.Models
                     .HasConstraintName("FK__ImportOrd__produ__123EB7A3");
             });
 
+            modelBuilder.Entity<ImportOrder>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Complete).HasColumnName("complete");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.OrderDate)
+                    .HasColumnType("date")
+                    .HasColumnName("orderDate");
+
+                entity.Property(e => e.OrderTotal)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("orderTotal");
+
+                entity.Property(e => e.SellerId).HasColumnName("seller_id");
+
+                entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updated_at");
+
+                entity.HasOne(d => d.Seller)
+                    .WithMany(p => p.ImportOrders)
+                    .HasForeignKey(d => d.SellerId)
+                    .HasConstraintName("FK__ImportOrd__selle__76969D2E");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.ImportOrders)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK__ImportOrd__suppl__778AC167");
+            });
+
+            modelBuilder.Entity<ImportOrderItem>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.ProductId })
+                    .HasName("PK__ImportOr__022945F64E082F75");
+
+                entity.Property(e => e.OrderId).HasColumnName("order_id");
+
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.ProductCost)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("product_cost");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updated_at");
+
+                entity.Property(e => e.Volume).HasColumnName("volume");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.ImportOrderItems)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ImportOrd__order__7C4F7684");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ImportOrderItems)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ImportOrd__produ__7D439ABD");
+            });
+
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -461,6 +534,36 @@ namespace COCOApp.Models
                     .WithMany(p => p.Suppliers)
                     .HasForeignKey(d => d.SellerId)
                     .HasConstraintName("FK__Suppliers__selle__06CD04F7");
+            });
+
+            modelBuilder.Entity<Supplier>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Address).HasColumnName("address");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.Name).HasColumnName("name");
+
+                entity.Property(e => e.Note).HasColumnName("note");
+
+                entity.Property(e => e.Phone).HasColumnName("phone");
+
+                entity.Property(e => e.SellerId).HasColumnName("seller_id");
+
+                entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updated_at");
+
+                entity.HasOne(d => d.Seller)
+                    .WithMany(p => p.Suppliers)
+                    .HasForeignKey(d => d.SellerId)
+                    .HasConstraintName("FK__Suppliers__selle__71D1E811");
             });
 
             modelBuilder.Entity<User>(entity =>
