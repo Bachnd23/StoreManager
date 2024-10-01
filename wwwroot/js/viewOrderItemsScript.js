@@ -111,7 +111,7 @@ function generateOrderItemsTable(data) {
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `#`,
+            href: `/Order/ViewOrderItemDetail?orderId=${orderItem.orderId}&productId=${orderItem.productId}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });

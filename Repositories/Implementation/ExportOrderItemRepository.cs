@@ -127,7 +127,9 @@ namespace COCOApp.Repositories
             {
                 existingOrder.OrderId = order.OrderId;
                 existingOrder.ProductId = order.ProductId;
+                existingOrder.ProductPrice = order.ProductPrice;
                 existingOrder.Volume = order.Volume;
+                existingOrder.Total= order.Total;
                 existingOrder.SellerId = order.SellerId;
                 existingOrder.CreatedAt = order.CreatedAt;
                 existingOrder.UpdatedAt = order.UpdatedAt;
