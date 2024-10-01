@@ -117,6 +117,23 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
+        [HttpGet]
+        public IActionResult ViewEditOrderItem(int orderId,int productId, int pageNumber = 1)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            ExportOrderItem model = _itemService.GetExportOrderitemById(orderId, productId, user.Id); ;
+            ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+            ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+            ViewData["PageNumber"] = pageNumber;
+            if (model != null)
+            {
+                return View("/Views/Order/EditOrderItem.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Order/ListOrders.cshtml");
+            }
+        }
         public IActionResult ViewList(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
@@ -286,6 +303,48 @@ namespace COCOApp.Controllers
 
             // Use the service to edit the customer
             _orderService.EditExportOrder(model.Id, order);
+
+            // Notify admins about changes to the order
+            await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated", order);
+
+            HttpContext.Session.SetString("SuccessMsg", "Sửa đơn hàng thành công!");
+            // Redirect to the customer list or a success page
+            return RedirectToAction("ViewList");
+        }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> EditOrderItem(ExportOrderItem model)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            
+            if (!ModelState.IsValid)
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string errorMessages = string.Join("; ", errors);
+
+                Debug.WriteLine(errorMessages);
+                // If the model state is not valid, return the same view with validation errors
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                return View("/Views/Order/EditOrderItem.cshtml", model);
+            }
+            ExportOrderItem oldOrder = _itemService.GetExportOrderitemById(model.OrderId,model.ProductId, user.Id);
+            // Convert the model to your domain entity
+
+            var order = new ExportOrderItem
+            {
+                OrderId = model.OrderId,
+                ProductId = model.ProductId,    
+                Volume = model.Volume,
+                ProductPrice= model.ProductPrice,
+                Total=model.ProductPrice*model.Volume,
+                SellerId = oldOrder.SellerId,
+                UpdatedAt = DateTime.Now
+            };
+
+            // Use the service to edit the customer
+            _itemService.EditExportOrderItem(model.OrderId,model.ProductId, order);
 
             // Notify admins about changes to the order
             await _hubContext.Clients.Group("Admin").SendAsync("OrderUpdated", order);
