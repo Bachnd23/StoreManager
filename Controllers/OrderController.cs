@@ -86,6 +86,21 @@ namespace COCOApp.Controllers
             }
         }
         [HttpGet]
+        public IActionResult ViewOrderItemDetail(int orderId,int productId, int pageNumber = 1)
+        {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            ExportOrderItem model = _itemService.GetExportOrderitemById(orderId, productId,user.Id); ;
+            ViewData["PageNumber"] = pageNumber;
+            if (model != null)
+            {
+                return View("/Views/Order/OrderItemDetail.cshtml", model);
+            }
+            else
+            {
+                return View("/Views/Order/ListOrders.cshtml");
+            }
+        }
+        [HttpGet]
         public IActionResult ViewEdit(int orderId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
