@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col">
                     <div>
-                        <h4 class="mb-4">Thông tin đơn hàng</h4>
+                        <h4 class="mb-4">Thông tin đơn hàng chi tiết</h4>
                     </div>
                 </div>
                 <div class="w-100"></div>
@@ -31,7 +31,7 @@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="ProductId" class="required">Mặt hàng</label>
-                                <select asp-for="ProductId" class="form-control select2">
+                                <select asp-for="ProductId" class="form-control select2" disabled>
                                     @foreach (var product in ViewBag.Products)
                                     {
                                         <option value="@product.Value">@product.Text</option>
