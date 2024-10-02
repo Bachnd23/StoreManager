@@ -51,7 +51,22 @@ namespace COCOApp.Repositories
             ExportOrderItem item = query.FirstOrDefault(u => u.OrderId == orderId && u.ProductId == productId);
             return item;
         }
+        public List<ExportOrderItem> GetExportOrderItemsByIds(List<int> orderIds, int sellerId)
+        {
+            var query = _context.ExportOrderItems
+                                  .Include (o => o.Product)
+                                  .Include(o => o.Order)
+                                  .ThenInclude(c=>c.Customer)
+                                .Where(o => orderIds.Contains(o.OrderId))
+                                .AsQueryable();
 
+            if (sellerId > 0)
+            {
+                query = query.Where(o => o.SellerId == sellerId);
+            }
+
+            return query.ToList();
+        }
         public List<ExportOrderItem> GetExportOrderItems(int orderId,string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             pageNumber = Math.Max(pageNumber, 1);

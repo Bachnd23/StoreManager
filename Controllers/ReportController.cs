@@ -12,12 +12,14 @@ namespace COCOApp.Controllers
         private readonly ExportOrderService _orderService;
         private readonly ReportService _reportService;
         private readonly ReportsExportOrdersMappingService _reportsOrdersMappingService;
+        private readonly ExportOrderItemService _itemService;
 
-        public ReportController(ExportOrderService orderService, ReportService reportService, ReportsExportOrdersMappingService reportsOrdersMappingService)
+        public ReportController(ExportOrderService orderService, ReportService reportService, ReportsExportOrdersMappingService reportsOrdersMappingService, ExportOrderItemService itemService)
         {
             _orderService = orderService;
             _reportService = reportService;
             _reportsOrdersMappingService = reportsOrdersMappingService;
+            _itemService = itemService;
         }
         public IActionResult ViewCreate()
         {
@@ -36,13 +38,14 @@ namespace COCOApp.Controllers
         [HttpPost]
         public IActionResult CreateSummary(List<int> orderIds)
         {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             if (orderIds == null || orderIds.Count <= 0)
             {
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
                 return View("/Views/Report/CreateReport.cshtml");
             }
-            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             // Assuming _orderService can fetch orders by their IDs
-            List<ExportOrder> orders = _orderService.GetExportOrdersByIds(orderIds, user.Id);
+            List<ExportOrderItem> orders = _itemService.GetExportOrderItemsByIds(orderIds, user.Id);
 
             return View("/Views/Report/ReportSummary.cshtml", orders);
         }

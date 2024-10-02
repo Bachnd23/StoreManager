@@ -1,4 +1,4 @@
-﻿@model List<COCOApp.Models.ExportOrder>
+﻿@model List<COCOApp.Models.ExportOrderItem>
 @{
     Layout = "_LayoutStoreDashBoard";
 }
@@ -37,13 +37,13 @@
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
-                                @foreach (ExportOrder o in Model)
+                                @foreach (ExportOrderItem o in Model)
                                 {
                                     <tr>
-                                        <td>@o.Id</td>
-@*                                         <td>@o.Product.ProductName</td>
+                                        <td>@o.OrderId</td>
+                                        <td>@o.Product.ProductName</td>
                                         <td>@o.Volume</td>
-                                        <td><input type="number" step="0.01" value="@o.Product.Cost"></td> *@
+                                        <td><input type="number" step="0.01" value="@o.Product.Cost"></td>
                                     </tr>
                                 }
                             </tbody>
