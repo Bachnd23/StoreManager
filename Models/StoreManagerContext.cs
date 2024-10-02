@@ -362,20 +362,26 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<ReportDetail>(entity =>
             {
-                entity.HasKey(e => e.ReportId)
-                    .HasName("PK__ReportDe__779B7C582CE7822F");
+                entity.HasKey(e => new { e.ReportId, e.ProductId })
+                    .HasName("PK__ReportDe__33EB5B87B24A32DF");
 
-                entity.Property(e => e.ReportId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("report_id");
+                entity.Property(e => e.ReportId).HasColumnName("report_id");
 
-                entity.Property(e => e.Details).HasColumnName("details");
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ReportDetails)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ReportDet__produ__03F0984C");
 
                 entity.HasOne(d => d.Report)
-                    .WithOne(p => p.ReportDetail)
-                    .HasForeignKey<ReportDetail>(d => d.ReportId)
+                    .WithMany(p => p.ReportDetails)
+                    .HasForeignKey(d => d.ReportId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportDet__repor__656C112C");
+                    .HasConstraintName("FK__ReportDet__repor__02FC7413");
             });
 
             modelBuilder.Entity<ReportsExportOrdersMapping>(entity =>
