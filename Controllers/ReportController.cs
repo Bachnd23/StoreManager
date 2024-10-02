@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using AspNetCore.Reporting;
 
 namespace COCOApp.Controllers
 {
@@ -13,13 +14,16 @@ namespace COCOApp.Controllers
         private readonly ReportService _reportService;
         private readonly ReportsExportOrdersMappingService _reportsOrdersMappingService;
         private readonly ExportOrderItemService _itemService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ReportController(ExportOrderService orderService, ReportService reportService, ReportsExportOrdersMappingService reportsOrdersMappingService, ExportOrderItemService itemService)
+        public ReportController(ExportOrderService orderService, ReportService reportService, ReportsExportOrdersMappingService reportsOrdersMappingService, ExportOrderItemService itemService, IWebHostEnvironment webHostEnvironment)
         {
             _orderService = orderService;
             _reportService = reportService;
             _reportsOrdersMappingService = reportsOrdersMappingService;
             _itemService = itemService;
+            _webHostEnvironment = webHostEnvironment;
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
         public IActionResult ViewCreate()
         {
@@ -93,6 +97,21 @@ namespace COCOApp.Controllers
             ViewBag.totalCost = ordersTotalCost;
             // Pass orders to the view
             return View("/Views/Report/Invoice.cshtml", orders);
+        }
+        public IActionResult Print()
+        {
+            string mimetype = "";
+            int extension = 1;
+
+            var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\Report1.rdlc";
+            Console.WriteLine(path.ToString());    
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters.Add("rp1", "Test report");
+
+            LocalReport localReport = new LocalReport(path);
+            var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
+
+            return File(result.MainStream, "application/pdf");
         }
     }
 }
