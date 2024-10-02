@@ -1,4 +1,4 @@
-﻿@model List<COCOApp.Models.ExportOrderItem>
+﻿@model List<COCOApp.Models.ReportDetail>
 @{
     Layout = "_LayoutStoreDashBoard";
 }
@@ -30,20 +30,21 @@
                         <table class="table table-striped w-100 resultTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Mã đơn hàng</th>
                                     <th scope="col">Sản phẩm</th>
                                     <th scope="col">Số lượng</th>
-                                    <th scope="col">Giá </th>
+                                    <th scope="col">giá</th>
+                                    <th scope="col">Tổng giá</th>
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
-                                @foreach (ExportOrderItem o in Model)
+                                @foreach (ReportDetail o in Model)
                                 {
                                     <tr>
-                                        <td>@o.OrderId</td>
                                         <td>@o.Product.ProductName</td>
                                         <td>@o.Volume</td>
-                                        <td><input type="number" step="0.01" value="@o.Product.Cost"></td>
+@*                                         <td><input type="number" step="0.01" value="@o.Product.Cost"></td> *@
+                                        <td>@o.Product.Cost</td>
+                                        <td>@o.TotalPrice</td>
                                     </tr>
                                 }
                             </tbody>

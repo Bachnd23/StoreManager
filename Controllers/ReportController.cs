@@ -45,9 +45,33 @@ namespace COCOApp.Controllers
                 return View("/Views/Report/CreateReport.cshtml");
             }
             // Assuming _orderService can fetch orders by their IDs
-            List<ExportOrderItem> orders = _itemService.GetExportOrderItemsByIds(orderIds, user.Id);
+            List<ExportOrder> orders = _orderService.GetExportOrdersByIds(orderIds, user.Id);
+            // Assuming _orderService can fetch orders by their IDs
+            List<ExportOrderItem> orderItems = _itemService.GetExportOrderItemsByIds(orderIds, user.Id);
+            
+            Report report = new Report()
+            {
+                CustomerId=orders[0].CustomerId,
+                TotalPrice=0,
+                CreatedAt= DateTime.Now,
+                UpdatedAt= DateTime.Now,
+                SellerId=user.Id,
+            };
+            _reportService.AddReport(report);
+            foreach (var item in orderItems)
+            {
+                ReportDetail reportDetail = new ReportDetail()
+                {
+                    ReportId = report.Id,
+                    ProductId = item.ProductId,
+                    Volume = item.Volume,
+                    TotalPrice = item.ProductPrice*item.Volume
+                };
+                _reportService.AddReportDetails(reportDetail);  
+            }
+            List<ReportDetail> reportDetails=_reportService.GetReportDetails(report.Id);
 
-            return View("/Views/Report/ReportSummary.cshtml", orders);
+            return View("/Views/Report/ReportSummary.cshtml", reportDetails);
         }
         [HttpPost]
         public IActionResult CreateInvoice(List<int> orderIds, List<decimal> costs)

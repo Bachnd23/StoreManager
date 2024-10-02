@@ -37,12 +37,53 @@ namespace COCOApp.Repositories
                 throw new ApplicationException("Error retrieving reports", ex);
             }
         }
+        public List<ReportDetail> GetReportDetails(int reportId)
+        {
+            try
+            {
+                var query = _context.ReportDetails.AsQueryable();
+                query = query.Include(p=>p.Product)
+                             .Include(r => r.Report)
+                             .ThenInclude(r => r.Customer)
+                             .Where(r => r.ReportId == reportId);
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving reports: {ex.Message}");
+                throw new ApplicationException("Error retrieving reports", ex);
+            }
+        }
 
         public void AddReport(Report report)
         {
             try
             {
                 _context.Reports.Add(report);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error adding report: {ex.Message}");
+                throw new ApplicationException("Error adding report", ex);
+            }
+        }
+
+        public void AddReportDetails(ReportDetail reportDetail)
+        {
+            try
+            {
+                ReportDetail existedReportDetail=_context.ReportDetails.FirstOrDefault(rd=>rd.ReportId == reportDetail.ReportId&&rd.ProductId==reportDetail.ProductId);
+                if (existedReportDetail != null)
+                {
+                    existedReportDetail.Volume += reportDetail.Volume; ;
+                    existedReportDetail.TotalPrice+= reportDetail.TotalPrice; ; 
+                }
+                else
+                {
+                    _context.ReportDetails.Add(reportDetail);
+                }
                 _context.SaveChanges();
             }
             catch (Exception ex)

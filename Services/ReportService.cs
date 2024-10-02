@@ -17,10 +17,18 @@ namespace COCOApp.Services
         {
             return _reportRepository.GetReports(customerId, sellerId);
         }
+        public List<ReportDetail> GetReportDetails(int reportId)
+        {
+            return _reportRepository.GetReportDetails(reportId);
+        }
 
         public void AddReport(Report report)
         {
             _reportRepository.AddReport(report);
+        }
+        public void AddReportDetails(ReportDetail reportDetail)
+        {
+            _reportRepository.AddReportDetails(reportDetail);
         }
     }
 }
