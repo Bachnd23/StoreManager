@@ -64,6 +64,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataSet\ExportOrderReportDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExportOrderReportDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Report.cs" />
     <Compile Include="ReportDetail.cs" />
     <Compile Include="ReportsExportOrdersMapping.cs" />
@@ -113,6 +118,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="DataSet\ExportOrderReportDataSet.xsc">
+      <DependentUpon>ExportOrderReportDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet\ExportOrderReportDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ExportOrderReportDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSet\ExportOrderReportDataSet.xss">
+      <DependentUpon>ExportOrderReportDataSet.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ExportOrderItem.datasource" />
     <None Include="Properties\Settings.settings">

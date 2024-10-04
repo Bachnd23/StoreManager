@@ -106,18 +106,19 @@ namespace COCOApp.Controllers
             var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\OrderReport.rdlc";
             Console.WriteLine(path.ToString());    
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            /*            parameters.Add("rp1", "Test report");*/
+            parameters.Add("CustomerPM", "bachnd");
+            parameters.Add("DateRangePM", "2024-12-12");
             var orderItems = _itemService.GetExportOrderItems(0, 0).Select(item => new
             {
-                created_at = item.CreatedAt,
-                order_id = item.OrderId,
-                product_id = item.ProductId,
-                product_price = item.ProductPrice,
-                seller_id = item.SellerId,
-                total = item.Total,
-                updated_at = item.UpdatedAt,
-                volume = item.Volume
+                ProductName=item.Product.ProductName,
+                product_price=item.ProductPrice,
+                volume=item.Volume,
+                total=item.Total,
+                orderDate=item.Order.OrderDate
             }).ToList();
+
+            parameters.Add("TotalQuantityPM", "100");
+            parameters.Add("TotalPricePM", "100-");
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", orderItems);
