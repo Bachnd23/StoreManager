@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Reports\OrderReport.rdlc" />
     <None Remove="Reports\Report1.rdlc" />
   </ItemGroup>
 
@@ -14,6 +15,10 @@
     <Content Include="Reports\Report1.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\OrderReport.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
@@ -119,6 +124,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="MailKit" Version="4.7.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.33" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.31" />

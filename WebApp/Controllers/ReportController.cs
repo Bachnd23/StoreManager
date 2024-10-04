@@ -98,17 +98,19 @@ namespace COCOApp.Controllers
             // Pass orders to the view
             return View("/Views/Report/Invoice.cshtml", orders);
         }
-        public IActionResult Print()
+        public async Task<IActionResult> Print()
         {
             string mimetype = "";
             int extension = 1;
 
-            var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\Report1.rdlc";
+            var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\OrderReport.rdlc";
             Console.WriteLine(path.ToString());    
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("rp1", "Test report");
+            /*            parameters.Add("rp1", "Test report");*/
+            var orderItems = _itemService.GetExportOrderItems(0, 0);
 
             LocalReport localReport = new LocalReport(path);
+            localReport.AddDataSource("DataSet1", orderItems);
             var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
 
             return File(result.MainStream, "application/pdf");
