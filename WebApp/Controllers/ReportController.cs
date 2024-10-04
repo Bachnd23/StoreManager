@@ -107,7 +107,17 @@ namespace COCOApp.Controllers
             Console.WriteLine(path.ToString());    
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             /*            parameters.Add("rp1", "Test report");*/
-            var orderItems = _itemService.GetExportOrderItems(0, 0);
+            var orderItems = _itemService.GetExportOrderItems(0, 0).Select(item => new
+            {
+                created_at = item.CreatedAt,
+                order_id = item.OrderId,
+                product_id = item.ProductId,
+                product_price = item.ProductPrice,
+                seller_id = item.SellerId,
+                total = item.Total,
+                updated_at = item.UpdatedAt,
+                volume = item.Volume
+            }).ToList();
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", orderItems);

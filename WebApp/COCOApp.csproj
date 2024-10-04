@@ -8,13 +8,6 @@
 
   <ItemGroup>
     <None Remove="Reports\OrderReport.rdlc" />
-    <None Remove="Reports\Report1.rdlc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Reports\Report1.rdlc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
