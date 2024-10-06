@@ -36,7 +36,7 @@ CREATE TABLE Users (
 GO
 
 -- Create UserDetails table (Detailed information separated from Users table)
-CREATE TABLE BuyerDetails (
+CREATE TABLE UserDetails (
     user_id INT NOT NULL PRIMARY KEY,
     fullname NVARCHAR(255) NOT NULL,
     address NVARCHAR(255) NOT NULL,

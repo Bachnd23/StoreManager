@@ -29,8 +29,8 @@ namespace COCOApp.Models
         public DateTime? UpdatedAt { get; set; }
 
         public virtual UserRole? RoleNavigation { get; set; }
-        public virtual BuyerDetail? BuyerDetail { get; set; }
         public virtual SellerDetail? SellerDetail { get; set; }
+        public virtual UserDetail? UserDetail { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }

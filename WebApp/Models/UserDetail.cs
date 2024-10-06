@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace COCOApp.Models
 {
-    public partial class BuyerDetail
+    public partial class UserDetail
     {
         public int UserId { get; set; }
         public string Fullname { get; set; } = null!;
