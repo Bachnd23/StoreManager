@@ -142,21 +142,10 @@ CREATE TABLE ReportDetails (
     product_id INT NOT NULL,
 	Volume INT NOT NULL,
 	TotalPrice DECIMAL(18, 2) NOT NULL,
+	orderDate DATE,
 	PRIMARY KEY(report_id,product_id),
     FOREIGN KEY (report_id) REFERENCES Reports(id),
 	FOREIGN KEY (product_id) REFERENCES Products(id)
-);
-GO
-
--- Create ReportsOrdersMapping table
-CREATE TABLE ReportsExportOrdersMapping (
-    report_id INT NOT NULL,
-    order_id INT NOT NULL,
-    seller_id INT,
-	PRIMARY KEY(report_id,order_id),
-    FOREIGN KEY (seller_id) REFERENCES Users(id),
-    FOREIGN KEY (report_id) REFERENCES Reports(id),
-    FOREIGN KEY (order_id) REFERENCES ExportOrders(id)
 );
 GO
 

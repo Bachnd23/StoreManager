@@ -13,7 +13,6 @@ namespace COCOApp.Models
             ImportOrders = new HashSet<ImportOrder>();
             Products = new HashSet<Product>();
             Reports = new HashSet<Report>();
-            ReportsExportOrdersMappings = new HashSet<ReportsExportOrdersMapping>();
             Suppliers = new HashSet<Supplier>();
         }
 
@@ -37,7 +36,6 @@ namespace COCOApp.Models
         public virtual ICollection<ImportOrder> ImportOrders { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
-        public virtual ICollection<ReportsExportOrdersMapping> ReportsExportOrdersMappings { get; set; }
         public virtual ICollection<Supplier> Suppliers { get; set; }
     }
 }

@@ -42,7 +42,6 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IExportOrderRepository, ExportOrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
-builder.Services.AddScoped<IReportsExportOrdersMappingRepository, ReportsExportOrdersMappingRepository>();
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
@@ -50,7 +49,6 @@ builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
 builder.Services.AddScoped<ReportService>();
-builder.Services.AddScoped<ReportsExportOrdersMappingService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
