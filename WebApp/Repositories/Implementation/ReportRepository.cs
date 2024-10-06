@@ -26,10 +26,28 @@ namespace COCOApp.Repositories
                     query = query.Where(r => r.SellerId == sellerId);
                 }
                 query = query.Include(r => r.Customer)
-                             .Include(r => r.ReportsExportOrdersMappings)
                              .Where(r => r.CustomerId == customerId);
 
                 return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving reports: {ex.Message}");
+                throw new ApplicationException("Error retrieving reports", ex);
+            }
+        }
+        public Report GetReportById(int reportId, int sellerId)
+        {
+            try
+            {
+                var query = _context.Reports.AsQueryable();
+                if (sellerId > 0)
+                {
+                    query = query.Where(r => r.SellerId == sellerId);
+                }
+                query = query.Include(r => r.Customer);
+
+                return query.FirstOrDefault(r => r.Id == reportId); 
             }
             catch (Exception ex)
             {

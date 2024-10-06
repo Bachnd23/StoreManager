@@ -16,7 +16,6 @@ namespace COCOApp.Models
         {
         }
 
-        public virtual DbSet<BuyerDetail> BuyerDetails { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<ExportOrder> ExportOrders { get; set; } = null!;
@@ -27,10 +26,10 @@ namespace COCOApp.Models
         public virtual DbSet<ProductDetail> ProductDetails { get; set; } = null!;
         public virtual DbSet<Report> Reports { get; set; } = null!;
         public virtual DbSet<ReportDetail> ReportDetails { get; set; } = null!;
-        public virtual DbSet<ReportsExportOrdersMapping> ReportsExportOrdersMappings { get; set; } = null!;
         public virtual DbSet<SellerDetail> SellerDetails { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserDetail> UserDetails { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -44,40 +43,6 @@ namespace COCOApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BuyerDetail>(entity =>
-            {
-                entity.HasKey(e => e.UserId)
-                    .HasName("PK__BuyerDet__B9BE370F0C8CD342");
-
-                entity.Property(e => e.UserId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("user_id");
-
-                entity.Property(e => e.Address)
-                    .HasMaxLength(255)
-                    .HasColumnName("address");
-
-                entity.Property(e => e.Dob)
-                    .HasColumnType("date")
-                    .HasColumnName("dob");
-
-                entity.Property(e => e.Fullname)
-                    .HasMaxLength(255)
-                    .HasColumnName("fullname");
-
-                entity.Property(e => e.Gender).HasColumnName("gender");
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(255)
-                    .HasColumnName("phone");
-
-                entity.HasOne(d => d.User)
-                    .WithOne(p => p.BuyerDetail)
-                    .HasForeignKey<BuyerDetail>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BuyerDeta__user___412EB0B6");
-            });
-
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -157,7 +122,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ExportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ExportOr__022945F62A930D09");
+                    .HasName("PK__ExportOr__022945F6F31C1683");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -230,18 +195,18 @@ namespace COCOApp.Models
                 entity.HasOne(d => d.Seller)
                     .WithMany(p => p.ImportOrders)
                     .HasForeignKey(d => d.SellerId)
-                    .HasConstraintName("FK__ImportOrd__selle__76969D2E");
+                    .HasConstraintName("FK__ImportOrd__selle__72C60C4A");
 
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.ImportOrders)
                     .HasForeignKey(d => d.SupplierId)
-                    .HasConstraintName("FK__ImportOrd__suppl__778AC167");
+                    .HasConstraintName("FK__ImportOrd__suppl__73BA3083");
             });
 
             modelBuilder.Entity<ImportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ImportOr__022945F64E082F75");
+                    .HasName("PK__ImportOr__022945F66957DBF6");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -265,13 +230,13 @@ namespace COCOApp.Models
                     .WithMany(p => p.ImportOrderItems)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ImportOrd__order__7C4F7684");
+                    .HasConstraintName("FK__ImportOrd__order__787EE5A0");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ImportOrderItems)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ImportOrd__produ__7D439ABD");
+                    .HasConstraintName("FK__ImportOrd__produ__797309D9");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -314,7 +279,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ProductDetail>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__ProductD__47027DF51D134A6D");
+                    .HasName("PK__ProductD__47027DF51E438FB9");
 
                 entity.Property(e => e.ProductId)
                     .ValueGeneratedNever()
@@ -363,11 +328,15 @@ namespace COCOApp.Models
             modelBuilder.Entity<ReportDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ReportId, e.ProductId })
-                    .HasName("PK__ReportDe__33EB5B87B24A32DF");
+                    .HasName("PK__ReportDe__33EB5B876A03F426");
 
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.OrderDate)
+                    .HasColumnType("date")
+                    .HasColumnName("orderDate");
 
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
 
@@ -375,50 +344,19 @@ namespace COCOApp.Models
                     .WithMany(p => p.ReportDetails)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportDet__produ__03F0984C");
+                    .HasConstraintName("FK__ReportDet__produ__66603565");
 
                 entity.HasOne(d => d.Report)
                     .WithMany(p => p.ReportDetails)
                     .HasForeignKey(d => d.ReportId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportDet__repor__02FC7413");
-            });
-
-            modelBuilder.Entity<ReportsExportOrdersMapping>(entity =>
-            {
-                entity.HasKey(e => new { e.ReportId, e.OrderId })
-                    .HasName("PK__ReportsE__F3FEEA7ACD8D6A09");
-
-                entity.ToTable("ReportsExportOrdersMapping");
-
-                entity.Property(e => e.ReportId).HasColumnName("report_id");
-
-                entity.Property(e => e.OrderId).HasColumnName("order_id");
-
-                entity.Property(e => e.SellerId).HasColumnName("seller_id");
-
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.ReportsExportOrdersMappings)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportsEx__order__6A30C649");
-
-                entity.HasOne(d => d.Report)
-                    .WithMany(p => p.ReportsExportOrdersMappings)
-                    .HasForeignKey(d => d.ReportId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ReportsEx__repor__693CA210");
-
-                entity.HasOne(d => d.Seller)
-                    .WithMany(p => p.ReportsExportOrdersMappings)
-                    .HasForeignKey(d => d.SellerId)
-                    .HasConstraintName("FK__ReportsEx__selle__68487DD7");
+                    .HasConstraintName("FK__ReportDet__repor__656C112C");
             });
 
             modelBuilder.Entity<SellerDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__SellerDe__B9BE370F00367C39");
+                    .HasName("PK__SellerDe__B9BE370FEEA7AB11");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -436,7 +374,7 @@ namespace COCOApp.Models
                     .WithOne(p => p.SellerDetail)
                     .HasForeignKey<SellerDetail>(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SellerDet__user___6D0D32F4");
+                    .HasConstraintName("FK__SellerDet__user___693CA210");
             });
 
             modelBuilder.Entity<Supplier>(entity =>
@@ -466,12 +404,12 @@ namespace COCOApp.Models
                 entity.HasOne(d => d.Seller)
                     .WithMany(p => p.Suppliers)
                     .HasForeignKey(d => d.SellerId)
-                    .HasConstraintName("FK__Suppliers__selle__71D1E811");
+                    .HasConstraintName("FK__Suppliers__selle__6E01572D");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164B3A04C26")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164BC5E9516")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -512,6 +450,40 @@ namespace COCOApp.Models
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.Role)
                     .HasConstraintName("FK__Users__role__3E52440B");
+            });
+
+            modelBuilder.Entity<UserDetail>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK__UserDeta__B9BE370F3803EC63");
+
+                entity.Property(e => e.UserId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.Address)
+                    .HasMaxLength(255)
+                    .HasColumnName("address");
+
+                entity.Property(e => e.Dob)
+                    .HasColumnType("date")
+                    .HasColumnName("dob");
+
+                entity.Property(e => e.Fullname)
+                    .HasMaxLength(255)
+                    .HasColumnName("fullname");
+
+                entity.Property(e => e.Gender).HasColumnName("gender");
+
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(255)
+                    .HasColumnName("phone");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.UserDetail)
+                    .HasForeignKey<UserDetail>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserDetai__user___412EB0B6");
             });
 
             modelBuilder.Entity<UserRole>(entity =>

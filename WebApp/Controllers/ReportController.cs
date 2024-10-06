@@ -12,15 +12,13 @@ namespace COCOApp.Controllers
     {
         private readonly ExportOrderService _orderService;
         private readonly ReportService _reportService;
-        private readonly ReportsExportOrdersMappingService _reportsOrdersMappingService;
         private readonly ExportOrderItemService _itemService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ReportController(ExportOrderService orderService, ReportService reportService, ReportsExportOrdersMappingService reportsOrdersMappingService, ExportOrderItemService itemService, IWebHostEnvironment webHostEnvironment)
+        public ReportController(ExportOrderService orderService, ReportService reportService, ExportOrderItemService itemService, IWebHostEnvironment webHostEnvironment)
         {
             _orderService = orderService;
             _reportService = reportService;
-            _reportsOrdersMappingService = reportsOrdersMappingService;
             _itemService = itemService;
             _webHostEnvironment = webHostEnvironment;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -69,7 +67,8 @@ namespace COCOApp.Controllers
                     ReportId = report.Id,
                     ProductId = item.ProductId,
                     Volume = item.Volume,
-                    TotalPrice = item.ProductPrice*item.Volume
+                    TotalPrice = item.ProductPrice*item.Volume,
+                    OrderDate=item.Order.OrderDate
                 };
                 _reportService.AddReportDetails(reportDetail);  
             }
@@ -78,7 +77,7 @@ namespace COCOApp.Controllers
             return View("/Views/Report/ReportSummary.cshtml", reportDetails);
         }
         [HttpPost]
-        public IActionResult CreateInvoice(List<int> orderIds, List<decimal> costs)
+        public IActionResult CreateInvoice(List<int> orderIds)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             List<ExportOrder> orders = _orderService.GetExportOrdersByIds(orderIds, user.Id);
@@ -98,30 +97,45 @@ namespace COCOApp.Controllers
             // Pass orders to the view
             return View("/Views/Report/Invoice.cshtml", orders);
         }
-        public async Task<IActionResult> Print()
+        public async Task<IActionResult> Print(List<ReportDetail> reportDetails)
         {
+            // Check if the model is valid
+            if (reportDetails == null || !reportDetails.Any())
+            {
+                ModelState.AddModelError("", "No details provided.");
+                return View("Error"); // Return an error view if the data is invalid
+            }
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            Report report = _reportService.GetReportById(reportDetails[0].ReportId,user.Id);
             string mimetype = "";
             int extension = 1;
-
             var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\OrderReport.rdlc";
-            Console.WriteLine(path.ToString());    
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("CustomerPM", "bachnd");
-            parameters.Add("DateRangePM", "2024-12-12");
-            var orderItems = _itemService.GetExportOrderItems(0, 0).Select(item => new
+
+            int totalQuantity= 0;
+            decimal totalCost = 0;
+            for (int i = 0; i < reportDetails.Count();i++)
             {
-                ProductName=item.Product.ProductName,
-                product_price=item.ProductPrice,
-                volume=item.Volume,
-                total=item.Total,
-                orderDate=item.Order.OrderDate
+                ReportDetail reportDetail = reportDetails[i];
+                totalQuantity += reportDetail.Volume;
+                totalCost += reportDetail.TotalPrice;
+            }
+            var reports=reportDetails.Select(item => new
+            {
+                ProductName = item.Product.ProductName,
+                product_price = item.Product.Cost,
+                volume = item.Volume,
+                total = item.TotalPrice,
+                orderDate = item.OrderDate
             }).ToList();
 
-            parameters.Add("TotalQuantityPM", "100");
-            parameters.Add("TotalPricePM", "100-");
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters.Add("CustomerPM", "Tên khách hàng: "+report.Customer.Name);
+            parameters.Add("CustomerAddressPM", "Địa chỉ: " + report.Customer.Address);
+            parameters.Add("TotalQuantityPM", "Tổng số lượng: "+totalQuantity);
+            parameters.Add("TotalPricePM", "Tổng giá: "+totalCost);
 
             LocalReport localReport = new LocalReport(path);
-            localReport.AddDataSource("DataSet1", orderItems);
+            localReport.AddDataSource("DataSet1", reports);
             var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
 
             return File(result.MainStream, "application/pdf");
