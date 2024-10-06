@@ -12,15 +12,15 @@ namespace COCOApp.Repositories
         {
             _context = context;
         }
-        public void AddUserDetails(BuyerDetail details)
+        public void AddUserDetails(UserDetail details)
         {
-            _context.BuyerDetails.Add(details);
+            _context.UserDetails.Add(details);
             _context.SaveChanges();
         }
 
-        public void UpdateUserDetails(int userId, BuyerDetail detail)
+        public void UpdateUserDetails(int userId, UserDetail detail)
         {
-            var existingDetail = _context.BuyerDetails.SingleOrDefault(d => d.UserId == userId);
+            var existingDetail = _context.UserDetails.SingleOrDefault(d => d.UserId == userId);
 
             if (existingDetail == null)
             {

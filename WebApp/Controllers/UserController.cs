@@ -165,7 +165,7 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.AddUser(user);
-                var userDetail = new BuyerDetail
+                var userDetail = new UserDetail
                 {
                     UserId = user.Id,
                     Fullname = "",
@@ -294,13 +294,13 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.UpdateUser(sellerId, user);
-                var userDetail = new BuyerDetail
+                var userDetail = new UserDetail
                 {
-                    Fullname = model.BuyerDetail.Fullname,
-                    Dob = model.BuyerDetail.Dob,
-                    Gender = model.BuyerDetail.Gender,
-                    Address = model.BuyerDetail.Address,
-                    Phone = model.BuyerDetail.Phone,
+                    Fullname = model.UserDetail.Fullname,
+                    Dob = model.UserDetail.Dob,
+                    Gender = model.UserDetail.Gender,
+                    Address = model.UserDetail.Address,
+                    Phone = model.UserDetail.Phone,
                 };
                 _userDetailsService.UpdateUserDetails(sellerId, userDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");

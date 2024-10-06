@@ -5,7 +5,7 @@ namespace COCOApp.Repositories
 {
     public interface IUserDetailRepository
     {
-        void AddUserDetails(BuyerDetail details);
-        void UpdateUserDetails(int userId, BuyerDetail detail);
+        void AddUserDetails(UserDetail details);
+        void UpdateUserDetails(int userId, UserDetail detail);
     }
 }

@@ -12,12 +12,12 @@ namespace COCOApp.Services
             _userDetailRepository = userDetailRepository;
         }
 
-        public void AddUserDetails(BuyerDetail details)
+        public void AddUserDetails(UserDetail details)
         {
             _userDetailRepository.AddUserDetails(details);
         }
 
-        public void UpdateUserDetails(int userId, BuyerDetail detail)
+        public void UpdateUserDetails(int userId, UserDetail detail)
         {
             _userDetailRepository.UpdateUserDetails(userId, detail);
         }
