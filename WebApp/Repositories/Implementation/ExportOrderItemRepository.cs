@@ -35,7 +35,47 @@ namespace COCOApp.Repositories
             }
             _context.SaveChanges();
         }
+        public List<ExportOrderItem> GetExportOrderItems(string dateRange, int customerId, int sellerId)
+        {
+            DateTime startDate = DateTime.MinValue;
+            DateTime endDate = DateTime.MaxValue;
 
+            if (!string.IsNullOrEmpty(dateRange))
+            {
+                var dateRangeParts = dateRange.Split(" - ");
+                if (dateRangeParts.Length == 2)
+                {
+                    if (!DateTime.TryParse(dateRangeParts[0], CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                    {
+                        startDate = DateTime.MinValue;
+                    }
+                    if (!DateTime.TryParse(dateRangeParts[1], CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                    {
+                        endDate = DateTime.MaxValue;
+                    }
+                }
+            }
+
+            try
+            {
+                var query = _context.ExportOrderItems.AsQueryable();
+                if (sellerId > 0)
+                {
+                    query = query.Where(o => o.SellerId == sellerId);
+                }
+                query = query.Include(p=>p.Product)
+                             .Include(o => o.Order)
+                             .ThenInclude(oi => oi.Customer)
+                             .Where(o => o.Order.CustomerId == customerId && o.Order.OrderDate >= startDate && o.Order.OrderDate <= endDate);
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error retrieving orders: {ex.Message}");
+                throw new ApplicationException("Error retrieving orders", ex);
+            }
+        }
         public ExportOrderItem GetExportOrderItemById(int orderId, int productId, int sellerId)
         {
             var query = _context.ExportOrderItems

@@ -16,7 +16,10 @@ namespace COCOApp.Services
         {
             _userDetailRepository.AddUserDetails(details);
         }
-
+        public UserDetail GetUserDetailsById(int id)
+        {
+            return _userDetailRepository.GetUserDetailsById(id);
+        }
         public void UpdateUserDetails(int userId, UserDetail detail)
         {
             _userDetailRepository.UpdateUserDetails(userId, detail);

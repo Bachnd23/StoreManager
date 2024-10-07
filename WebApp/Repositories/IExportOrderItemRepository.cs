@@ -13,5 +13,6 @@ namespace COCOApp.Repositories
         int GetTotalExportOrderItems(int orderId,string nameQuery, int sellerId);
         ExportOrderItem GetExportOrderItemById(int orderItemId,int productId, int sellerId);
         void EditExportOrderItem(int orderId,int productId, ExportOrderItem order);
+        List<ExportOrderItem> GetExportOrderItems(string dateRange, int customerId, int sellerId);
     }
 }

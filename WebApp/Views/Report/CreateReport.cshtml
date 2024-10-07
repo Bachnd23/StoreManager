@@ -10,6 +10,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Summary</title>
+    <style>
+        /* Hide the checkbox column */
+        .resultTable thead th:first-child,
+        .resultTable tbody td:first-child {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Form Start -->
@@ -58,20 +65,21 @@
                     }
                     else
                     {
+
                         <table class="table table-striped w-100 resultTable">
                             <thead>
                                 <tr>
-                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox" checked hidden></th>
                                     <th scope="col">Mã đơn hàng</th>
                                     <th scope="col">Ngày mua</th>
-                                    <th scope="col">Thông tin  đơn hàng </th>
+                                    <th scope="col">Thông tin đơn hàng</th>
                                 </tr>
                             </thead>
                             <tbody class="resultTableBody">
                                 @foreach (ExportOrder o in Model)
                                 {
                                     <tr>
-                                        <th scope="col"><input type="checkbox" class="orderCheckbox" data-order-id="@o.Id"></th>
+                                        <td><input type="checkbox" class="orderCheckbox" data-order-id="@o.Id" checked hidden></td>
                                         <td>@o.Id</td>
                                         <td>@o.OrderDate</td>
                                         <td><button type="button" class="btn btn-primary viewOrderDetailsBtn" data-order-id="@o.Id"><i class="fas fa-info-circle"></i></button></td>
@@ -79,6 +87,7 @@
                                 }
                             </tbody>
                         </table>
+
                     }
                 </div>
                 <div class="w-100"></div>

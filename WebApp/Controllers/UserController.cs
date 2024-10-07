@@ -195,7 +195,6 @@ namespace COCOApp.Controllers
                 {
                     await _userService.UpdateRememberMeTokenAsync(user.Username);
                 }
-
                 // Create claims for the authenticated user
                 var claims = new List<Claim>
                     {
