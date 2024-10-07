@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Reports\OrderReport.rdlc" />
+    <EmbeddedResource Include="Reports\OrderReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

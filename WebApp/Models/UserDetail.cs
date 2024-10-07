@@ -12,6 +12,6 @@ namespace COCOApp.Models
         public DateTime Dob { get; set; }
         public bool Gender { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User? User { get; set; } 
     }
 }

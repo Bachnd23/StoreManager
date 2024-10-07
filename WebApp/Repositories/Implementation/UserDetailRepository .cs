@@ -17,7 +17,17 @@ namespace COCOApp.Repositories
             _context.UserDetails.Add(details);
             _context.SaveChanges();
         }
+        public UserDetail GetUserDetailsById(int id)
+        {
+            var user = _context.UserDetails.Include(u => u.User)
+                                           .FirstOrDefault(u => u.UserId == id);
+            if (user != null)
+            {
+                return user;
+            }
 
+            return null; // User not found 
+        }
         public void UpdateUserDetails(int userId, UserDetail detail)
         {
             var existingDetail = _context.UserDetails.SingleOrDefault(d => d.UserId == userId);

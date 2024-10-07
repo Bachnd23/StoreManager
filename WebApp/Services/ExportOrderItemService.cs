@@ -42,5 +42,9 @@ namespace COCOApp.Services
         {
             _orderItemRepository.EditExportOrderItem(orderId,productId, order);
         }
+        public List<ExportOrderItem> GetExportOrderItems(string dateRange, int customerId, int sellerId)
+        {
+            return _orderItemRepository.GetExportOrderItems(dateRange, customerId, sellerId);
+        }
     }
 }
