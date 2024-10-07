@@ -102,11 +102,13 @@ function generateOrdersTable(data) {
 
     // Iterate over the user results and create table rows
     $.each(data.orderResults, function (index, order) {
+        const orderDateFormatted = new Date(order.orderDate).toLocaleDateString();
+
         const row = $('<tr>');
         row.append($('<td>').text(order.customer.name));
         row.append($('<td>').text(order.updatedAt));
-        row.append($('<td>').text(order.orderDate));
-        row.append($('<td>').text(order.complete));
+        row.append($('<td>').text(orderDateFormatted));
+        //row.append($('<td>').text(order.complete));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
