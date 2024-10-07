@@ -2,7 +2,7 @@
 
 namespace COCOApp.Models.Validations
 {
-    public class SellerDetailMetaData
+    public class UserDetailMetaData
     {
         [Required(ErrorMessage = "Họ và tên là bắt buộc")]
         [StringLength(100, ErrorMessage = "Độ dài họ và tên không được vượt quá 100 ký tự")]

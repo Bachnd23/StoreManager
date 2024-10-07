@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace COCOApp.Controllers
 {
@@ -17,7 +18,7 @@ namespace COCOApp.Controllers
             _hubContext = hubContext;
         }
         private const int PageSize = 10;
-
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetList(string nameQuery,int statusId, int pageNumber = 1)
         {
@@ -34,6 +35,7 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetProduct(int productId, int pageNumber = 1)
         {
@@ -49,6 +51,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Products/ListProducts.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewEdit(int productId, int pageNumber = 1)
         {
@@ -64,15 +67,18 @@ namespace COCOApp.Controllers
                 return View("/Views/Products/ListProducts.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewList(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/Products/ListProducts.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewAdd()
         {
             return View("/Views/Products/AddProduct.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> AddProduct(Product model)
@@ -122,7 +128,7 @@ namespace COCOApp.Controllers
             return RedirectToAction("ViewList");
         }
 
-
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditProduct(Product model)

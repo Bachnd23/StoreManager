@@ -2,6 +2,7 @@
 using COCOApp.Models;
 using COCOApp.Services;
 using COCOApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace COCOApp.Controllers
         }
         private const int PageSize = 10;
 
-
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetOrdersList(string nameQuery, int pageNumber = 1)
         {
@@ -42,6 +43,7 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetOrderItemsList(int orderId,string nameQuery, int pageNumber = 1)
         {
@@ -58,6 +60,7 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetOrderItemsListNoPaging(int orderId)
         {
@@ -70,6 +73,7 @@ namespace COCOApp.Controllers
             };
             return Json(response);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewDetail(int orderId, int pageNumber = 1)
         {
@@ -85,6 +89,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewOrderItemDetail(int orderId,int productId, int pageNumber = 1)
         {
@@ -100,6 +105,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewEdit(int orderId, int pageNumber = 1)
         {
@@ -117,6 +123,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewEditOrderItem(int orderId,int productId, int pageNumber = 1)
         {
@@ -134,6 +141,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Order/ListOrders.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewList(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
@@ -145,7 +153,7 @@ namespace COCOApp.Controllers
             ViewData["OrderId"] = orderId;
             return View("/Views/Order/ListItems.cshtml");
         }
-
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult Add()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
@@ -154,7 +162,7 @@ namespace COCOApp.Controllers
             var viewModel = new MultiOrderViewModel();
             return View("/Views/Order/AddOrder.cshtml", viewModel);
         }
-
+        [Authorize(Roles = "Admin,Seller")]
         // POST: Order/CreateMultiple
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -274,6 +282,7 @@ namespace COCOApp.Controllers
         //    return RedirectToAction("ViewList"); // Redirect to action "ViewList" if model state is valid
 
         //}
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditOrder(ExportOrder model)
@@ -311,6 +320,7 @@ namespace COCOApp.Controllers
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditOrderItem(ExportOrderItem model)

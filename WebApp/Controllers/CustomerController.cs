@@ -54,6 +54,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Customer/ListCustomers.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewEdit(int customerId, int pageNumber = 1)
         {
@@ -82,10 +83,12 @@ namespace COCOApp.Controllers
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/Customer/ListCustomers.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewDetail()
         {
             return View("/Views/Customer/CustomerDetail.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> AddCustomer(Customer model)
@@ -129,6 +132,7 @@ namespace COCOApp.Controllers
             // Redirect to the customer list or a success page
             return RedirectToAction("ViewList");
         }
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditCustomer(Customer model)

@@ -25,12 +25,14 @@ namespace COCOApp.Controllers
             _webHostEnvironment = webHostEnvironment;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewCreate()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             return View("/Views/Report/CreateReport.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetOrders(int customerId, string daterange)
         {
@@ -41,6 +43,7 @@ namespace COCOApp.Controllers
             HttpContext.Session.SetObjectInSession("dateRange", daterange);
             return View("/Views/Report/CreateReport.cshtml", orders);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public IActionResult CreateSummary(List<int> orderIds)
         {
@@ -80,6 +83,7 @@ namespace COCOApp.Controllers
 
             return View("/Views/Report/ReportSummary.cshtml", reportDetails);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public IActionResult CreateInvoice(List<int> orderIds)
         {
@@ -101,6 +105,7 @@ namespace COCOApp.Controllers
             // Pass orders to the view
             return View("/Views/Report/Invoice.cshtml", orders);
         }
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<IActionResult> Print(List<ReportDetail> reportDetails)
         {
             // Check if the model is valid

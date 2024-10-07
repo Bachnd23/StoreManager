@@ -248,6 +248,23 @@ namespace COCOApp.Repositories
                 Console.WriteLine($"No user found with username: {username}");
             }
         }
+        public async Task RemoveRemembermeTokenAsync(String username)
+        {
+            var user = await _context.Users.Include(u => u.UserDetail)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user != null)
+            {
+                user.RememberToken = "";
+
+                await _context.SaveChangesAsync();
+
+            }
+            else
+            {
+                Console.WriteLine($"No user found with username: {username}");
+            }
+        }
         public async Task<User> CheckRemembermeTokenAsync()
         {
             var tokenExpiration = _httpContextAccessor.HttpContext.Request.Cookies["RememberMeTokenTokenExpiration"];
