@@ -6,31 +6,31 @@ using System.Globalization;
 
 namespace COCOApp.Repositories
 {
-    public class ExportOrderRepository : IExportOrderRepository
+    public class ImportOrderRepository : IImportOrderRepository
     {
         private readonly StoreManagerContext _context;
 
-        public ExportOrderRepository(StoreManagerContext context)
+        public ImportOrderRepository(StoreManagerContext context)
         {
             _context = context;
         }
 
-        public List<ExportOrder> GetExportOrders()
+        public List<ImportOrder> GetImportOrders()
         {
-            return _context.ExportOrders
-                              .Include(o => o.Customer)
-                              .Include(o => o.ExportOrderItems)
+            return _context.ImportOrders
+                              .Include(o => o.Supplier)
+                              .Include(o => o.ImportOrderItems)
                               .ThenInclude(oi => oi.Product)
                               .AsQueryable()
                               .ToList();
         }
 
 
-        public List<ExportOrder> GetExportOrdersByIds(List<int> orderIds, int sellerId)
+        public List<ImportOrder> GetImportOrdersByIds(List<int> orderIds, int sellerId)
         {
-            var query = _context.ExportOrders
-                                  .Include(o => o.Customer)
-                                  .Include(o => o.ExportOrderItems)
+            var query = _context.ImportOrders
+                                  .Include(o => o.Supplier)
+                                  .Include(o => o.ImportOrderItems)
                                   .ThenInclude(oi => oi.Product)
                                 .Where(o => orderIds.Contains(o.Id))
                                 .AsQueryable();
@@ -43,11 +43,11 @@ namespace COCOApp.Repositories
             return query.ToList();
         }
 
-        public ExportOrder GetExportOrderById(int orderId, int sellerId)
+        public ImportOrder GetImportOrderById(int orderId, int sellerId)
         {
-            var query = _context.ExportOrders
-                                  .Include(o => o.Customer)
-                                  .Include(o => o.ExportOrderItems)
+            var query = _context.ImportOrders
+                                  .Include(o => o.Supplier)
+                                  .Include(o => o.ImportOrderItems)
                                   .ThenInclude(oi => oi.Product)
                                 .AsQueryable();
 
@@ -59,21 +59,21 @@ namespace COCOApp.Repositories
             return orderId > 0 ? query.FirstOrDefault(u => u.Id == orderId) : null;
         }
 
-        public List<ExportOrder> GetExportOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<ImportOrder> GetImportOrders(string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             pageNumber = Math.Max(pageNumber, 1);
 
-            var query = _context.ExportOrders.AsQueryable();
+            var query = _context.ImportOrders.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
             }
             if (!string.IsNullOrEmpty(nameQuery))
             {
-                query = query.Where(o => o.Customer.Name.Contains(nameQuery));
+                query = query.Where(o => o.Supplier.Name.Contains(nameQuery));
             }
-            query = query.Include(o => o.Customer)
-                         .Include(o => o.ExportOrderItems)
+            query = query.Include(o => o.Supplier)
+                         .Include(o => o.ImportOrderItems)
                          .ThenInclude(oi => oi.Product)
                          .OrderByDescending(o => o.Id);
 
@@ -82,27 +82,27 @@ namespace COCOApp.Repositories
                         .ToList();
         }
 
-        public int GetTotalExportOrders(string nameQuery, int sellerId)
+        public int GetTotalImportOrders(string nameQuery, int sellerId)
         {
-            var query = _context.ExportOrders.AsQueryable();
+            var query = _context.ImportOrders.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(o => o.SellerId == sellerId);
             }
             if (!string.IsNullOrEmpty(nameQuery))
             {
-                query = query.Where(c => c.Customer.Name.Contains(nameQuery));
+                query = query.Where(c => c.Supplier.Name.Contains(nameQuery));
             }
-            query = query.Include(o => o.Customer)
-                         .Include(o => o.ExportOrderItems)
+            query = query.Include(o => o.Supplier)
+                         .Include(o => o.ImportOrderItems)
                          .ThenInclude(oi => oi.Product);
 
             return query.Count();
         }
 
-        public List<SelectListItem> GetCustomersSelectList(int sellerId)
+        public List<SelectListItem> GetSuppliersSelectList(int sellerId)
         {
-            var query = _context.Customers.AsQueryable();
+            var query = _context.Suppliers.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(c => c.SellerId == sellerId);
@@ -128,23 +128,23 @@ namespace COCOApp.Repositories
             }).ToList();
         }
 
-        public void AddExportOrder(ExportOrder order)
+        public void AddImportOrder(ImportOrder order)
         {
-            ExportOrder exportOrder=_context.ExportOrders.FirstOrDefault(o => o.CustomerId==order.CustomerId&&o.OrderDate==order.OrderDate);
-            if (exportOrder == null)
+            ImportOrder importOrder = _context.ImportOrders.FirstOrDefault(o => o.SupplierId == order.SupplierId && o.OrderDate == order.OrderDate);
+            if (importOrder == null)
             {
-                _context.ExportOrders.Add(order);
+                _context.ImportOrders.Add(order);
                 _context.SaveChanges();
             }
         }
 
-        public void EditExportOrder(int orderId, ExportOrder order)
+        public void EditImportOrder(int orderId, ImportOrder order)
         {
-            var existingOrder = _context.ExportOrders.FirstOrDefault(c => c.Id == orderId);
+            var existingOrder = _context.ImportOrders.FirstOrDefault(c => c.Id == orderId);
 
             if (existingOrder != null)
             {
-                existingOrder.CustomerId = order.CustomerId;
+                existingOrder.SupplierId = order.SupplierId;
                 existingOrder.OrderDate = order.OrderDate;
                 existingOrder.UpdatedAt = order.UpdatedAt;
 
@@ -156,7 +156,7 @@ namespace COCOApp.Repositories
             }
         }
 
-        public List<ExportOrder> GetExportOrders(string dateRange, int customerId, int sellerId)
+        public List<ImportOrder> GetImportOrders(string dateRange, int supplierId, int sellerId)
         {
             DateTime startDate = DateTime.MinValue;
             DateTime endDate = DateTime.MaxValue;
@@ -179,16 +179,15 @@ namespace COCOApp.Repositories
 
             try
             {
-                var query = _context.ExportOrders.AsQueryable();
+                var query = _context.ImportOrders.AsQueryable();
                 if (sellerId > 0)
                 {
                     query = query.Where(o => o.SellerId == sellerId);
                 }
-                query = query.Include(o => o.Customer)
-                             .Include(o => o.ExportOrderItems)
+                query = query.Include(o => o.Supplier)
+                             .Include(o => o.ImportOrderItems)
                              .ThenInclude(oi => oi.Product)
-                             .Where(o => o.CustomerId == customerId && o.OrderDate >= startDate && o.OrderDate <= endDate)
-                             .OrderByDescending(o=>o.OrderDate);
+                             .Where(o => o.SupplierId == supplierId && o.OrderDate >= startDate && o.OrderDate <= endDate);
 
                 return query.ToList();
             }
@@ -198,15 +197,15 @@ namespace COCOApp.Repositories
                 throw new ApplicationException("Error retrieving orders", ex);
             }
         }
-        public ExportOrder GetExportOrderByCustomerAndDate(int customerId, DateTime date)
+        public ImportOrder GetImportOrderBySupplierAndDate(int supplierId, DateTime date)
         {
-            var query = _context.ExportOrders
-                      .Include(o => o.Customer)
-                      .Include(o => o.ExportOrderItems)
+            var query = _context.ImportOrders
+                      .Include(o => o.Supplier)
+                      .Include(o => o.ImportOrderItems)
                       .ThenInclude(oi => oi.Product)
                     .AsQueryable();
 
-            return query.FirstOrDefault(o=>o.CustomerId==customerId&&o.OrderDate==date);
+            return query.FirstOrDefault(o => o.SupplierId == supplierId && o.OrderDate == date);
         }
     }
 }

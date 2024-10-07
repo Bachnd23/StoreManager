@@ -145,12 +145,15 @@
                             <a href="~/Order/ViewList" class="nav-item nav-link @(activePage == "4" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-table me-2"></i>Quản lý đơn hàng
                             </a>
-                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
+                            <a href="~/ImportOrder/ViewList" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
+                                <i class="fa fa-table me-2"></i>Quản lý đơn hàng nhập
+                            </a>
+                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-file me-2"></i>Tổng kết
                             </a>
                             @if (user!=null&&user.Role == 1)
                             {
-                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
+                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "7" ? "active" : "")" name="sidebaritem">
                                     <i class="fa fa-user me-2"></i>Danh sách người dùng
                                 </a>
                             }

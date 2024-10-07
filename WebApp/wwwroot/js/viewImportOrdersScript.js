@@ -53,7 +53,7 @@ function fetchOrdersResults() {
             generateOrdersTable(data);
         },
         error: function (xhr, status, error) {
-            console.error('Error fetching customer data:', error);
+            console.error('Error fetching supplier data:', error);
         },
         complete: function () {
             isFetchingData = false; // Reset the flag after data fetch is complete
@@ -100,23 +100,24 @@ function generateOrdersTable(data) {
         return;
     }
 
+    console.log("Received data:", data);
     // Iterate over the user results and create table rows
-    $.each(data.orderResults, function (index, order) {
-        const orderDateFormatted = new Date(order.orderDate).toLocaleDateString();
+    $.each(data.orderResults, function (index, order) { 
+        console.log("Processing order:", order);
         const row = $('<tr>');
-        row.append($('<td>').text(order.customer.name));
+        row.append($('<td>').text(order.supplier.name));
         row.append($('<td>').text(order.updatedAt));
-        row.append($('<td>').text(orderDateFormatted));
-        //row.append($('<td>').text(order.complete));
+        row.append($('<td>').text(order.orderDate));
+        row.append($('<td>').text(order.complete));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/Order/ViewDetail?orderId=${order.id}&pageNumber=${pageNumber}`,
+            href: `/ImportOrder/ViewDetail?orderId=${order.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
         const viewItemsButton = $('<a>', {
-            href: `/Order/ViewOrderItemsList?orderId=${order.id}&pageNumber=${pageNumber}`,
+            href: `/ImportOrder/ViewOrderItemsList?orderId=${order.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-info-circle"></i>'
         });
