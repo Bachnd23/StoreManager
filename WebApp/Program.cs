@@ -44,7 +44,6 @@ builder.Services.AddScoped<IExportOrderRepository, ExportOrderRepository>();
 builder.Services.AddScoped<IImportOrderRepository, ImportOrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
-builder.Services.AddScoped<IReportsExportOrdersMappingRepository, ReportsExportOrdersMappingRepository>();
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
@@ -54,7 +53,6 @@ builder.Services.AddScoped<IImportOrderItemRepository,ImportOrderItemRepository>
 builder.Services.AddScoped<ExportOrderService>();
 builder.Services.AddScoped<ImportOrderService>();
 builder.Services.AddScoped<ReportService>();
-builder.Services.AddScoped<ReportsExportOrdersMappingService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();

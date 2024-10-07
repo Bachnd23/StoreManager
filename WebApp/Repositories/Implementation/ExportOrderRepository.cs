@@ -187,7 +187,8 @@ namespace COCOApp.Repositories
                 query = query.Include(o => o.Customer)
                              .Include(o => o.ExportOrderItems)
                              .ThenInclude(oi => oi.Product)
-                             .Where(o => o.CustomerId == customerId && o.OrderDate >= startDate && o.OrderDate <= endDate);
+                             .Where(o => o.CustomerId == customerId && o.OrderDate >= startDate && o.OrderDate <= endDate)
+                             .OrderByDescending(o=>o.OrderDate);
 
                 return query.ToList();
             }

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 namespace COCOApp.Controllers
 {
     public class UserController : Controller
@@ -24,7 +25,7 @@ namespace COCOApp.Controllers
         }
 
         private const int PageSize = 10;
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetList(string nameQuery, int pageNumber = 1)
         {
@@ -40,6 +41,7 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetUser(int userId)
         {
@@ -53,10 +55,12 @@ namespace COCOApp.Controllers
                 return View("/Views/User/ListUsers.cshtml");
             }
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult ViewList()
         {
             return View("/Views/User/ListUsers.cshtml");
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult ViewAdd()
         {
             return View("/Views/User/AddUser.cshtml");
@@ -65,11 +69,13 @@ namespace COCOApp.Controllers
         {
             return View("/Views/User/ForgotPassword.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewProfile()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             return View("/Views/User/UserProfile.cshtml", user);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult ViewEdit(int userId)
         {
@@ -83,6 +89,7 @@ namespace COCOApp.Controllers
                 return View("/Views/User/ListUsers.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public IActionResult EditUser(User model)
         {
@@ -120,6 +127,7 @@ namespace COCOApp.Controllers
                 return View("/Views/User/EditUser.cshtml", model);
             }
         }
+
         public async Task<IActionResult> ViewChangePassword(string email)
         {
             if (await _userService.CheckPasswordResetTokenAsync(email))
@@ -133,6 +141,7 @@ namespace COCOApp.Controllers
                 return View("/Views/Home/SignIn.cshtml");
             }
         }
+
 
         [HttpPost]
         public IActionResult RegisterUser(User model)
@@ -165,7 +174,7 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.AddUser(user);
-                var userDetail = new BuyerDetail
+                var userDetail = new UserDetail
                 {
                     UserId = user.Id,
                     Fullname = "",
@@ -195,7 +204,6 @@ namespace COCOApp.Controllers
                 {
                     await _userService.UpdateRememberMeTokenAsync(user.Username);
                 }
-
                 // Create claims for the authenticated user
                 var claims = new List<Claim>
                     {
@@ -249,6 +257,7 @@ namespace COCOApp.Controllers
 
         public async Task<IActionResult> LogOut()
         {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             // Clear the session data
             HttpContext.Session.Clear();
 
@@ -256,13 +265,15 @@ namespace COCOApp.Controllers
             HttpContext.Response.Cookies.Delete("RememberMeToken");
             HttpContext.Response.Cookies.Delete("RememberMeTokenTokenExpiration");
 
+            await _userService.RemoveRememberMeTokenAsync(user.Username);
+
             // Sign out from the authentication scheme
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Redirect to the login page or home page after logout
             return RedirectToAction("ViewSignIn", "Home");
         }
-
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public IActionResult UpdateUser(User model)
         {
@@ -294,13 +305,13 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.UpdateUser(sellerId, user);
-                var userDetail = new BuyerDetail
+                var userDetail = new UserDetail
                 {
-                    Fullname = model.BuyerDetail.Fullname,
-                    Dob = model.BuyerDetail.Dob,
-                    Gender = model.BuyerDetail.Gender,
-                    Address = model.BuyerDetail.Address,
-                    Phone = model.BuyerDetail.Phone,
+                    Fullname = model.UserDetail.Fullname,
+                    Dob = model.UserDetail.Dob,
+                    Gender = model.UserDetail.Gender,
+                    Address = model.UserDetail.Address,
+                    Phone = model.UserDetail.Phone,
                 };
                 _userDetailsService.UpdateUserDetails(sellerId, userDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");

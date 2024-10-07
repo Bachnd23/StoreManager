@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace COCOApp.Models
 {
-    public partial class BuyerDetail
+    public partial class UserDetail
     {
         public int UserId { get; set; }
         public string Fullname { get; set; } = null!;
@@ -12,6 +12,6 @@ namespace COCOApp.Models
         public DateTime Dob { get; set; }
         public bool Gender { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User? User { get; set; } 
     }
 }

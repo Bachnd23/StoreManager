@@ -83,6 +83,10 @@ namespace COCOApp.Services
         {
             await _userRepository.UpdateRemembermeTokenAsync(username);
         }
+        public async Task RemoveRememberMeTokenAsync(string username)
+        {
+            await _userRepository.RemoveRemembermeTokenAsync(username);
+        }
 
         public async Task<User> CheckRememberMeTokenAsync()
         {

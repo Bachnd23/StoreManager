@@ -22,7 +22,7 @@ namespace COCOApp.Repositories
         public List<User> GetUsers()
         {
             var query = _context.Users.AsQueryable();
-            query = query.Include(u => u.SellerDetail);
+            query = query.Include(u => u.UserDetail);
             return query.ToList();
         }
 
@@ -113,7 +113,7 @@ namespace COCOApp.Repositories
 
         public User GetUserByNameAndPass(string username, string password)
         {
-            var user = _context.Users.Include(u => u.SellerDetail)
+            var user = _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefault(u => u.Username == username);
 
             if (user != null && user.Status == true && BCrypt.Net.BCrypt.Verify(password, user.Password))
@@ -126,13 +126,13 @@ namespace COCOApp.Repositories
 
         public User GetUserById(int userId)
         {
-            return _context.Users.Include(u => u.SellerDetail)
+            return _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefault(u => u.Id == userId);
         }
 
         public User GetActiveUserByEmail(string email)
         {
-            var user = _context.Users.Include(u => u.SellerDetail)
+            var user = _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefault(u => u.Email == email);
 
             if (user != null && user.Status == true)
@@ -145,19 +145,19 @@ namespace COCOApp.Repositories
 
         public User GetUserByUsername(string username)
         {
-            return _context.Users.Include(u => u.SellerDetail)
-                .FirstOrDefault(u => u.Username == username);
+            return _context.Users.Include(u => u.UserDetail)  
+                                 .FirstOrDefault(u => u.Username == username);
         }
 
         public User GetUserByEmail(string email)
         {
-            return _context.Users.Include(u => u.SellerDetail)
+            return _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefault(u => u.Email == email);
         }
 
         public async Task UpdateUserPasswordResetTokenAsync(string email)
         {
-            var user = await _context.Users.Include(u => u.SellerDetail)
+            var user = await _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user != null)
@@ -222,7 +222,7 @@ namespace COCOApp.Repositories
         }
         public async Task UpdateRemembermeTokenAsync(String username)
         {
-            var user = await _context.Users.Include(u => u.SellerDetail)
+            var user = await _context.Users.Include(u => u.UserDetail)
                 .FirstOrDefaultAsync(u => u.Username==username);
 
             if (user != null)
@@ -248,6 +248,23 @@ namespace COCOApp.Repositories
                 Console.WriteLine($"No user found with username: {username}");
             }
         }
+        public async Task RemoveRemembermeTokenAsync(String username)
+        {
+            var user = await _context.Users.Include(u => u.UserDetail)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user != null)
+            {
+                user.RememberToken = "";
+
+                await _context.SaveChangesAsync();
+
+            }
+            else
+            {
+                Console.WriteLine($"No user found with username: {username}");
+            }
+        }
         public async Task<User> CheckRemembermeTokenAsync()
         {
             var tokenExpiration = _httpContextAccessor.HttpContext.Request.Cookies["RememberMeTokenTokenExpiration"];
@@ -260,7 +277,7 @@ namespace COCOApp.Repositories
                     if (DateTime.UtcNow <= expirationTime)
                     {
 
-                        var user = await _context.Users.Include(u => u.SellerDetail)
+                        var user = await _context.Users.Include(u => u.UserDetail)
                           .FirstOrDefaultAsync(u => u.RememberToken == tokenFromCookie);
 
                         if (user != null)
