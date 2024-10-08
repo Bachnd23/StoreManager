@@ -12,6 +12,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/Bachnd23/StoreManager',
+                                credentialsId: 'jenkin-huy-access'
             }
         }
         stage('Set Permissions') {
