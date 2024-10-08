@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Set Permissions') {
             steps {
-                sh 'chmod +x deploy.sh'
+                // sh 'chmod +x deploy.sh'
                 sh 'sudo usermod -aG docker jenkins'
             }
         }
