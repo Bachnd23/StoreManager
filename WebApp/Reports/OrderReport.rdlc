@@ -595,7 +595,7 @@
         <Height>1.19445in</Height>
         <Style />
       </Body>
-      <Width>7.29933in</Width>
+      <Width>7.191in</Width>
       <Page>
         <PageHeader>
           <Height>1.93833in</Height>
@@ -860,9 +860,9 @@
               </Paragraphs>
               <rd:DefaultName>TotalPricePM</rd:DefaultName>
               <Top>0.13833in</Top>
-              <Left>5.98567in</Left>
+              <Left>4.83in</Left>
               <Height>0.25in</Height>
-              <Width>1.16933in</Width>
+              <Width>1.57766in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -893,9 +893,9 @@
               </Paragraphs>
               <rd:DefaultName>TotalQuantityPM</rd:DefaultName>
               <Top>0.13833in</Top>
-              <Left>4.83in</Left>
+              <Left>3.10234in</Left>
               <Height>0.25in</Height>
-              <Width>1.15567in</Width>
+              <Width>1.65822in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
