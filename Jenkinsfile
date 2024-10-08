@@ -24,7 +24,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withDockerRegistry(credentialsId: 'docker-hub-login', url: 'https://index.docker.io/v1/') {
-                    sh ' docker build -t coco -f WebApp/Dockerfile --force-rm -t coco-backend .'
+                sh 'docker build -t coco-backend -f WebApp/Dockerfile --force-rm .'
                 }
             }
         }
