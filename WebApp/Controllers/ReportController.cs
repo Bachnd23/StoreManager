@@ -39,7 +39,10 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             List<ExportOrder> orders = _orderService.GetExportOrders(daterange, customerId, user.Id);
-            string dateRange = orders[orders.Count - 1].OrderDate.ToString("MM / dd / yyyy") + " - " + orders[0].OrderDate.ToString("MM / dd / yyyy");
+            if (orders.Count > 0)
+            {
+                string dateRange = orders[orders.Count - 1].OrderDate.ToString("MM / dd / yyyy") + " - " + orders[0].OrderDate.ToString("MM / dd / yyyy");
+            }
             HttpContext.Session.SetObjectInSession("dateRange", daterange);
             return View("/Views/Report/CreateReport.cshtml", orders);
         }

@@ -143,7 +143,7 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.2in</Width>
+                  <Width>0.786in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.16933in</Width>
@@ -158,7 +158,7 @@
                   <Width>1.16933in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.16933in</Width>
+                  <Width>0.761in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -507,7 +507,9 @@
                                   <Style />
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>volume1</rd:DefaultName>
@@ -582,7 +584,7 @@
             <Top>0.38611in</Top>
             <Left>0.27768in</Left>
             <Height>0.5in</Height>
-            <Width>6.87732in</Width>
+            <Width>6.05499in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -593,7 +595,7 @@
         <Height>1.19445in</Height>
         <Style />
       </Body>
-      <Width>7.29933in</Width>
+      <Width>7.191in</Width>
       <Page>
         <PageHeader>
           <Height>1.93833in</Height>
@@ -858,9 +860,9 @@
               </Paragraphs>
               <rd:DefaultName>TotalPricePM</rd:DefaultName>
               <Top>0.13833in</Top>
-              <Left>5.98567in</Left>
+              <Left>4.83in</Left>
               <Height>0.25in</Height>
-              <Width>1.16933in</Width>
+              <Width>1.57766in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -891,9 +893,9 @@
               </Paragraphs>
               <rd:DefaultName>TotalQuantityPM</rd:DefaultName>
               <Top>0.13833in</Top>
-              <Left>4.83in</Left>
+              <Left>3.10234in</Left>
               <Height>0.25in</Height>
-              <Width>1.15567in</Width>
+              <Width>1.65822in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
