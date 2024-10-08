@@ -1,0 +1,6 @@
+services:
+  coco-backend:
+    image: phamdat2002/coco-backend:latest
+    container_name: coco-backend:latest
+    ports:
+      - "5008:80"
