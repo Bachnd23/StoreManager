@@ -42,24 +42,25 @@ namespace COCOApp.Controllers
             {
                 // Create claims for the authenticated user
                 var claims = new List<Claim>
-                    {
-                    new Claim(ClaimTypes.Name, authenticatedUser.Username),
-                    new Claim(ClaimTypes.Email, authenticatedUser.Email),
-                    new Claim(ClaimTypes.Role, GetRoleName((int)authenticatedUser.Role)) // Convert role ID to role name
-                    };
+        {
+            new Claim(ClaimTypes.Name, authenticatedUser.Username),
+            new Claim(ClaimTypes.Email, authenticatedUser.Email),
+            new Claim(ClaimTypes.Role, GetRoleName((int)authenticatedUser.Role)) // Convert role ID to role name
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-                // Sign in the user
+                // Sign in the user with the claims
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
                 if (authenticatedUser.Role == 2) // Seller
                 {
                     // Store authenticated user in session
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
-                else if (authenticatedUser.Role == 1)// Admin
+                else if (authenticatedUser.Role == 1) // Admin
                 {
                     int sellerId = authenticatedUser.Id;
                     HttpContext.Session.SetObjectInSession("sellerId", sellerId);
@@ -75,12 +76,12 @@ namespace COCOApp.Controllers
             }
             else
             {
-                // Sign out from the authentication scheme
+                // Clear any lingering authentication state if the user is not authenticated
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return View("/Views/Home/SignIn.cshtml");
             }
-
         }
+
         // Helper method to convert role ID to role name
         private string GetRoleName(int roleId)
         {

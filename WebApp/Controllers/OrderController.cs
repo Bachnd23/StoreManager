@@ -132,7 +132,7 @@ namespace COCOApp.Controllers
             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
             ViewData["PageNumber"] = pageNumber;
-            if (model != null)
+            if (model != null&&!model.Status)
             {
                 return View("/Views/Order/EditOrderItem.cshtml", model);
             }
@@ -215,9 +215,11 @@ namespace COCOApp.Controllers
                             OrderId = exportOrder.Id,
                             ProductId = currentOrder.ProductId,
                             Volume = currentOrder.ProductVolume,
+                            RealVolume=0,
                             ProductPrice = product.Cost,
                             Total = currentOrder.ProductVolume * product.Cost,
                             SellerId = sellerId,
+                            Status=false,
                             CreatedAt = DateTime.Now,
                             UpdatedAt = DateTime.Now
                         };
@@ -341,14 +343,20 @@ namespace COCOApp.Controllers
             }
             ExportOrderItem oldOrder = _itemService.GetExportOrderitemById(model.OrderId,model.ProductId, user.Id);
             // Convert the model to your domain entity
-
+            Boolean modelStatus = false;
+            if (model.RealVolume>0)
+            {
+                modelStatus = true;
+            }
             var order = new ExportOrderItem
             {
                 OrderId = model.OrderId,
                 ProductId = model.ProductId,    
                 Volume = model.Volume,
+                RealVolume = model.RealVolume,
                 ProductPrice= model.ProductPrice,
                 Total=model.ProductPrice*model.Volume,
+                Status=modelStatus,
                 SellerId = oldOrder.SellerId,
                 UpdatedAt = DateTime.Now
             };
