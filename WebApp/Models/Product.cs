@@ -24,6 +24,7 @@ namespace COCOApp.Models
 
         public virtual Category? Category { get; set; }
         public virtual User? Seller { get; set; }
+        public virtual InventoryManagement? InventoryManagement { get; set; }
         public virtual ProductDetail? ProductDetail { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ImportOrderItem> ImportOrderItems { get; set; }

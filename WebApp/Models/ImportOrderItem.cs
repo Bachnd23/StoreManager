@@ -8,6 +8,7 @@ namespace COCOApp.Models
         public int OrderId { get; set; }
         public int ProductId { get; set; }
         public int Volume { get; set; }
+        public int RealVolume { get; set; }
         public decimal ProductCost { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

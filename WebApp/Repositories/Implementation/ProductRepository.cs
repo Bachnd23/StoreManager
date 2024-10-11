@@ -26,7 +26,10 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(c => c.SellerId == sellerId);
             }
-            return productId > 0 ? query.FirstOrDefault(u => u.Id == productId) : null;
+            return productId > 0 ? query
+                .Include(i => i.InventoryManagements)
+                .Include(c => c.Category)
+                .FirstOrDefault(u => u.Id == productId) : null;
         }
 
         public List<Product> GetProducts(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
@@ -47,7 +50,10 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
-            query = query.OrderByDescending(p => p.Id);
+            query = query
+                .Include(i => i.InventoryManagements)
+                .Include(c => c.Category)
+                .OrderByDescending(p => p.Id);
             return query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
 
@@ -67,7 +73,7 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
-            return query.Count();
+            return query.Include(i => i.InventoryManagements).Include(c => c.Category).Count();
         }
 
         public void AddProduct(Product product)
