@@ -1,6 +1,8 @@
 ﻿using COCOApp.Helpers;
 using COCOApp.Models;
 using COCOApp.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -12,7 +14,7 @@ namespace COCOApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserService _userService;
 
-        public HomeController(ILogger<HomeController> logger,UserService userService)
+        public HomeController(ILogger<HomeController> logger, UserService userService)
         {
             _logger = logger;
             _userService = userService;
@@ -33,7 +35,7 @@ namespace COCOApp.Controllers
         }
         public async Task<IActionResult> ViewSignIn()
         {
-            User authenticatedUser =await _userService.CheckRememberMeTokenAsync();
+            User authenticatedUser = await _userService.CheckRememberMeTokenAsync();
 
             if (authenticatedUser != null)
             {
@@ -52,8 +54,18 @@ namespace COCOApp.Controllers
                     HttpContext.Session.SetObjectInSession("user", authenticatedUser);
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    return View("/Views/Home/SignIn.cshtml");
+                }
             }
-            return View("/Views/Home/SignIn.cshtml");
+            else
+            {
+                // Sign out from the authentication scheme
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return View("/Views/Home/SignIn.cshtml");
+            }
+
         }
 
 
