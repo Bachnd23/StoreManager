@@ -1,0 +1,8 @@
+services:
+  coco-backend:
+    image: phamdat2002/coco-backend:latest
+    container_name: coco-backend
+    ports:
+      - "5008:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
