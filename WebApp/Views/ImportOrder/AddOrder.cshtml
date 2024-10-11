@@ -1,4 +1,4 @@
-﻿@model COCOApp.ViewModels.MultiOrderViewModel
+﻿@model COCOApp.ViewModels.MultiImportOrderViewModel
 @{
     Layout = "_LayoutStoreDashBoard";
 }
@@ -18,23 +18,23 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-controller="Order" asp-action="ViewList">Danh sách đơn hàng</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Thêm mới đơn hàng</li>
+                <li class="breadcrumb-item"><a asp-controller="ImportOrder" asp-action="ViewList">Danh sách đơn hàng nhập</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới đơn hàng nhập</li>
             </ol>
         </nav>
         <form asp-action="CreateMultiple" method="post">
-            <!-- Top input fields for Khách hàng and Ngày đặt -->
+            <!-- Top input fields for nhà cung câp and Ngày đặt -->
             <div class="col-12 mb-3">
                 <div class="bg-light rounded h-100 p-4">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="topSelectCustomer" class="form-label">Chọn khách hàng</label>
-                                <select id="topSelectCustomer" class="form-control select2">
-                                    <option value="">Chọn khách hàng</option>
-                                    @foreach (var customer in ViewBag.Customers)
+                                <label for="topSelectSupplier" class="form-label">Chọn nhà cung câp</label>
+                                <select id="topSelectSupplier" class="form-control select2">
+                                    <option value="">Chọn nhà cung câp</option>
+                                    @foreach (var supplier in ViewBag.Suppliers)
                                     {
-                                        <option value="@customer.Value">@customer.Text</option>
+                                        <option value="@supplier.Value">@supplier.Text</option>
                                     }
                                 </select>
                             </div>
@@ -51,33 +51,33 @@
             <table class="table" id="orderTable">
                 <thead>
                     <tr>
-                        <th>Tên khách hàng</th>
+                        <th>Tên nhà cung câp</th>
                         <th>Ngày đặt</th>
                         <th>Mặt hàng</th>
                         <th>Số lượng</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.Orders.Count; i++)
+                    @for (int i = 0; i < Model.ImportOrders.Count; i++)
                     {
                         <tr>
                             <td>
                                 <div class="form-group">
-                                    <select asp-for="@Model.Orders[i].CustomerId" class="form-control select-customer">
-                                        <option value="">Chọn khách hàng</option>
-                                        @foreach (var customer in ViewBag.Customers)
+                                    <select asp-for="@Model.ImportOrders[i].SupplierId" class="form-control select-supplier">
+                                        <option value="">Chọn nhà cung câp</option>
+                                        @foreach (var supplier in ViewBag.Suppliers)
                                         {
-                                            <option value="@customer.Value">@customer.Text</option>
+                                            <option value="@supplier.Value">@supplier.Text</option>
                                         }
                                     </select>
                                 </div>
                             </td>
                             <td>
-                                <input type="date" asp-for="@Model.Orders[i].OrderDate" class="form-control order-date" />
+                                <input type="date" asp-for="@Model.ImportOrders[i].OrderDate" class="form-control ImportOrder-date" />
                             </td>
                             <td>
                               <div class="form-group">
-                                    <select asp-for="@Model.Orders[i].ProductId" class="form-control select-customer">
+                                    <select asp-for="@Model.ImportOrders[i].ProductId" class="form-control select-supplier">
                                         <option value="">Chọn mặt hàng</option>
                                         @foreach (var product in ViewBag.Products)
                                         {
@@ -87,7 +87,7 @@
                                 </div>
                             </td>
                             <td>
-                                <input type="number" asp-for="@Model.Orders[i].ProductVolume" class="form-control" />
+                                <input type="number" asp-for="@Model.ImportOrders[i].ProductVolume" class="form-control" />
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button>
@@ -111,29 +111,29 @@
                     var rowIndex = table.rows.length - 1;
 
                     // Retrieve top dropdown values
-                    var selectedCustomer = document.getElementById("topSelectCustomer").value;
+                    var selectedCustomer = document.getElementById("topSelectSupplier").value;
                     var selectedDate = document.getElementById("topSelectOrderDate").value;
 
-                    // HTML structure for a new row with a customer dropdown, date, order total, and seller ID
+                    // HTML structure for a new row with a supplier dropdown, date, ImportOrder total, and seller ID
                     newRow.innerHTML = `
                                                         <td>
                                                             <div class="form-group">
-                                                                <select name="Orders[${rowIndex}].CustomerId" class="form-control select2">
-                                                                    <option value="">Select Customer</option>
+                                                                <select name="ImportOrders[${rowIndex}].SupplierId" class="form-control select2">
+                                                                    <option value="">Select supplier</option>
                                                                     ${getCustomerOptions(selectedCustomer)}
                                                                 </select>
                                                             </div>
                                                         </td>
-                                                        <td><input type="date" name="Orders[${rowIndex}].OrderDate" value="${selectedDate}" class="form-control order-date" /></td>
+                                                        <td><input type="date" name="ImportOrders[${rowIndex}].OrderDate" value="${selectedDate}" class="form-control ImportOrder-date" /></td>
                                                         <td>
                                                             <div class="form-group">
-                                                                <select name="Orders[${rowIndex}].ProductId" class="form-control select2">
+                                                                <select name="ImportOrders[${rowIndex}].ProductId" class="form-control select2">
                                                                     <option value="">Chọn mặt hàng</option>
                                                                     ${getProductOptions()}
                                                                 </select>
                                                             </div>
                                                         </td>
-                                                        <td><input type="number" name="Orders[${rowIndex}].ProductVolume" class="form-control" /></td>
+                                                        <td><input type="number" name="ImportOrders[${rowIndex}].ProductVolume" class="form-control" /></td>
                                                         <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Xóa</button></td>
                                                     `;
 
@@ -146,9 +146,9 @@
                     row.parentNode.removeChild(row);
                 }
 
-                // Function to populate customer dropdown options dynamically
+                // Function to populate supplier dropdown options dynamically
                 function getCustomerOptions(selectedCustomer = "") {
-                    var customers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Customers));
+                    var customers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Suppliers));
                     var options = '';
                     for (var i = 0; i < customers.length; i++) {
                         var selected = customers[i].Value === selectedCustomer ? 'selected' : '';
@@ -166,7 +166,7 @@
                     return options;
                 }
 
-                // Function to initialize Select2 on all customer dropdowns
+                // Function to initialize Select2 on all supplier dropdowns
                 function initializeSelect2() {
                     // Initialize select2 for existing select fields
                     $('.select2').select2({

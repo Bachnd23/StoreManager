@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_LayoutStoreDashBoard";
-    ViewData["Title"] = "Order List";
-    var getListUrl = Url.Action("GetOrderItemsList", "Order");
+    ViewData["Title"] = "Import Order List";
+    var getListUrl = Url.Action("GetOrderItemsList", "ImportOrder");
     var currentPage = ViewData["PageNumber"] ?? 1;
     var orderId = ViewData["OrderId"]; // Retrieve orderId from ViewData
 }
@@ -13,14 +13,14 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm trong đơn hàng</li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm trong đơn hàng nhập</li>
             </ol>
         </nav>
         <div class="row g-4">
             <div class="col-sm-12 col-xl-12">
                 <div class="bg-light rounded h-100 p-4">
                     <div>
-                        <h4 class="mb-4">Danh sách sản phẩm trong đơn hàng</h4>
+                        <h4 class="mb-4">Danh sách sản phẩm trong đơn hàng nhập</h4>
                     </div>
                     <div class="row g-4 input-group">
                         <div class="col-sm-4">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="g-4 input-group flex-nowrap justify-content-end">
-                        <a href="~/Order/Add" class="btn btn-sm btn-primary">
+                        <a href="~/ImportOrder/Add" class="btn btn-sm btn-primary">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -70,7 +70,7 @@
             var getListUrl = '@getListUrl';
             var orderId=@orderId;
         </script>
-        <script src="~/js/viewImportOrderItemsScript.js"></script>
+        <script src="~/js/viewImportOrdersItemScript.js"></script>
     }
 </body>
 </html>
