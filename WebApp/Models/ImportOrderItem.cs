@@ -12,6 +12,7 @@ namespace COCOApp.Models
         public decimal ProductCost { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public bool Status { get; set; }
 
         public virtual ImportOrder Order { get; set; } = null!;
         public virtual Product Product { get; set; } = null!;

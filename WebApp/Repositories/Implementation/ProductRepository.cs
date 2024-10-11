@@ -27,7 +27,7 @@ namespace COCOApp.Repositories
                 query = query.Where(c => c.SellerId == sellerId);
             }
             return productId > 0 ? query
-                .Include(i => i.InventoryManagements)
+                .Include(i => i.InventoryManagement)
                 .Include(c => c.Category)
                 .FirstOrDefault(u => u.Id == productId) : null;
         }
@@ -51,7 +51,7 @@ namespace COCOApp.Repositories
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
             query = query
-                .Include(i => i.InventoryManagements)
+                .Include(i => i.InventoryManagement)
                 .Include(c => c.Category)
                 .OrderByDescending(p => p.Id);
             return query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
@@ -73,7 +73,7 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(c => c.ProductName.Contains(nameQuery));
             }
-            return query.Include(i => i.InventoryManagements).Include(c => c.Category).Count();
+            return query.Include(i => i.InventoryManagement).Include(c => c.Category).Count();
         }
 
         public void AddProduct(Product product)

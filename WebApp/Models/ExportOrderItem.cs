@@ -14,9 +14,10 @@ namespace COCOApp.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? SellerId { get; set; }
+        public bool Status { get; set; }
 
         public virtual ExportOrder? Order { get; set; } 
-        public virtual Product? Product { get; set; }
+        public virtual Product? Product { get; set; } 
         public virtual User? Seller { get; set; }
     }
 }
