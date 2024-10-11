@@ -98,11 +98,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Use authentication and authorization
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSession();
 
 app.UseEndpoints(endpoints =>
 {

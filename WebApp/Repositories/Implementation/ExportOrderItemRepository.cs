@@ -29,9 +29,18 @@ namespace COCOApp.Repositories
             }
             else
             {
+                //Update quantity
                 exportOrderItem.Volume += item.Volume;
                 Product product = _context.Products.FirstOrDefault(p => p.Id == exportOrderItem.ProductId);
-                exportOrderItem.Total=exportOrderItem.Volume*product.Cost;
+                exportOrderItem.Total = exportOrderItem.Volume * product.Cost;
+                if (exportOrderItem.Status)
+                {
+                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == exportOrderItem.ProductId);
+                    //Rollback inventory changes
+                    inventory.AllocatedVolume -= exportOrderItem.RealVolume;
+                    inventory.RemainingVolume += exportOrderItem.RealVolume;
+                    exportOrderItem.Status = false;
+                }
             }
             _context.SaveChanges();
         }
@@ -63,7 +72,8 @@ namespace COCOApp.Repositories
                 {
                     query = query.Where(o => o.SellerId == sellerId);
                 }
-                query = query.Include(p=>p.Product)
+                query = query.Include(p => p.Product)
+                             .ThenInclude(i => i.InventoryManagement)
                              .Include(o => o.Order)
                              .ThenInclude(oi => oi.Customer)
                              .Where(o => o.Order.CustomerId == customerId && o.Order.OrderDate >= startDate && o.Order.OrderDate <= endDate);
@@ -80,6 +90,7 @@ namespace COCOApp.Repositories
         {
             var query = _context.ExportOrderItems
                                 .Include(o => o.Product)
+                                .ThenInclude(i => i.InventoryManagement)
                                 .Include(o => o.Order)
                                 .ThenInclude(c => c.Customer)
                                 .AsQueryable();
@@ -94,9 +105,10 @@ namespace COCOApp.Repositories
         public List<ExportOrderItem> GetExportOrderItemsByIds(List<int> orderIds, int sellerId)
         {
             var query = _context.ExportOrderItems
-                                  .Include (o => o.Product)
+                                  .Include(o => o.Product)
+                                  .ThenInclude(i => i.InventoryManagement)
                                   .Include(o => o.Order)
-                                  .ThenInclude(c=>c.Customer)
+                                  .ThenInclude(c => c.Customer)
                                 .Where(o => orderIds.Contains(o.OrderId))
                                 .AsQueryable();
 
@@ -107,12 +119,13 @@ namespace COCOApp.Repositories
 
             return query.ToList();
         }
-        public List<ExportOrderItem> GetExportOrderItems(int orderId,string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<ExportOrderItem> GetExportOrderItems(int orderId, string nameQuery, int pageNumber, int pageSize, int sellerId)
         {
             pageNumber = Math.Max(pageNumber, 1);
 
             var query = _context.ExportOrderItems.AsQueryable();
             query = query.Include(o => o.Product)
+                         .ThenInclude(i => i.InventoryManagement)
                          .Include(o => o.Order)
                          .ThenInclude(c => c.Customer);
             if (sellerId > 0)
@@ -133,11 +146,12 @@ namespace COCOApp.Repositories
                         .Take(pageSize)
                         .ToList();
         }
-        public List<ExportOrderItem> GetExportOrderItems(int orderId,int sellerId)
+        public List<ExportOrderItem> GetExportOrderItems(int orderId, int sellerId)
         {
 
             var query = _context.ExportOrderItems.AsQueryable();
             query = query.Include(o => o.Product)
+                         .ThenInclude(i => i.InventoryManagement)
                          .Include(o => o.Order)
                          .ThenInclude(c => c.Customer);
             if (sellerId > 0)
@@ -153,10 +167,11 @@ namespace COCOApp.Repositories
             return query.ToList();
         }
 
-        public int GetTotalExportOrderItems(int orderId,string nameQuery, int sellerId)
+        public int GetTotalExportOrderItems(int orderId, string nameQuery, int sellerId)
         {
             var query = _context.ExportOrderItems.AsQueryable();
             query = query.Include(o => o.Product)
+                         .ThenInclude(i => i.InventoryManagement)
                          .Include(o => o.Order)
                          .ThenInclude(c => c.Customer);
             if (sellerId > 0)
@@ -176,7 +191,10 @@ namespace COCOApp.Repositories
         }
         public void EditExportOrderItem(int orderId, int productId, ExportOrderItem order)
         {
-            var existingOrder = _context.ExportOrderItems.FirstOrDefault(c => c.OrderId == orderId && c.ProductId == productId);
+            var existingOrder = _context.ExportOrderItems
+                .Include(o => o.Product)
+                .ThenInclude(i => i.InventoryManagement)
+                .FirstOrDefault(c => c.OrderId == orderId && c.ProductId == productId);
 
             if (existingOrder != null)
             {
@@ -184,10 +202,19 @@ namespace COCOApp.Repositories
                 existingOrder.ProductId = order.ProductId;
                 existingOrder.ProductPrice = order.ProductPrice;
                 existingOrder.Volume = order.Volume;
-                existingOrder.Total= order.Total;
+                existingOrder.RealVolume = order.RealVolume;
+                existingOrder.Total = order.Total;
+                existingOrder.Status = order.Status;
                 existingOrder.SellerId = order.SellerId;
-                existingOrder.CreatedAt = order.CreatedAt;
                 existingOrder.UpdatedAt = order.UpdatedAt;
+
+                if (existingOrder.Status)
+                {
+                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == existingOrder.ProductId);
+                    //Update inventory changes
+                    inventory.AllocatedVolume += existingOrder.RealVolume;
+                    inventory.RemainingVolume -= existingOrder.RealVolume;
+                }
 
                 _context.SaveChanges();
             }

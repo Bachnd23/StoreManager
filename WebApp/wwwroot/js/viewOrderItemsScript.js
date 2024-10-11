@@ -105,9 +105,14 @@ function generateOrderItemsTable(data) {
         const row = $('<tr>');
         row.append($('<td>').text(orderItem.product.productName));
         row.append($('<td>').text(orderItem.volume));
+        row.append($('<td>').text(orderItem.realVolume));
         row.append($('<td>').text(orderItem.productPrice));
         row.append($('<td>').text(orderItem.total));
-        row.append($('<td>').text(orderItem.updatedAt));
+        if (!orderItem.status) {
+            row.append($('<td>').text('Chưa xác nhận'));
+        } else {
+            row.append($('<td>').text('Đã xác nhận'));
+        }
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
