@@ -112,6 +112,7 @@ CREATE TABLE ExportOrderItems (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     volume INT NOT NULL,
+	real_volume INT NOT NULL,
     product_price DECIMAL(10, 2) NOT NULL,
     total DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
@@ -191,6 +192,7 @@ CREATE TABLE ImportOrderItems (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     volume INT NOT NULL,
+	real_volume INT NOT NULL,
     product_cost DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NULL DEFAULT NULL,
     updated_at DATETIME NULL DEFAULT NULL,
@@ -199,3 +201,10 @@ CREATE TABLE ImportOrderItems (
     FOREIGN KEY (product_id) REFERENCES Products(id),
 );
 GO
+CREATE TABLE InventoryManagement(
+	product_id INT NOT NULL PRIMARY KEY,
+	remaining_volume INT NOT NULL DEFAULT 0,
+	allocated_volume INT NOT NULL DEFAULT 0,
+	shipped_volume INT NOT NULL DEFAULT 0,
+	FOREIGN KEY (product_id) REFERENCES Products(id),
+);

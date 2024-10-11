@@ -22,6 +22,7 @@ namespace COCOApp.Models
         public virtual DbSet<ExportOrderItem> ExportOrderItems { get; set; } = null!;
         public virtual DbSet<ImportOrder> ImportOrders { get; set; } = null!;
         public virtual DbSet<ImportOrderItem> ImportOrderItems { get; set; } = null!;
+        public virtual DbSet<InventoryManagement> InventoryManagements { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductDetail> ProductDetails { get; set; } = null!;
         public virtual DbSet<Report> Reports { get; set; } = null!;
@@ -34,11 +35,10 @@ namespace COCOApp.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(config.GetConnectionString("MyConStr"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=.\\BACH;User ID=sa;Password=123;Database=StoreManager;Trusted_Connection=True;");
             }
         }
 
@@ -123,7 +123,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ExportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ExportOr__022945F6F31C1683");
+                    .HasName("PK__ExportOr__022945F6A8DDFA6D");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -136,6 +136,8 @@ namespace COCOApp.Models
                 entity.Property(e => e.ProductPrice)
                     .HasColumnType("decimal(10, 2)")
                     .HasColumnName("product_price");
+
+                entity.Property(e => e.RealVolume).HasColumnName("real_volume");
 
                 entity.Property(e => e.SellerId).HasColumnName("seller_id");
 
@@ -207,7 +209,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ImportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ImportOr__022945F66957DBF6");
+                    .HasName("PK__ImportOr__022945F6F82036F5");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -220,6 +222,8 @@ namespace COCOApp.Models
                 entity.Property(e => e.ProductCost)
                     .HasColumnType("decimal(10, 2)")
                     .HasColumnName("product_cost");
+
+                entity.Property(e => e.RealVolume).HasColumnName("real_volume");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
@@ -238,6 +242,30 @@ namespace COCOApp.Models
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ImportOrd__produ__797309D9");
+            });
+
+            modelBuilder.Entity<InventoryManagement>(entity =>
+            {
+                entity.HasKey(e => e.ProductId)
+                    .HasName("PK__Inventor__47027DF5CCF6525E");
+
+                entity.ToTable("InventoryManagement");
+
+                entity.Property(e => e.ProductId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("product_id");
+
+                entity.Property(e => e.AllocatedVolume).HasColumnName("allocated_volume");
+
+                entity.Property(e => e.RemainingVolume).HasColumnName("remaining_volume");
+
+                entity.Property(e => e.ShippedVolume).HasColumnName("shipped_volume");
+
+                entity.HasOne(d => d.Product)
+                    .WithOne(p => p.InventoryManagement)
+                    .HasForeignKey<InventoryManagement>(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Inventory__produ__7F2BE32F");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -280,7 +308,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ProductDetail>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__ProductD__47027DF51E438FB9");
+                    .HasName("PK__ProductD__47027DF57D411BE1");
 
                 entity.Property(e => e.ProductId)
                     .ValueGeneratedNever()
@@ -329,7 +357,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ReportDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ReportId, e.ProductId })
-                    .HasName("PK__ReportDe__33EB5B876A03F426");
+                    .HasName("PK__ReportDe__33EB5B876ACF0554");
 
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
 
@@ -357,7 +385,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<SellerDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__SellerDe__B9BE370FEEA7AB11");
+                    .HasName("PK__SellerDe__B9BE370F444242DC");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -410,7 +438,7 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164BC5E9516")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164A0E5106A")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -456,7 +484,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<UserDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__UserDeta__B9BE370F3803EC63");
+                    .HasName("PK__UserDeta__B9BE370F8A70C585");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
