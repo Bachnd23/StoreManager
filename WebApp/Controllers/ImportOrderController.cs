@@ -121,7 +121,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             ImportOrderItem model = _itemService.GetImportOrderitemById(orderId, productId, user.Id); ;
-            ViewBag.Customers = _orderService.GetSuppliersSelectList(user.Id);
+            ViewBag.Suppliers = _orderService.GetSuppliersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
@@ -316,7 +316,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Log the validation errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);

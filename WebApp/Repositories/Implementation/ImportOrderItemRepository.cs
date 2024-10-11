@@ -138,7 +138,7 @@ namespace COCOApp.Repositories.Implementation
                 existingOrder.ProductCost = order.ProductCost;
                 existingOrder.Volume = order.Volume;
                 //existingOrder.Total = order.Total;
-                existingOrder.Order.SellerId = order.Order.SellerId;
+                //existingOrder.Order.SellerId = order.Order.SellerId;
                 existingOrder.CreatedAt = order.CreatedAt;
                 existingOrder.UpdatedAt = order.UpdatedAt;
 
