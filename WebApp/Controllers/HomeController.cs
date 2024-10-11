@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace COCOApp.Controllers
 {
@@ -39,6 +40,19 @@ namespace COCOApp.Controllers
 
             if (authenticatedUser != null)
             {
+                // Create claims for the authenticated user
+                var claims = new List<Claim>
+                    {
+                    new Claim(ClaimTypes.Name, authenticatedUser.Username),
+                    new Claim(ClaimTypes.Email, authenticatedUser.Email),
+                    new Claim(ClaimTypes.Role, GetRoleName((int)authenticatedUser.Role)) // Convert role ID to role name
+                    };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                // Sign in the user
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                 if (authenticatedUser.Role == 2) // Seller
                 {
                     // Store authenticated user in session
@@ -66,6 +80,16 @@ namespace COCOApp.Controllers
                 return View("/Views/Home/SignIn.cshtml");
             }
 
+        }
+        // Helper method to convert role ID to role name
+        private string GetRoleName(int roleId)
+        {
+            return roleId switch
+            {
+                1 => "Admin",
+                2 => "Seller",
+                _ => "Customer"
+            };
         }
 
 
