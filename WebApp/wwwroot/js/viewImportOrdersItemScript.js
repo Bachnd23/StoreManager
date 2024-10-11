@@ -7,7 +7,7 @@ $(document).ready(function () {
     // Establish SignalR connection
     connection = new signalR.HubConnectionBuilder().withUrl("/orderHub").build();
 
-    // Define the event handler for Order
+    // Define the event handler for ImportOrder
     connection.on("OrderUpdated", function (order) {
         // Fetch and regenerate the table
         fetchOrderItemsResults();
@@ -105,13 +105,13 @@ function generateOrderItemsTable(data) {
         const row = $('<tr>');
         row.append($('<td>').text(orderItem.product.productName));
         row.append($('<td>').text(orderItem.volume));
-        row.append($('<td>').text(orderItem.productPrice));
+        row.append($('<td>').text(orderItem.productCost));
         row.append($('<td>').text(orderItem.total));
         row.append($('<td>').text(orderItem.updatedAt));
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/Order/ViewOrderItemDetail?orderId=${orderItem.orderId}&productId=${orderItem.productId}&pageNumber=${pageNumber}`,
+            href: `/ImportOrder/ViewOrderItemDetail?orderId=${orderItem.orderId}&productId=${orderItem.productId}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });

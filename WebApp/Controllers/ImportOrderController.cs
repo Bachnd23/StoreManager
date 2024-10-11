@@ -31,7 +31,7 @@ namespace COCOApp.Controllers
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             var orders = _orderService.GetImportOrders(nameQuery, pageNumber, PageSize, user.Id);
             var totalOrders = _orderService.GetTotalImportOrders(nameQuery, user.Id);
-
+            
             var response = new
             {
                 orderResults = orders,
@@ -121,7 +121,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
             ImportOrderItem model = _itemService.GetImportOrderitemById(orderId, productId, user.Id); ;
-            ViewBag.Customers = _orderService.GetSuppliersSelectList(user.Id);
+            ViewBag.Suppliers = _orderService.GetSuppliersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
@@ -148,13 +148,13 @@ namespace COCOApp.Controllers
         public IActionResult Add()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            ViewBag.Customers = _orderService.GetSuppliersSelectList(user.Id);
+            ViewBag.Suppliers = _orderService.GetSuppliersSelectList(user.Id);
             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
-            var viewModel = new MultiOrderViewModel();
+            var viewModel = new MultiImportOrderViewModel();
             return View("/Views/ImportOrder/AddOrder.cshtml", viewModel);
         }
 
-        // POST: Order/CreateMultiple
+        // POST: ImportOrder/CreateMultiple
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateMultiple(MultiImportOrderViewModel viewModel)
@@ -180,10 +180,10 @@ namespace COCOApp.Controllers
                 while (i < sortedOrders.Count)
                 {
                     var order = sortedOrders[i];
-                    ImportOrder exportOrder = _orderService.GetImportOrderByCustomerAndDate(order.SupplierId, order.OrderDate);
-                    if (exportOrder == null)
+                    ImportOrder importOrder = _orderService.GetImportOrderByCustomerAndDate(order.SupplierId, order.OrderDate);
+                    if (importOrder == null)
                     {
-                        exportOrder = new ImportOrder
+                        importOrder = new ImportOrder
                         {
                             SupplierId = order.SupplierId,
                             OrderDate = order.OrderDate,
@@ -193,7 +193,7 @@ namespace COCOApp.Controllers
                             CreatedAt = DateTime.Now,
                             UpdatedAt = DateTime.Now
                         };
-                        _orderService.AddImportOrder(exportOrder);
+                        _orderService.AddImportOrder(importOrder);
                     }
                     // Add items for all orders with the same SupplierId and OrderDate
                     while (i < sortedOrders.Count && order.SupplierId == sortedOrders[i].SupplierId && order.OrderDate == sortedOrders[i].OrderDate)
@@ -203,7 +203,7 @@ namespace COCOApp.Controllers
 
                         var exportOrderItem = new ImportOrderItem
                         {
-                            OrderId = exportOrder.Id,
+                            OrderId = importOrder.Id,
                             ProductId = currentOrder.ProductId,
                             Volume = currentOrder.ProductVolume,
                             ProductCost = product.Cost,
@@ -316,7 +316,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Log the validation errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);

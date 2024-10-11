@@ -1,4 +1,4 @@
-﻿@model COCOApp.Models.ExportOrder
+﻿@model COCOApp.Models.ImportOrder
 @{
     Layout = "_LayoutStoreDashBoard";
     var currentPage = ViewData["PageNumber"] ?? 1;
@@ -10,8 +10,8 @@
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Order/ViewList">Danh sách đơn hàng</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Sửa thông tin đơn hàng</li>
+                <li class="breadcrumb-item"><a href="~/Order/ViewList">Danh sách đơn hàng nhập</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sửa thông tin đơn hàng nhập</li>
             </ol>
         </nav>
         <form id="registerForm" asp-action="EditOrder" method="post">
@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col">
                     <div>
-                        <h4 class="mb-4">Thông tin đơn hàng</h4>
+                        <h4 class="mb-4">Thông tin đơn hàng nhập</h4>
                     </div>
                 </div>
                 <div class="w-100"></div>
@@ -29,14 +29,14 @@
                     <div class="bg-light rounded h-100 p-4">
 
                         <div class="form-group">
-                            <label asp-for="CustomerId" class="required">Tên khách hàng</label>
-                            <select asp-for="CustomerId" class="form-control select2" required>
+                            <label asp-for="SupplierId" class="required">Tên khách hàng</label>
+                            <select asp-for="SupplierId" class="form-control select2" required>
                                 @foreach (var customer in ViewBag.Customers)
                                 {
                                     <option value="@customer.Value" >@customer.Text</option>
                                 }
                             </select>
-                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
                         </div>
 
 
