@@ -9,7 +9,6 @@ namespace COCOApp.Models
         {
             ExportOrderItems = new HashSet<ExportOrderItem>();
             ImportOrderItems = new HashSet<ImportOrderItem>();
-            InventoryManagements = new HashSet<InventoryManagement>();
             ReportDetails = new HashSet<ReportDetail>();
         }
 
@@ -25,10 +24,10 @@ namespace COCOApp.Models
 
         public virtual Category? Category { get; set; }
         public virtual User? Seller { get; set; }
+        public virtual InventoryManagement? InventoryManagement { get; set; }
         public virtual ProductDetail? ProductDetail { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ImportOrderItem> ImportOrderItems { get; set; }
-        public virtual ICollection<InventoryManagement> InventoryManagements { get; set; }
         public virtual ICollection<ReportDetail> ReportDetails { get; set; }
     }
 }

@@ -5,7 +5,6 @@ namespace COCOApp.Models
 {
     public partial class InventoryManagement
     {
-        public int Id { get; set; }
         public int ProductId { get; set; }
         public int RemainingVolume { get; set; }
         public int AllocatedVolume { get; set; }
