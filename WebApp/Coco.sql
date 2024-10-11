@@ -202,8 +202,7 @@ CREATE TABLE ImportOrderItems (
 );
 GO
 CREATE TABLE InventoryManagement(
-    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	product_id INT NOT NULL,
+	product_id INT NOT NULL PRIMARY KEY,
 	remaining_volume INT NOT NULL DEFAULT 0,
 	allocated_volume INT NOT NULL DEFAULT 0,
 	shipped_volume INT NOT NULL DEFAULT 0,
