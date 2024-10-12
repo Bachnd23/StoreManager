@@ -12,10 +12,12 @@ namespace COCOApp.Controllers
     {
         private readonly IHubContext<ProductHub> _hubContext;
         private ProductService _productService;
-        public ProductController(ProductService productService, IHubContext<ProductHub> hubContext)
+        private InventoryMangementService _inventoryMangementService;
+        public ProductController(ProductService productService, IHubContext<ProductHub> hubContext, InventoryMangementService inventoryMangementService)
         {
             _productService = productService;
             _hubContext = hubContext;
+            _inventoryMangementService = inventoryMangementService;
         }
         private const int PageSize = 10;
         [Authorize(Roles = "Admin,Seller")]
@@ -117,6 +119,16 @@ namespace COCOApp.Controllers
 
             // Use the service to insert the product
             _productService.AddProduct(product);
+
+            var invenory = new InventoryManagement
+            {
+                ProductId = product.Id,
+                RemainingVolume = 0,
+                AllocatedVolume = 0,
+                ShippedVolume = 0,
+                Product= product,
+            };
+            _inventoryMangementService.AddInventory(invenory);
 
             // Notify admins about changes to the product
             await _hubContext.Clients.Group("Admin").SendAsync("ProductUpdated", product);

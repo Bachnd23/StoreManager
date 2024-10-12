@@ -41,8 +41,15 @@
                         <div class="mb-3">
                             <div class="form-group">
                                 <label asp-for="Volume" class="required"> Số lượng</label>
-                                <input asp-for="Volume" class="form-control" placeholder="Nhập giá bán..." disabled>
+                                <input asp-for="Volume" class="form-control" placeholder="Nhập số lượng..." disabled>
                                 <span asp-validation-for="Volume" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label asp-for="RealVolume" class="required"> Số lượng thực xuất</label>
+                                <input asp-for="RealVolume" class="form-control" placeholder="Nhập số lượng..." disabled>
+                                <span asp-validation-for="RealVolume" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -57,7 +64,10 @@
                 <div class="w-100"></div>
                 <div class="col">
                     <div class="bg-light rounded h-100 p-4 text-center">
-                        <a href="@Url.Action("ViewEditOrderItem", "Order", new { orderId = Model.OrderId,productId=Model.ProductId, pageNumber = currentPage })" class="btn btn-primary">Đến trang chỉnh sửa</a>
+                        @if (!Model.Status)
+                        {
+                            <a href="@Url.Action("ViewEditOrderItem", "Order", new { orderId = Model.OrderId,productId=Model.ProductId, pageNumber = currentPage })" class="btn btn-primary">Đến trang chỉnh sửa</a>
+                        }
                         <a href="@Url.Action("ViewList", "Order", new { pageNumber = currentPage })" class="btn btn-danger">Quay lại</a>
                     </div>
                 </div>

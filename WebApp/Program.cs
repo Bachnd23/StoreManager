@@ -48,6 +48,7 @@ builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
 builder.Services.AddScoped<IImportOrderItemRepository,ImportOrderItemRepository>();
+builder.Services.AddScoped<IInventoryManagementRepository, InventoryManagementRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
 builder.Services.AddScoped<ExportOrderItemService>();
 builder.Services.AddScoped<ImportOrderItemService>();
+builder.Services.AddScoped<InventoryMangementService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
@@ -96,11 +98,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Use authentication and authorization
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSession();
 
 app.UseEndpoints(endpoints =>
 {
