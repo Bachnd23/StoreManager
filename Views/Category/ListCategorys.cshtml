@@ -1,39 +1,45 @@
 ﻿@{
     Layout = "_LayoutStoreDashBoard";
-    ViewData["Title"] = "Order List";
-    var getListUrl = Url.Action("GetImportOrdersList", "ImportOrder");
+    ViewData["Title"] = "Category List";
+    var getListUrl = Url.Action("GetList", "Category");
     var currentPage = ViewData["PageNumber"] ?? 1;
 }
 @using System.Globalization
 @using System.Text.Json
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="~/css/list_import_orders.css">
-</head>
 <body>
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Danh sách đơn hàng nhập</li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách danh mục</li>
             </ol>
         </nav>
         <div class="row g-4">
             <div class="col-sm-12 col-xl-12">
                 <div class="bg-light rounded h-100 p-4">
                     <div>
-                        <h4 class="mb-4">Danh sách đơn hàng nhập</h4>
+                        <h4 class="mb-4">Danh sách danh mục</h4>
                     </div>
                     <div class="row g-4 input-group">
                         <div class="col-sm-4">
-                            <input class="form-control border-0 nameQuery" type="search" name="nameQuery" placeholder="Tìm kiếm ...">
+                            <input class="form-control border-0 nameQuery" type="search"
+                                   name="nameQuery" placeholder="Tìm kiếm ...">
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-select form-select-sm mb-3 form-control statusId"
+                                    aria-label=".form-select-sm example" name="statusId">
+                                <option value="0" selected>Trạng thái</option>
+                                <option value="1">Đã kích hoạt</option>
+                                <option value="2">Chưa kích hoạt</option>
+                            </select>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary" onclick="search()">Tìm</button>
-                        </div>
+                        </div> 
                     </div>
                     <div class="g-4 input-group flex-nowrap justify-content-end">
-                        <a href="~/ImportOrder/Add" class="btn btn-sm btn-primary">
+                        <a href="~/Category/ViewAdd" class="btn btn-sm btn-primary">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -41,10 +47,8 @@
                         <table class="table table-striped w-100 resultTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Nhà Cung Cấp</th>
-                                    <th scope="col">Cập nhật ngày</th>
-                                    <th scope="col">Ngày mua</th>
-                                    @* <th scope="col">Trạng thái</th> *@
+                                    <th scope="col">Tên danh mục</th>
+                                    <th scope="col">Mô tả</th>
                                     <th scope="col">Hành động</th>
                                 </tr>
                             </thead>
@@ -65,12 +69,13 @@
             </div>
         </div>
     </div>
-    @section Scripts {
+    
+    @section Scripts { 
         <script>
             var pageNumber = @currentPage;
             var getListUrl = '@getListUrl';
         </script>
-        <script src="~/js/viewImportOrdersScripts.js"></script>
+        <script src="~/js/viewCategoriesScript.js"></script>
     }
 </body>
 </html>
