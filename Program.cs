@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using COCOApp.Repositories;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using COCOApp.Repositories.Implementation;
+using COCOApp.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,7 @@ builder.Services.AddScoped<IReportsExportOrdersMappingRepository, ReportsExportO
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -56,6 +59,7 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
 builder.Services.AddScoped<ExportOrderItemService>();
+builder.Services.AddScoped<CategoryService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
@@ -107,5 +111,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<ProductHub>("/productHub");
     endpoints.MapHub<CustomerHub>("/customerHub");
     endpoints.MapHub<OrderHub>("/orderHub");
+    endpoints.MapHub<CategoryHub>("/categoryHub");
 });
 app.Run();
