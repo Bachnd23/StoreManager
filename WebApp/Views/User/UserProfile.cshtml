@@ -1,6 +1,12 @@
 ﻿@model COCOApp.Models.User
 @{
     Layout = "_LayoutStoreDashBoard";
+    // Check if image data exists and convert it to a base64 string
+    string base64Image = string.Empty;
+    if (Model.SellerDetail?.ImageData != null)
+    {
+        base64Image = "data:image/png;base64," + Convert.ToBase64String(Model.SellerDetail.ImageData);
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +22,8 @@
         <h4 class="font-weight-bold py-3 mb-4">
             Thông tin cá nhân
         </h4>
-        <form asp-controller="User" asp-action="UpdateUser" method="post">
+        <!-- Make sure to add enctype="multipart/form-data" to allow file uploads -->
+        <form asp-controller="User" asp-action="UpdateUser" method="post" enctype="multipart/form-data">
             <input type="text" name="id" class="form-control" value="@Model.Id" hidden>
             <input type="text" name="password" class="form-control" value="test1234" hidden>
             <div class="card overflow-hidden">
@@ -49,6 +56,30 @@
                                         <input asp-for="Email" class="form-control" placeholder="Nhập email ..." required readonly>
                                         <span asp-validation-for="Email" class="text-danger"></span>
                                     </div>
+                                    <div class="form-group">
+                                        <label asp-for="SellerDetail.BusinessName" class="required"> Tên cửa hàng</label>
+                                        <input asp-for="SellerDetail.BusinessName" class="form-control" placeholder="Nhập tên cửa hàng ..." required >
+                                        <span asp-validation-for="SellerDetail.BusinessName" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="SellerDetail.BusinessAddress" class="required"> Địa chỉ cửa hàng</label>
+                                        <input asp-for="SellerDetail.BusinessAddress" class="form-control" placeholder="Nhập địa chỉ cửa hàng ..." required >
+                                        <span asp-validation-for="SellerDetail.BusinessAddress" class="text-danger"></span>
+                                    </div>
+                                    <!-- Image upload -->
+                                    <div class="form-group">
+                                        <label for="imageUpload">Tải lên hình ảnh mã QR của tài khoản ngân hàng</label>
+                                        <input type="file" class="form-control" id="imageUpload" name="ImageFile" accept="image/*">
+                                    </div>
+
+                                    <!-- Display existing image if it exists -->
+                                    @if (!string.IsNullOrEmpty(base64Image))
+                                    {
+                                        <div class="form-group">
+                                            <label>Ảnh đã tải lên</label><br />
+                                            <img src="@base64Image" alt="Uploaded Image" style="max-width: 400px; max-height: 400px;" />
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="account-info">
@@ -75,8 +106,8 @@
                                         <span asp-validation-for="UserDetail.Gender" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="UserDetail.Address" class="required"> Địa chỉ cửa hàng</label>
-                                        <input asp-for="UserDetail.Address" class="form-control" placeholder="Nhập Địa chỉ cửa hàng ..." required>
+                                        <label asp-for="UserDetail.Address" class="required"> Địa chỉ nhà</label>
+                                        <input asp-for="UserDetail.Address" class="form-control" placeholder="Nhập Địa chỉ nhà ..." required>
                                         <span asp-validation-for="UserDetail.Address" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
