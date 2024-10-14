@@ -138,6 +138,7 @@ namespace COCOApp.Controllers
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/ImportOrder/ListOrders.cshtml");
         }
+
         public IActionResult ViewOrderItemsList(int orderId, int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
@@ -201,7 +202,7 @@ namespace COCOApp.Controllers
                         var currentOrder = sortedOrders[i];
                         Product product = _productService.GetProductById(currentOrder.ProductId, user.Id);
 
-                        var exportOrderItem = new ImportOrderItem
+                        var importOrderItem = new ImportOrderItem
                         {
                             OrderId = importOrder.Id,
                             ProductId = currentOrder.ProductId,
@@ -212,7 +213,7 @@ namespace COCOApp.Controllers
                             CreatedAt = DateTime.Now,
                             UpdatedAt = DateTime.Now
                         };
-                        _itemService.AddImportOrderItem(exportOrderItem);
+                        _itemService.AddImportOrderItem(importOrderItem);
 
                         i++; // Increment index to process the next order
                     }
@@ -316,7 +317,7 @@ namespace COCOApp.Controllers
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid || model.Volume < model.RealVolume)
             {
                 // Log the validation errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
@@ -329,19 +330,22 @@ namespace COCOApp.Controllers
                 return View("/Views/ImportOrder/EditOrderItem.cshtml", model);
             }
             ImportOrderItem oldOrder = _itemService.GetImportOrderitemById(model.OrderId, model.ProductId, user.Id);
-            // Convert the model to your domain entity
-
-            var order = new ImportOrderItem
-            {
-                OrderId = model.OrderId,
-                ProductId = model.ProductId,
-                Volume = model.Volume,
-                ProductCost = model.ProductCost,
-                //Total = model.ProductCost * model.Volume,
-                //SellerId = oldOrder.Order.SellerId,
-                UpdatedAt = DateTime.Now
-            };
-
+            //if Real volumm = volum tức là supplier đã cung cấp đủ số lượng yêu cầu lúc này chuyển trạng thái của ImportOrderItem đó sang true
+                // Convert the model to your domain entity
+                var order = new ImportOrderItem
+                {
+                    OrderId = model.OrderId,
+                    ProductId = model.ProductId,
+                    Volume = model.Volume,
+                    ProductCost = model.ProductCost,
+                    RealVolume = model.RealVolume,
+                    //Total = model.ProductCost * model.Volume,
+                    //SellerId = oldOrder.Order.SellerId,
+                    UpdatedAt = DateTime.Now,
+                    Status = model.Volume == model.RealVolume ? true : false
+                };
+            
+            
             // Use the service to edit the customer
             _itemService.EditImportOrderItem(model.OrderId, model.ProductId, order);
 

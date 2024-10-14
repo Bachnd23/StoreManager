@@ -102,13 +102,20 @@ function generateOrdersTable(data) {
 
     console.log("Received data:", data);
     // Iterate over the user results and create table rows
-    $.each(data.orderResults, function (index, order) { 
+    $.each(data.orderResults, function (index, order) {
         console.log("Processing order:", order);
         const row = $('<tr>');
-        row.append($('<td>').text(order.supplier.name));
-        row.append($('<td>').text(order.updatedAt));
+        row.append($('<td>').text(order.supplier ? order.supplier.name : 'N/A'));
+        row.append($('<td>').text(order.updatedAt ? order.updatedAt : 'N/A'));
         row.append($('<td>').text(order.orderDate));
-        row.append($('<td>').text(order.complete));
+
+        // Correct status logic
+        // if (order.complete) {
+        //     row.append($('<td>').text("Đã hoàn thành"));
+        // } else {
+        //     row.append($('<td>').text("Chưa hoàn thành"));
+        // }
+
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
@@ -131,3 +138,4 @@ function generateOrdersTable(data) {
     });
 
 }
+

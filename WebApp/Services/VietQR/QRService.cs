@@ -1,20 +1,20 @@
 //using System.Text;
 //using System.Text.Json;
-//using COCOApp.DTO.VietQR;
+////using COCOApp.DTO.VietQR;
 //using COCOApp.Models;
-//using COCOApp.Services.Impl;
+////using COCOApp.Services.Impl;
 //using Microsoft.EntityFrameworkCore;
 //using JsonSerializer = System.Text.Json.JsonSerializer;
 
 //namespace COCOApp.Services;
 
-//public class QRService 
+//public class QRService
 //{
 //    private readonly IHttpClientFactory _httpClientFactory;
 //    private readonly HttpClient _httpClient;
 //    private readonly IConfiguration _config;
 //    private readonly StoreManagerContext _context;
-        
+
 //    public QRService(IHttpClientFactory clientFactory, IConfiguration config, StoreManagerContext context)
 //    {
 //        _context = context;
@@ -22,7 +22,7 @@
 //        _httpClientFactory = clientFactory;
 //        _httpClient = clientFactory.CreateClient("VietQRAPI");
 //    }
-    
+
 //    public async Task<string> GetQRDataURL(int customerId)
 //    {
 //        var contentReq = new VietQRReq
@@ -44,7 +44,7 @@
 //        });
 //        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 //        var response = await _httpClient.PostAsync("generate", httpContent);
-        
+
 //        // Kiểm tra response và xử lý kết quả
 //        if (response.IsSuccessStatusCode)
 //        {
@@ -67,7 +67,7 @@
 //            AccountName = _config.GetValue<string>("VietQR:AccountName"),
 //            AccountNo = _config.GetValue<string>("VietQR:AccountNo"),
 //            AcqId = _config.GetValue<int>("VietQR:AcqId"),
-//            AddInfo = bookingContract.CustomerId+"ChuyenKhoan"+bookingContractId,
+//            AddInfo = bookingContract.CustomerId + "ChuyenKhoan" + bookingContractId,
 //            Amount = amount
 //        };
 
@@ -80,7 +80,7 @@
 //        });
 //        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 //        var response = await _httpClient.PostAsync("generate", httpContent);
-        
+
 //        // Kiểm tra response và xử lý kết quả
 //        if (response.IsSuccessStatusCode)
 //        {
@@ -92,4 +92,14 @@
 //            return "";
 //        }
 //    }
+//}
+
+//internal class VietQRReq
+//{
+//    public string Format { get; set; }
+//    public string Template { get; set; }
+//    public string AccountName { get; set; }
+//    public string AccountNo { get; set; }
+//    public int AcqId { get; set; }
+//    public string AddInfo { get; set; }
 //}
