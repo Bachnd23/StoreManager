@@ -8,7 +8,8 @@ namespace COCOApp.Models
         public int UserId { get; set; }
         public string? BusinessName { get; set; }
         public string? BusinessAddress { get; set; }
+        public byte[]? ImageData { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User? User { get; set; } 
     }
 }

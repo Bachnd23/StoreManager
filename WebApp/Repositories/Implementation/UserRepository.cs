@@ -114,6 +114,7 @@ namespace COCOApp.Repositories
         public User GetUserByNameAndPass(string username, string password)
         {
             var user = _context.Users.Include(u => u.UserDetail)
+                .Include(s => s.SellerDetail)
                 .FirstOrDefault(u => u.Username == username);
 
             if (user != null && user.Status == true && BCrypt.Net.BCrypt.Verify(password, user.Password))
@@ -127,6 +128,7 @@ namespace COCOApp.Repositories
         public User GetUserById(int userId)
         {
             return _context.Users.Include(u => u.UserDetail)
+                .Include(s => s.SellerDetail)
                 .FirstOrDefault(u => u.Id == userId);
         }
 
@@ -145,7 +147,7 @@ namespace COCOApp.Repositories
 
         public User GetUserByUsername(string username)
         {
-            return _context.Users.Include(u => u.UserDetail)  
+            return _context.Users.Include(u => u.UserDetail)
                                  .FirstOrDefault(u => u.Username == username);
         }
 
@@ -223,7 +225,7 @@ namespace COCOApp.Repositories
         public async Task UpdateRemembermeTokenAsync(String username)
         {
             var user = await _context.Users.Include(u => u.UserDetail)
-                .FirstOrDefaultAsync(u => u.Username==username);
+                .FirstOrDefaultAsync(u => u.Username == username);
 
             if (user != null)
             {
@@ -278,6 +280,7 @@ namespace COCOApp.Repositories
                     {
 
                         var user = await _context.Users.Include(u => u.UserDetail)
+                          .Include(s => s.SellerDetail)
                           .FirstOrDefaultAsync(u => u.RememberToken == tokenFromCookie);
 
                         if (user != null)

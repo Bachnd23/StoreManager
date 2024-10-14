@@ -156,6 +156,7 @@ CREATE TABLE SellerDetails (
     user_id INT NOT NULL PRIMARY KEY,
     business_name NVARCHAR(255) NULL,
     business_address NVARCHAR(255) NULL,
+	ImageData VARBINARY(MAX) NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 GO
