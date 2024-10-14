@@ -110,11 +110,11 @@ function generateOrdersTable(data) {
         row.append($('<td>').text(order.orderDate));
 
         // Correct status logic
-        if (order.complete) {
-            row.append($('<td>').text("Đã hoàn thành"));
-        } else {
-            row.append($('<td>').text("Chưa hoàn thành"));
-        }
+        // if (order.complete) {
+        //     row.append($('<td>').text("Đã hoàn thành"));
+        // } else {
+        //     row.append($('<td>').text("Chưa hoàn thành"));
+        // }
 
 
         const actionCell = $('<td>');

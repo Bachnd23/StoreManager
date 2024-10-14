@@ -129,7 +129,10 @@ namespace COCOApp.Repositories.Implementation
         }
         public void EditImportOrderItem(int orderId, int productId, ImportOrderItem order)
         {
-            var existingOrder = _context.ImportOrderItems.FirstOrDefault(c => c.OrderId == orderId && c.ProductId == productId);
+            var existingOrder = _context.ImportOrderItems
+                .Include(o => o.Product)
+                .ThenInclude(i => i.InventoryManagement)
+                .FirstOrDefault(c => c.OrderId == orderId && c.ProductId == productId);
 
             if (existingOrder != null)
             {
@@ -137,11 +140,20 @@ namespace COCOApp.Repositories.Implementation
                 existingOrder.ProductId = order.ProductId;
                 existingOrder.ProductCost = order.ProductCost;
                 existingOrder.Volume = order.Volume;
+                existingOrder.RealVolume = order.RealVolume;
                 //existingOrder.Total = order.Total;
                 //existingOrder.Order.SellerId = order.Order.SellerId;
                 existingOrder.CreatedAt = order.CreatedAt;
                 existingOrder.UpdatedAt = order.UpdatedAt;
-
+                existingOrder.Status = order.Status;
+                if (existingOrder.Status)
+                {
+                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == existingOrder.ProductId);
+                    //Update inventory changes
+                    int realVolumeAsInt = Convert.ToInt32(existingOrder.RealVolume);
+                    inventory.AllocatedVolume -= realVolumeAsInt;
+                    inventory.RemainingVolume += realVolumeAsInt;
+                }
                 _context.SaveChanges();
             }
             else
