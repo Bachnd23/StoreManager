@@ -11,14 +11,16 @@ namespace COCOApp.Controllers
     public class ReportController : Controller
     {
         private readonly ExportOrderService _orderService;
+        private readonly UserService _userService;
         private readonly ReportService _reportService;
         private readonly ExportOrderItemService _itemService;
         private readonly UserDetailsService _userDetailsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ReportController(ExportOrderService orderService, ReportService reportService, ExportOrderItemService itemService, UserDetailsService userDetailsService, IWebHostEnvironment webHostEnvironment)
+        public ReportController(ExportOrderService orderService,UserService userService, ReportService reportService, ExportOrderItemService itemService, UserDetailsService userDetailsService, IWebHostEnvironment webHostEnvironment)
         {
             _orderService = orderService;
+            _userService = userService;
             _reportService = reportService;
             _itemService = itemService;
             _userDetailsService = userDetailsService;
@@ -118,7 +120,7 @@ namespace COCOApp.Controllers
                 return View("Error"); // Return an error view if the data is invalid
             }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            UserDetail userDetail = _userDetailsService.GetUserDetailsById(user.Id);
+            user=_userService.GetUserById(user.Id);
 
             Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
             string dateRange= HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
@@ -137,28 +139,36 @@ namespace COCOApp.Controllers
                 totalQuantity += orderItem.Volume;
                 totalCost += orderItem.Total;
             }
+
+            byte[] imageBytes = user.SellerDetail.ImageData;
+
             var reports = orderItems.Select(item => new
             {
                 ProductName = item.Product.ProductName,
-                product_price = item.Product.Cost,
+                product_price = item.Product.Cost + " VND",
                 volume = item.Volume,
                 MeasureUnit = item.Product.MeasureUnit,
-                total = item.Total,
-                orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy")
+                total = item.Total+" VND",
+                orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy"),
+                ImageData= imageBytes
             }).ToList();
 
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("StoreNamePM", "Cửa hàng vlxd: " + userDetail.Fullname);
-            parameters.Add("StoreAddressPM", "Địa chỉ: " + userDetail.Address);
-            parameters.Add("StorePhonePM", "Số điện thoại: " + userDetail.Phone);
+            parameters.Add("StoreNamePM", "Cửa hàng vlxd: " + user.SellerDetail.BusinessName);
+            parameters.Add("StoreAddressPM", "Địa chỉ: " + user.SellerDetail.BusinessAddress);
+            parameters.Add("StorePhonePM", "Số điện thoại: " + user.UserDetail.Phone);
             parameters.Add("DateRangePM", "Từ ngày: " + orderItems[0].Order.OrderDate.ToString("dd-MM-yyyy") + " đến ngày: " + orderItems[orderItems.Count - 1].Order.OrderDate.ToString("dd-MM-yyyy"));
             parameters.Add("CustomerPM", "Tên khách hàng: " + report.Customer.Name);
             parameters.Add("CustomerAddressPM", "Địa chỉ: " + report.Customer.Address);
             parameters.Add("TotalQuantityPM", "Tổng số lượng: " + totalQuantity);
-            parameters.Add("TotalPricePM", "Tổng giá: " + totalCost);
+            parameters.Add("TotalPricePM", "Tổng giá: " + totalCost + " VND");
 
+            // Create the LocalReport object
             LocalReport localReport = new LocalReport(path);
+
             localReport.AddDataSource("DataSet1", reports);
+
+            // Execute the report
             var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
 
             return File(result.MainStream, "application/pdf");

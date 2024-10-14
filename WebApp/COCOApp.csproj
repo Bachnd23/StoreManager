@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Reports\OrderReport.rdlc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
