@@ -8,20 +8,23 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 namespace COCOApp.Controllers
 {
     public class UserController : Controller
     {
         private readonly UserService _userService;
         private readonly UserDetailsService _userDetailsService;
+        private readonly SellerDetailsService _sellerDetailsService;
         private readonly EmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserController(UserService userService, UserDetailsService userDetailsService, EmailService emailService, IHttpContextAccessor httpContextAccessor)
+        public UserController(UserService userService, UserDetailsService userDetailsService, EmailService emailService, IHttpContextAccessor httpContextAccessor, SellerDetailsService sellerDetailsService)
         {
             _userService = userService;
             _userDetailsService = userDetailsService;
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
+            _sellerDetailsService = sellerDetailsService;
         }
 
         private const int PageSize = 10;
@@ -73,6 +76,7 @@ namespace COCOApp.Controllers
         public IActionResult ViewProfile()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            user=_userService.GetUserById(user.Id);
             return View("/Views/User/UserProfile.cshtml", user);
         }
         [Authorize(Roles = "Admin")]
@@ -117,7 +121,7 @@ namespace COCOApp.Controllers
                 };
                 // Use the service to insert the customer
                 _userService.UpdateUser(model.Id, user);
-                HttpContext.Session.SetString("SuccessMsg", "Sửa khách hàng thành công!");
+                HttpContext.Session.SetString("SuccessMsg", "Sửa người dùng thành công!");
                 // Redirect to the customer list or a success page
                 return RedirectToAction("ViewList");
             }
@@ -183,6 +187,15 @@ namespace COCOApp.Controllers
                     Dob = DateTime.Now,
                     Gender = true,
                 };
+                var sellerDetail = new SellerDetail
+                {
+                    UserId = user.Id,   
+                    BusinessAddress = "",
+                    BusinessName="",
+                    ImageData=null
+                };
+                
+                _sellerDetailsService.AddSellerDetails(sellerDetail);
                 _userDetailsService.AddUserDetails(userDetail);
                 HttpContext.Session.SetString("SuccessMsg", "Đăng ký tài khoản thành công!");
                 return View("/Views/Home/SignIn.cshtml");
@@ -275,7 +288,7 @@ namespace COCOApp.Controllers
         }
         [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
-        public IActionResult UpdateUser(User model)
+        public IActionResult UpdateUser(User model, IFormFile ImageFile)
         {
             try
             {
@@ -289,12 +302,14 @@ namespace COCOApp.Controllers
                     // If the model state is not valid, return the same view with validation errors
                     return View("/Views/User/UserProfile.cshtml", model);
                 }
+
                 int sellerId = model.Id;
                 if (sellerId == 0)
                 {
                     sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
                 }
-                // Convert the model to your domain entity
+
+                // Convert the model to your domain entity for updating the User
                 var user = new User
                 {
                     Id = sellerId,
@@ -303,8 +318,11 @@ namespace COCOApp.Controllers
                     Status = true,
                     UpdatedAt = DateTime.Now
                 };
-                // Use the service to insert the customer
+
+                // Update user details
                 _userService.UpdateUser(sellerId, user);
+
+                // Prepare the UserDetail object
                 var userDetail = new UserDetail
                 {
                     Fullname = model.UserDetail.Fullname,
@@ -313,12 +331,37 @@ namespace COCOApp.Controllers
                     Address = model.UserDetail.Address,
                     Phone = model.UserDetail.Phone,
                 };
+                var sellerDetail = new SellerDetail
+                {
+                    BusinessName = model.SellerDetail.BusinessName,
+                    BusinessAddress = model.SellerDetail.BusinessAddress,
+                };
+                // Handle the image upload
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        // Copy the uploaded file into the memory stream
+                        ImageFile.CopyTo(memoryStream);
+                        // Convert the image to a byte array and store it in the UserDetail object
+                        sellerDetail.ImageData = memoryStream.ToArray();
+                    }
+                }
+
+                // Update user details in the database
                 _userDetailsService.UpdateUserDetails(sellerId, userDetail);
+                // Update seller details in the database
+                _sellerDetailsService.UpdateSellerDetails(sellerId, sellerDetail);
+                // Set success message in session
+                model.UserDetail = userDetail;
+                model.SellerDetail = sellerDetail;
                 HttpContext.Session.SetString("SuccessMsg", "Cập nhật tài khoản thành công!");
+
                 return View("/Views/User/UserProfile.cshtml", model);
             }
             catch (ArgumentException ex)
             {
+                // Handle known exception (like email/username conflict)
                 HttpContext.Session.SetString("ErrorMsg", "Email hoặc tên đăng nhập đã được sử dụng!");
                 return View("/Views/User/UserProfile.cshtml", model);
             }

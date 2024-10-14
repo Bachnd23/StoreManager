@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataSet\ExportOrderReportDataSet.cs">
+      <DependentUpon>ExportOrderReportDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DataSet\ExportOrderReportDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
