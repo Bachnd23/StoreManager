@@ -102,12 +102,19 @@ function generateOrderItemsTable(data) {
 
     // Iterate over the user results and create table rows
     $.each(data.orderResults, function (index, orderItem) {
+        console.log("Processing import order item: ", orderItem);
         const row = $('<tr>');
         row.append($('<td>').text(orderItem.product.productName));
         row.append($('<td>').text(orderItem.volume));
+        row.append($('<td>').text(orderItem.realVolume != null ? orderItem.realVolume : null));
         row.append($('<td>').text(orderItem.productCost));
-        row.append($('<td>').text(orderItem.total));
-        row.append($('<td>').text(orderItem.updatedAt));
+        row.append($('<td>').text(orderItem.productCost * orderItem.volume));
+   
+        if (!orderItem.status) {
+            row.append($('<td>').text('Chưa nhận đủ hàng'));
+        } else {
+            row.append($('<td>').text('Đã nhận đủ hàng'));
+        }
 
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
