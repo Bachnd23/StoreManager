@@ -49,6 +49,7 @@ builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<IProductStatisticsRepository, ProductStatisticsRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
 builder.Services.AddScoped<ExportOrderItemService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductStatisticService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
