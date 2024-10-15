@@ -1,0 +1,68 @@
+﻿@model DashboardViewModel
+
+<h1>Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Doanh thu dự kiến</h2>
+        <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h2>Chi tiết doanh thu</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mặt hàng</th>
+                    <th>Số lượng</th>
+                    <th>Doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var stat in Model.ProductStatistics)
+                {
+                    <tr>
+                        <td>@stat.ProductName</td>
+                        <td>@stat.Quantity</td>
+                        <td>@stat.Revenue.ToString("N0") VND</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2">Tổng cộng</th>
+                    <th>@Model.TotalRevenue.ToString("N0") VND</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('revenueChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.ProductStatistics.Select(s => $"'{s.ProductName}'")))],
+                datasets: [{
+                    data: [@string.Join(",", Model.ProductStatistics.Select(s => s.Revenue))],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Doanh thu dự kiến'
+                }
+            }
+        });
+    </script>
+}
