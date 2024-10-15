@@ -53,6 +53,8 @@ builder.Services.AddScoped<IProductStatisticsRepository, ProductStatisticsReposi
 builder.Services.AddScoped<IImportOrderItemRepository,ImportOrderItemRepository>();
 builder.Services.AddScoped<IInventoryManagementRepository, InventoryManagementRepository>();
 builder.Services.AddScoped<ISellerDetailRepository, SellerDetailRepository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<IProductStatisticsRepository, ProductStatisticsRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -68,6 +70,8 @@ builder.Services.AddScoped<ProductStatisticService>();
 builder.Services.AddScoped<ImportOrderItemService>();
 builder.Services.AddScoped<InventoryMangementService>();
 builder.Services.AddScoped<SellerDetailsService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductStatisticService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
