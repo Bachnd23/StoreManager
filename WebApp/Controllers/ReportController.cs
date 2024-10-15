@@ -78,7 +78,7 @@ namespace COCOApp.Controllers
                 {
                     ReportId = report.Id,
                     ProductId = item.ProductId,
-                    Volume = item.Volume,
+                    Volume = item.RealVolume,
                     TotalPrice = item.ProductPrice * item.Volume,
                     OrderDate = item.Order.OrderDate
                 };
@@ -136,7 +136,7 @@ namespace COCOApp.Controllers
             {
                 ExportOrderItem orderItem = orderItems[i];
                 orderItem.Product.Cost = reportDetails[0].Product.Cost;
-                totalQuantity += orderItem.Volume;
+                totalQuantity += orderItem.RealVolume;
                 totalCost += orderItem.Total;
             }
 
@@ -146,7 +146,7 @@ namespace COCOApp.Controllers
             {
                 ProductName = item.Product.ProductName,
                 product_price = item.Product.Cost + " VND",
-                volume = item.Volume,
+                volume = item.RealVolume,
                 MeasureUnit = item.Product.MeasureUnit,
                 total = item.Total+" VND",
                 orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy"),
