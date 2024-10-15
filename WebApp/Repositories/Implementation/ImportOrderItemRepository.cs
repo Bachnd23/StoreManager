@@ -151,7 +151,6 @@ namespace COCOApp.Repositories.Implementation
                     InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == existingOrder.ProductId);
                     //Update inventory changes
                     int realVolumeAsInt = Convert.ToInt32(existingOrder.RealVolume);
-                    inventory.AllocatedVolume -= realVolumeAsInt;
                     inventory.RemainingVolume += realVolumeAsInt;
                 }
                 _context.SaveChanges();

@@ -9,6 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thêm mới đơn hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .form-section {
             margin-bottom: 20px;
@@ -36,7 +39,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="topSelectCustomer" class="form-label">Chọn khách hàng</label>
-                            <select id="topSelectCustomer" class="form-select" required>
+                            <select id="topSelectCustomer" class="form-select select2" >
                                 <option value="">Chọn khách hàng</option>
                                 @foreach (var customer in ViewBag.Customers)
                                 {
@@ -48,7 +51,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="topSelectOrderDate" class="form-label">Chọn Ngày đặt</label>
-                            <input type="date" class="form-control" id="topSelectOrderDate" required>
+                            <input type="date" class="form-control" id="topSelectOrderDate" >
                         </div>
                     </div>
                 </div>
@@ -72,7 +75,7 @@
                         {
                             <tr>
                                 <td>
-                                    <select asp-for="@Model.Orders[i].CustomerId" class="form-select" required>
+                                    <select asp-for="@Model.Orders[i].CustomerId" class="form-select select2" required>
                                         <option value="">Chọn khách hàng</option>
                                         @foreach (var customer in ViewBag.Customers)
                                         {
@@ -84,7 +87,7 @@
                                     <input type="date" asp-for="@Model.Orders[i].OrderDate" class="form-control" required />
                                 </td>
                                 <td>
-                                    <select asp-for="@Model.Orders[i].ProductId" class="form-select" required>
+                                    <select asp-for="@Model.Orders[i].ProductId" class="form-select select2" required>
                                         <option value="">Chọn mặt hàng</option>
                                         @foreach (var product in ViewBag.Products)
                                         {
@@ -112,10 +115,17 @@
         </form>
     </div>
 
-    <!-- Include Bootstrap JS and custom script -->
+    <!-- Include jQuery, Bootstrap JS, and Select2 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
+        // Initialize Select2 on document ready
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+
         // Function to dynamically add a new row
         function addRow() {
             var table = document.getElementById("orderTable").getElementsByTagName('tbody')[0];
@@ -126,20 +136,23 @@
             var selectedDate = document.getElementById("topSelectOrderDate").value;
 
             newRow.innerHTML = `
-                    <td>
-                        <select name="Orders[${rowIndex}].CustomerId" class="form-select" required>
-                            ${getCustomerOptions(selectedCustomer)}
-                        </select>
-                    </td>
-                    <td><input type="date" name="Orders[${rowIndex}].OrderDate" value="${selectedDate}" class="form-control" required></td>
-                    <td>
-                        <select name="Orders[${rowIndex}].ProductId" class="form-select" required>
-                            ${getProductOptions()}
-                        </select>
-                    </td>
-                    <td><input type="number" name="Orders[${rowIndex}].ProductVolume" class="form-control" min="1" max="100" required></td>
-                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>
-                `;
+                            <td>
+                                <select name="Orders[${rowIndex}].CustomerId" class="form-select select2" required>
+                                    ${getCustomerOptions(selectedCustomer)}
+                                </select>
+                            </td>
+                            <td><input type="date" name="Orders[${rowIndex}].OrderDate" value="${selectedDate}" class="form-control" required></td>
+                            <td>
+                                <select name="Orders[${rowIndex}].ProductId" class="form-select select2" required>
+                                    ${getProductOptions()}
+                                </select>
+                            </td>
+                            <td><input type="number" name="Orders[${rowIndex}].ProductVolume" class="form-control" min="1" max="100" required></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>
+                        `;
+
+            // Initialize Select2 for the new select elements
+            $('.select2').select2();
         }
 
         function removeRow(button) {

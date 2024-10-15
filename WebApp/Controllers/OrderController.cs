@@ -185,7 +185,6 @@ namespace COCOApp.Controllers
                                             .ToList();
 
                 int i = 0;
-                Debug.WriteLine(sortedOrders.Count);
                 while (i < sortedOrders.Count)
                 {
                     var order = sortedOrders[i];
@@ -209,7 +208,6 @@ namespace COCOApp.Controllers
                     {
                         var currentOrder = sortedOrders[i];
                         Product product = _productService.GetProductById(currentOrder.ProductId, user.Id);
-
                         var exportOrderItem = new ExportOrderItem
                         {
                             OrderId = exportOrder.Id,
@@ -223,6 +221,15 @@ namespace COCOApp.Controllers
                             CreatedAt = DateTime.Now,
                             UpdatedAt = DateTime.Now
                         };
+
+                        if (exportOrderItem.Volume > product.InventoryManagement.RemainingVolume)
+                        {
+                            ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                            ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                            HttpContext.Session.SetString("ErrorMsg", "Không đủ số lượng tồn kho!");
+                            return View("/Views/Order/AddOrder.cshtml", viewModel);
+                        }
+
                         _itemService.AddExportOrderItem(exportOrderItem);
 
                         i++; // Increment index to process the next order
@@ -237,7 +244,7 @@ namespace COCOApp.Controllers
             string errorMessages = string.Join("; ", errors);
             Debug.WriteLine(errorMessages);
 
-            return RedirectToAction("Add"); // Redirect to action "Add" if model state is not valid
+            return View("/Views/Order/AddOrder.cshtml", viewModel);
         }
 
 
@@ -360,6 +367,14 @@ namespace COCOApp.Controllers
                 SellerId = oldOrder.SellerId,
                 UpdatedAt = DateTime.Now
             };
+            Product product = _productService.GetProductById(order.ProductId, user.Id);
+            if (order.RealVolume > product.InventoryManagement.RemainingVolume)
+            {
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                HttpContext.Session.SetString("ErrorMsg", "Không đủ hàng tồn!");
+                return View("/Views/Order/EditOrderItem.cshtml", model);
+            }
 
             // Use the service to edit the customer
             _itemService.EditExportOrderItem(model.OrderId,model.ProductId, order);
