@@ -100,6 +100,8 @@ function generateUsersTable(data) {
             row.append($('<td>').text('Người bán'));
         } else if (user.role == 3) {
             row.append($('<td>').text('Người mua'));
+        } else {
+            row.append($('<td>').text('N/A'));
         }
         if (user.status) {
             row.append($('<td>').text('Đã kích hoạt'));

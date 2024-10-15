@@ -367,6 +367,14 @@ namespace COCOApp.Controllers
                 SellerId = oldOrder.SellerId,
                 UpdatedAt = DateTime.Now
             };
+            Product product = _productService.GetProductById(order.ProductId, user.Id);
+            if (order.RealVolume > product.InventoryManagement.RemainingVolume)
+            {
+                ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
+                ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
+                HttpContext.Session.SetString("ErrorMsg", "Không đủ hàng tồn!");
+                return View("/Views/Order/EditOrderItem.cshtml", model);
+            }
 
             // Use the service to edit the customer
             _itemService.EditExportOrderItem(model.OrderId,model.ProductId, order);
