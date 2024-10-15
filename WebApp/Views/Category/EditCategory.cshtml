@@ -24,7 +24,7 @@
                 </ol>
             </nav>
             <form asp-action="EditCategory" method="post">
-                <input type="text" name="cateid" class="form-control" value="@Model.Id" hidden>
+                <input asp-for="Id"  class="form-control" hidden>
                 <div class="row">
                     <div class="col">
                         <div>
