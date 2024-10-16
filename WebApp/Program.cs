@@ -8,6 +8,7 @@ using COCOApp.Repositories;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using COCOApp.Repositories.Implementation;
+using COCOApp.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +48,13 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IExportOrderItemRepository,ExportOrderItemRepository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<IProductStatisticsRepository, ProductStatisticsRepository>();
 builder.Services.AddScoped<IImportOrderItemRepository,ImportOrderItemRepository>();
 builder.Services.AddScoped<IInventoryManagementRepository, InventoryManagementRepository>();
 builder.Services.AddScoped<ISellerDetailRepository, SellerDetailRepository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+builder.Services.AddScoped<IProductStatisticsRepository, ProductStatisticsRepository>();
 
 // Register your custom services here
 builder.Services.AddScoped<ExportOrderService>();
@@ -60,9 +65,13 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
 builder.Services.AddScoped<ExportOrderItemService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductStatisticService>();
 builder.Services.AddScoped<ImportOrderItemService>();
 builder.Services.AddScoped<InventoryMangementService>();
 builder.Services.AddScoped<SellerDetailsService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductStatisticService>();
 
 // Configure SignalR to handle cyclic references
 builder.Services.AddSignalR().AddJsonProtocol(options =>
@@ -113,5 +122,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<ProductHub>("/productHub");
     endpoints.MapHub<CustomerHub>("/customerHub");
     endpoints.MapHub<OrderHub>("/orderHub");
+    endpoints.MapHub<CategoryHub>("/categoryHub");
 });
 app.Run();
