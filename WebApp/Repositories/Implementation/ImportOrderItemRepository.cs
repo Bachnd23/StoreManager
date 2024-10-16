@@ -25,6 +25,13 @@ namespace COCOApp.Repositories.Implementation
                 importOrderItem.Volume += item.Volume;
                 Product product = _context.Products.FirstOrDefault(p => p.Id == importOrderItem.ProductId);
                 //importOrderItem.Total = importOrderItem.Volume * product.Cost;
+                if (importOrderItem.Status)
+                {
+                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == importOrderItem.ProductId);
+                    //Rollback inventory changes
+                    inventory.RemainingVolume -= importOrderItem.RealVolume;
+                    importOrderItem.Status = false;
+                }
             }
             _context.SaveChanges();
         }

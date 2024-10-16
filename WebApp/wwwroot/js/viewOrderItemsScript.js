@@ -106,8 +106,8 @@ function generateOrderItemsTable(data) {
         row.append($('<td>').text(orderItem.product.productName));
         row.append($('<td>').text(orderItem.volume));
         row.append($('<td>').text(orderItem.realVolume));
-        row.append($('<td>').text(orderItem.productPrice));
-        row.append($('<td>').text(orderItem.total));
+        row.append($('<td>').text(orderItem.productPrice.toLocaleString('vi-VN') + ' VNĐ'));
+        row.append($('<td>').text(orderItem.total.toLocaleString('vi-VN') + ' VNĐ'));
         if (!orderItem.status) {
             row.append($('<td>').text('Chưa xác nhận'));
         } else {
