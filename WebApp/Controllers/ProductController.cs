@@ -11,11 +11,13 @@ namespace COCOApp.Controllers
     public class ProductController : Controller
     {
         private readonly IHubContext<ProductHub> _hubContext;
-        private ProductService _productService;
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
         private InventoryMangementService _inventoryMangementService;
-        public ProductController(ProductService productService, IHubContext<ProductHub> hubContext, InventoryMangementService inventoryMangementService)
+        public ProductController(ProductService productService, CategoryService categoryService, IHubContext<ProductHub> hubContext, InventoryMangementService inventoryMangementService)
         {
             _productService = productService;
+            _categoryService = categoryService;
             _hubContext = hubContext;
             _inventoryMangementService = inventoryMangementService;
         }
