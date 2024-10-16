@@ -50,7 +50,12 @@ GO
 CREATE TABLE Categories (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     CategoryName NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(255) NULL
+    Description NVARCHAR(255) NULL,
+	status BIT NOT NULL,
+    created_at DATETIME NULL DEFAULT NULL,
+    updated_at DATETIME NULL DEFAULT NULL,
+	seller_id INT,
+    FOREIGN KEY (seller_id) REFERENCES Users(id),
 );
 GO
 -- Create Products table (General product information)
