@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using COCOApp.Models.ValidationAtributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace COCOApp.Models.Validations
 {
@@ -16,6 +17,7 @@ namespace COCOApp.Models.Validations
 
         [Required(ErrorMessage = "Giá sản phẩm là bắt buộc")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Giá sản phẩm phải lớn hơn 0")]
+        [WholeNumberValidation(ErrorMessage = "Giá sản phẩm phải là số nguyên")]
         public decimal Cost { get; set; }
 
         [Required(ErrorMessage = "Trạng thái là bắt buộc")]

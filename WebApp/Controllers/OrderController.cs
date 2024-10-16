@@ -222,13 +222,13 @@ namespace COCOApp.Controllers
                             UpdatedAt = DateTime.Now
                         };
 
-                        if (exportOrderItem.Volume > product.InventoryManagement.RemainingVolume)
+/*                        if (exportOrderItem.Volume > product.InventoryManagement.RemainingVolume)
                         {
                             ViewBag.Customers = _orderService.GetCustomersSelectList(user.Id);
                             ViewBag.Products = _orderService.GetProductsSelectList(user.Id);
                             HttpContext.Session.SetString("ErrorMsg", "Không đủ số lượng tồn kho!");
                             return View("/Views/Order/AddOrder.cshtml", viewModel);
-                        }
+                        }*/
 
                         _itemService.AddExportOrderItem(exportOrderItem);
 
