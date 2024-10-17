@@ -22,26 +22,61 @@ namespace COCOApp.Repositories
 
         public void addExportOrderItem(ExportOrderItem item)
         {
-            ExportOrderItem exportOrderItem = _context.ExportOrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.ProductId == item.ProductId);
+            // Try to retrieve the existing export order item if it exists
+            var exportOrderItem = _context.ExportOrderItems
+                .Include(x => x.Order)
+                .FirstOrDefault(o => o.OrderId == item.OrderId && o.ProductId == item.ProductId);
+
             if (exportOrderItem == null)
             {
+                // If the item does not exist, add it directly
                 _context.ExportOrderItems.Add(item);
             }
             else
             {
-                //Update quantity
-                exportOrderItem.Volume += item.Volume;
-                Product product = _context.Products.FirstOrDefault(p => p.Id == exportOrderItem.ProductId);
-                exportOrderItem.Total = exportOrderItem.Volume * product.Cost;
                 if (exportOrderItem.Status)
                 {
-                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == exportOrderItem.ProductId);
-                    //Rollback inventory changes
-                    inventory.AllocatedVolume -= exportOrderItem.RealVolume;
-                    inventory.RemainingVolume += exportOrderItem.RealVolume;
-                    exportOrderItem.Status = false;
+                    // Create a new ExportOrder if the status is true
+                    var exportOrder = new ExportOrder
+                    {
+                        CustomerId = exportOrderItem.Order.CustomerId,
+                        OrderDate = exportOrderItem.Order.OrderDate,
+                        Complete = false,
+                        OrderTotal = 0,
+                        SellerId = exportOrderItem.Order.SellerId,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    };
+
+                    // Add the new export order and save changes to generate the ID
+                    _context.ExportOrders.Add(exportOrder);
+                    _context.SaveChanges();  // Save to generate new order ID
+
+                    // Assign the new OrderId to the item
+                    item.OrderId = exportOrder.Id;
+
+                    // Add the new export order item
+                    _context.ExportOrderItems.Add(item);
+                }
+                else
+                {
+                    // If the status is false, update the existing item's volume
+                    exportOrderItem.Volume += item.Volume;
+
+                    // Retrieve the product with AsNoTracking to avoid tracking conflicts
+                    var product = _context.Products
+                        .AsNoTracking()
+                        .FirstOrDefault(p => p.Id == exportOrderItem.ProductId);
+
+                    // Update the total based on the new volume and product cost
+                    if (product != null)
+                    {
+                        exportOrderItem.Total = exportOrderItem.Volume * product.Cost;
+                    }
                 }
             }
+
+            // Save all changes at the end
             _context.SaveChanges();
         }
         public List<ExportOrderItem> GetExportOrderItems(string dateRange, int customerId, int sellerId)
