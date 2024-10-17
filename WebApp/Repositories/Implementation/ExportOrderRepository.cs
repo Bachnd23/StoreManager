@@ -206,7 +206,8 @@ namespace COCOApp.Repositories
                       .ThenInclude(oi => oi.Product)
                     .AsQueryable();
 
-            return query.FirstOrDefault(o=>o.CustomerId==customerId&&o.OrderDate==date);
+            return query.OrderByDescending(o=>o.UpdatedAt)
+                .FirstOrDefault(o=>o.CustomerId==customerId&&o.OrderDate==date);
         }
     }
 }

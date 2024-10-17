@@ -14,26 +14,57 @@ namespace COCOApp.Repositories.Implementation
 
         public void addImportOrderItem(ImportOrderItem item)
         {
-            ImportOrderItem importOrderItem = _context.ImportOrderItems.FirstOrDefault(o => o.OrderId == item.OrderId 
-            && o.ProductId == item.ProductId);
+            // Try to retrieve the existing order item if it exists
+            var importOrderItem = _context.ImportOrderItems
+                .Include(x => x.Order)
+                .FirstOrDefault(o => o.OrderId == item.OrderId && o.ProductId == item.ProductId);
+
             if (importOrderItem == null)
             {
+                // If the item does not exist, add it directly
                 _context.ImportOrderItems.Add(item);
             }
             else
             {
-                importOrderItem.Volume += item.Volume;
-                Product product = _context.Products.FirstOrDefault(p => p.Id == importOrderItem.ProductId);
-                //importOrderItem.Total = importOrderItem.Volume * product.Cost;
                 if (importOrderItem.Status)
                 {
-                    InventoryManagement inventory = _context.InventoryManagements.FirstOrDefault(p => p.ProductId == importOrderItem.ProductId);
-                    //Rollback inventory changes
-                    inventory.RemainingVolume -= importOrderItem.RealVolume;
-                    importOrderItem.Status = false;
+                    // Create a new ImportOrder if the status is true
+                    var importOrder = new ImportOrder
+                    {
+                        SupplierId = importOrderItem.Order.SupplierId,
+                        OrderDate = importOrderItem.Order.OrderDate,
+                        Complete = false,
+                        OrderTotal = 0,
+                        SellerId = importOrderItem.Order.SellerId,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    };
+
+                    // Add the new import order
+                    _context.ImportOrders.Add(importOrder);
+                    _context.SaveChanges();  // Save to generate the new order ID
+
+                    // Reassign the OrderId to the new import order
+                    item.OrderId = importOrder.Id;
+
+                    // Add the new import order item
+                    _context.ImportOrderItems.Add(item);
+                }
+                else
+                {
+                    // If the status is false, just update the volume
+                    importOrderItem.Volume += item.Volume;
+
+                    // If you need the product, retrieve it with AsNoTracking
+                    var product = _context.Products
+                        .AsNoTracking()
+                        .FirstOrDefault(p => p.Id == importOrderItem.ProductId);
+
+                    // No further action required unless you need to modify product details
                 }
             }
-            _context.SaveChanges();
+
+            _context.SaveChanges();  // Save changes at the end
         }
 
         public ImportOrderItem GetImportOrderItemById(int orderId, int productId, int sellerId)
