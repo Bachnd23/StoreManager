@@ -62,14 +62,18 @@ namespace COCOApp.Controllers
             List<ExportOrder> orders = _orderService.GetExportOrdersByIds(orderIds, user.Id);
             // Assuming _orderService can fetch orders by their IDs
             List<ExportOrderItem> orderItems = _itemService.GetExportOrderItemsByIds(orderIds, user.Id);
-
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
             Report report = new Report()
             {
                 CustomerId = orders[0].CustomerId,
                 TotalPrice = 0,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                SellerId = user.Id,
+                SellerId = sellerId,
             };
             _reportService.AddReport(report);
             foreach (var item in orderItems)
@@ -117,11 +121,15 @@ namespace COCOApp.Controllers
             if (reportDetails == null || !reportDetails.Any())
             {
                 ModelState.AddModelError("", "No details provided.");
-                return View("Error"); // Return an error view if the data is invalid
+                return RedirectToAction("ViewCreate");
             }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            user=_userService.GetUserById(user.Id);
-
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
+            user = _userService.GetUserById(sellerId);
             Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
             string dateRange= HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
             List<ExportOrderItem> orderItems = _itemService.GetExportOrderItems(dateRange, report.Customer.Id, user.Id);

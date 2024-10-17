@@ -18,7 +18,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Giá hóa đơn</li>
             </ol>
         </nav>
-        <form asp-controller="Report" asp-action="Print" method="post" id="summaryForm">
+        <form asp-controller="Report" asp-action="Print" method="post" target="_blank" id="summaryForm">
             <div class="row bg-light rounded h-100 p-4">
                 <div>
                     @if (Model == null || Model.Count == 0)
