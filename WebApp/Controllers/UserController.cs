@@ -76,7 +76,12 @@ namespace COCOApp.Controllers
         public IActionResult ViewProfile()
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            user=_userService.GetUserById(user.Id);
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
+            user = _userService.GetUserById(sellerId);
             return View("/Views/User/UserProfile.cshtml", user);
         }
         [Authorize(Roles = "Admin")]
