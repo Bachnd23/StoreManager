@@ -62,14 +62,18 @@ namespace COCOApp.Controllers
             List<ExportOrder> orders = _orderService.GetExportOrdersByIds(orderIds, user.Id);
             // Assuming _orderService can fetch orders by their IDs
             List<ExportOrderItem> orderItems = _itemService.GetExportOrderItemsByIds(orderIds, user.Id);
-
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
             Report report = new Report()
             {
                 CustomerId = orders[0].CustomerId,
                 TotalPrice = 0,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                SellerId = user.Id,
+                SellerId = sellerId,
             };
             _reportService.AddReport(report);
             foreach (var item in orderItems)
@@ -78,7 +82,7 @@ namespace COCOApp.Controllers
                 {
                     ReportId = report.Id,
                     ProductId = item.ProductId,
-                    Volume = item.Volume,
+                    Volume = item.RealVolume,
                     TotalPrice = item.ProductPrice * item.Volume,
                     OrderDate = item.Order.OrderDate
                 };
@@ -117,11 +121,15 @@ namespace COCOApp.Controllers
             if (reportDetails == null || !reportDetails.Any())
             {
                 ModelState.AddModelError("", "No details provided.");
-                return View("Error"); // Return an error view if the data is invalid
+                return RedirectToAction("ViewCreate");
             }
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            user=_userService.GetUserById(user.Id);
-
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
+            user = _userService.GetUserById(sellerId);
             Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
             string dateRange= HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
             List<ExportOrderItem> orderItems = _itemService.GetExportOrderItems(dateRange, report.Customer.Id, user.Id);
@@ -136,7 +144,7 @@ namespace COCOApp.Controllers
             {
                 ExportOrderItem orderItem = orderItems[i];
                 orderItem.Product.Cost = reportDetails[0].Product.Cost;
-                totalQuantity += orderItem.Volume;
+                totalQuantity += orderItem.RealVolume;
                 totalCost += orderItem.Total;
             }
 
@@ -146,7 +154,7 @@ namespace COCOApp.Controllers
             {
                 ProductName = item.Product.ProductName,
                 product_price = item.Product.Cost + " VND",
-                volume = item.Volume,
+                volume = item.RealVolume,
                 MeasureUnit = item.Product.MeasureUnit,
                 total = item.Total+" VND",
                 orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy"),

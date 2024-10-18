@@ -3,42 +3,46 @@ var roleId = "";
 var totalPages = 1;
 var isFetchingData = false;
 var connection;
+
 $(document).ready(function () {
     // Establish SignalR connection
-    connection = new signalR.HubConnectionBuilder().withUrl("/orderHub").build();
+    connection = new signalR.HubConnectionBuilder().withUrl("/categoryHub").build();
 
-    // Define the event handler for ImportOrder
-    connection.on("OrderUpdated", function (order) {
+    // Define the event handler for ProductAdded
+    connection.on("CategoryUpdated", function (category) {
         // Fetch and regenerate the table
-        fetchOrderItemsResults();
+        fetchCategoriesResults();
     });
+
     // Start the SignalR connection
     connection.start().catch(function (err) {
         return console.error(err.toString());
     });
-    fetchOrderItemsResults();
+
+    // Fetch the initial product results
+    fetchCategoriesResults();
 });
 
 function nextPage() {
     if (pageNumber < totalPages && !isFetchingData) {
         pageNumber++;
-        fetchOrderItemsResults();
+        fetchCategoriesResults();
     }
 }
 
 function prevPage() {
     if (pageNumber > 1 && !isFetchingData) {
         pageNumber--;
-        fetchOrderItemsResults();
+        fetchCategoriesResults();
     }
 }
 
 function search() {
     pageNumber = 1;
-    fetchOrderItemsResults();
+    fetchCategoriesResults();
 }
 
-function fetchOrderItemsResults() {
+function fetchCategoriesResults() {
     nameQuery = $('.nameQuery').val();
     isFetchingData = true;
     $.ajax({
@@ -46,11 +50,10 @@ function fetchOrderItemsResults() {
         type: 'GET',
         data: {
             nameQuery: nameQuery,
-            pageNumber: pageNumber,
-            orderId: orderId
+            pageNumber: pageNumber
         },
         success: function (data) {
-            generateOrderItemsTable(data);
+            generateCategoriesTable(data);
         },
         error: function (xhr, status, error) {
             console.error('Error fetching customer data:', error);
@@ -62,7 +65,7 @@ function fetchOrderItemsResults() {
 
 }
 
-function generateOrderItemsTable(data) {
+function generateCategoriesTable(data) {
     // Update the pagination information
     pageNumber = data.pageNumber;
     totalPages = data.totalPages;
@@ -70,7 +73,7 @@ function generateOrderItemsTable(data) {
     // If current page out of range, then move current page to last range and retrieve data again
     if (pageNumber > totalPages) {
         pageNumber = totalPages;
-        fetchOrderItemsResults();
+        fetchCategoriesResults();
         return;
     }
 
@@ -95,30 +98,20 @@ function generateOrderItemsTable(data) {
     $('.resultTableBody').empty();
 
     // Check if there is no data
-    if (data.orderResults.length === 0) {
+    if (data.categoryResults.length === 0) {
         $('.resultTableBody').append('<tr><td colspan="7"><p>No result found</p></td></tr>');
         return;
     }
 
-    // Iterate over the user results and create table rows
-    $.each(data.orderResults, function (index, orderItem) {
-        console.log("Processing import order item: ", orderItem);
+    // Iterate over the product results and create table rows
+    $.each(data.categoryResults, function (index, category) {
         const row = $('<tr>');
-        row.append($('<td>').text(orderItem.product.productName));
-        row.append($('<td>').text(orderItem.volume));
-        row.append($('<td>').text(orderItem.realVolume != null ? orderItem.realVolume : null));
-        row.append($('<td>').text(orderItem.productCost.toLocaleString('vi-VN') + ' VNĐ'));
-        row.append($('<td>').text((orderItem.productCost * orderItem.volume).toLocaleString('vi-VN') + ' VNĐ'));
-   
-        if (!orderItem.status) {
-            row.append($('<td>').text('Chưa nhận đủ hàng'));
-        } else {
-            row.append($('<td>').text('Đã nhận đủ hàng'));
-        }
-
+        row.append($('<td>').text(category.categoryName));
+        row.append($('<td>').text(category.description));
+        
         const actionCell = $('<td>');
         const viewButton = $('<a>', {
-            href: `/ImportOrder/ViewOrderItemDetail?orderId=${orderItem.orderId}&productId=${orderItem.productId}&pageNumber=${pageNumber}`,
+            href: `/Category/GetCategory?categoryId=${category.id}&pageNumber=${pageNumber}`,
             class: 'btn btn-sm btn-primary ps-2',
             html: '<i class="fas fa-eye"></i>'
         });
@@ -128,5 +121,4 @@ function generateOrderItemsTable(data) {
 
         $('.resultTableBody').append(row);
     });
-
 }

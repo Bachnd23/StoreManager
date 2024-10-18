@@ -111,7 +111,7 @@ function generateProductsTable(data) {
         const row = $('<tr>');
         row.append($('<td>').text(product.productName));
         row.append($('<td>').text(product.measureUnit));
-        row.append($('<td>').text(product.cost));
+        row.append($('<td>').text(product.cost.toLocaleString('vi-VN') + ' VNĐ'));
         row.append($('<td>').text(product.inventoryManagement.remainingVolume));
         row.append($('<td>').text(product.inventoryManagement.allocatedVolume));
 /*        if (product.status) {

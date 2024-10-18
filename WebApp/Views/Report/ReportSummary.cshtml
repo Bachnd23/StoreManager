@@ -18,7 +18,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Giá hóa đơn</li>
             </ol>
         </nav>
-        <form asp-controller="Report" asp-action="Print" method="post" id="summaryForm">
+        <form asp-controller="Report" asp-action="Print" method="post" target="_blank" id="summaryForm">
             <div class="row bg-light rounded h-100 p-4">
                 <div>
                     @if (Model == null || Model.Count == 0)
@@ -72,7 +72,7 @@
                 <div class="w-100"></div>
                 <div class="col">
                     <div class="bgrow bg-light rounded h-100 p-4 align-items-center">
-                        <button type="submit" class="btn btn-primary">Tạo hóa đơn</button>
+                        <button type="submit" class="btn btn-primary">Tạo tổng kết</button>
                     </div>
                 </div>
             </div>

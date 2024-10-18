@@ -7,6 +7,7 @@ namespace COCOApp.Models
     {
         public User()
         {
+            Categories = new HashSet<Category>();
             Customers = new HashSet<Customer>();
             ExportOrderItems = new HashSet<ExportOrderItem>();
             ExportOrders = new HashSet<ExportOrder>();
@@ -30,6 +31,7 @@ namespace COCOApp.Models
         public virtual UserRole? RoleNavigation { get; set; }
         public virtual SellerDetail? SellerDetail { get; set; }
         public virtual UserDetail? UserDetail { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<ExportOrderItem> ExportOrderItems { get; set; }
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }
