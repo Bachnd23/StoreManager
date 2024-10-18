@@ -1,5 +1,6 @@
 ﻿var nameQuery = "";
 var roleId = "";
+var statusId = "";
 var totalPages = 1;
 var isFetchingData = false;
 var connection;
@@ -44,12 +45,14 @@ function search() {
 
 function fetchCategoriesResults() {
     nameQuery = $('.nameQuery').val();
+    statusId = $('.statusId').val();
     isFetchingData = true;
     $.ajax({
         url: getListUrl,
         type: 'GET',
         data: {
             nameQuery: nameQuery,
+            statusId: statusId,
             pageNumber: pageNumber
         },
         success: function (data) {
@@ -103,10 +106,16 @@ function generateCategoriesTable(data) {
         return;
     }
 
-    // Iterate over the product results and create table rows
+    // Iterate over the category results and create table rows
     $.each(data.categoryResults, function (index, category) {
         const row = $('<tr>');
         row.append($('<td>').text(category.categoryName));
+        row.append($('<td>').text(category.updatedAt));
+        if (category.status) {
+            row.append($('<td>').text('Đã kích hoạt'));
+        } else {
+            row.append($('<td>').text('Chưa kích hoạt'));
+        }
         row.append($('<td>').text(category.description));
         
         const actionCell = $('<td>');
