@@ -106,11 +106,12 @@ function generateCustomersTable(data) {
 
     // Iterate over the user results and create table rows
     $.each(data.customerResults, function (index, customer) {
+        const UpdatedAtFormatted = new Date(customer.updatedAt).toLocaleString();
         const row = $('<tr>');
         row.append($('<td>').text(customer.name));
         row.append($('<td>').text(customer.address));
         row.append($('<td>').text(customer.phone));
-        row.append($('<td>').text(customer.updatedAt));
+        row.append($('<td>').text(UpdatedAtFormatted));
         if (customer.status) {
             row.append($('<td>').text('Đã kích hoạt'));
         } else {
