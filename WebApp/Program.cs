@@ -41,6 +41,7 @@ builder.Services.AddSingleton(emailSettings);
 builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IExportOrderRepository, ExportOrderRepository>();
 builder.Services.AddScoped<IImportOrderRepository, ImportOrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped<ImportOrderService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserDetailsService>();
 builder.Services.AddScoped<ExportOrderItemService>();
@@ -117,6 +119,7 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=ViewSignIn}");
     endpoints.MapHub<ProductHub>("/productHub");
     endpoints.MapHub<CustomerHub>("/customerHub");
+    endpoints.MapHub<SupplierHub>("/supplierHub");
     endpoints.MapHub<OrderHub>("/orderHub");
     endpoints.MapHub<CategoryHub>("/categoryHub");
 });

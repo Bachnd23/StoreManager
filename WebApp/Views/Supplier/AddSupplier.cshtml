@@ -1,4 +1,4 @@
-﻿@model COCOApp.Models.Customer
+﻿@model COCOApp.Models.Supplier
 @{
     Layout = "_LayoutStoreDashBoard";
 }
@@ -6,27 +6,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm mới khách hàng</title>
+    <title>Thêm mới nhà cung cấp</title>
 </head>
 <body>
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Customer/ViewList">Danh sách khách hàng</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Thêm mới khách hàng</li>
+                <li class="breadcrumb-item"><a href="~/Supplier/ViewList">Danh sách nhà cung cấp</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới nhà cung cấp</li>
             </ol>
         </nav>
-        <form id="registerForm" asp-action="AddCustomer" method="post">
+        <form id="registerForm" asp-action="AddSupplier" method="post">
             <div class="row bg-light rounded h-100 p-4">
                 <div>
-                    <h4 class="mb-4">Thêm mới khách hàng</h4>
+                    <h4 class="mb-4">Thêm mới nhà cung cấp</h4>
                 </div>
                 <div class="col-xl-6">
                     <div class="bg-light rounded h-100 p-4">
                         <div class="mb-3">
                             <div class="form-group">
-                                <label asp-for="Name" class="required"> Tên khách hàng</label>
-                                <input asp-for="Name" class="form-control" placeholder="Nhập tên khách hàng..." required />
+                                <label asp-for="Name" class="required"> Tên nhà cung cấp</label>
+                                <input asp-for="Name" class="form-control" placeholder="Nhập tên nhà cung cấp..." required />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                         </div>
