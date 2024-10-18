@@ -101,7 +101,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="number" asp-for="@Model.Orders[i].ProductVolume" class="form-control" min="1" max="100" required />
+                                    <input type="number" asp-for="@Model.Orders[i].ProductVolume" class="form-control" min="1" max="100000" required />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
@@ -152,7 +152,7 @@
                                     ${getProductOptions()}
                                 </select>
                             </td>
-                            <td><input type="number" name="Orders[${rowIndex}].ProductVolume" class="form-control" min="1" max="100" required></td>
+                            <td><input type="number" name="Orders[${rowIndex}].ProductVolume" class="form-control" min="1" max="100000" required></td>
                             <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>
                         `;
 
