@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using AspNetCore.Reporting;
-using AspNetCore.Reporting.ReportExecutionService;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Document = iTextSharp.text.Document;
 
 namespace COCOApp.Controllers
 {
@@ -124,59 +125,153 @@ namespace COCOApp.Controllers
                 return RedirectToAction("ViewCreate");
             }
 
-            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            int sellerId = user.Id == 0
-                ? HttpContext.Session.GetCustomObjectFromSession<int>("sellerId")
-                : user.Id;
-
-            user = _userService.GetUserById(sellerId);
-            Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
-            string dateRange = HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
-            List<ExportOrderItem> orderItems = _itemService.GetExportOrderItems(dateRange, report.Customer.Id, user.Id);
-
-            int totalQuantity = orderItems.Sum(item => item.RealVolume);
-            decimal totalCost = orderItems.Sum(item => item.Total);
-
-            byte[] imageBytes = user.SellerDetail.ImageData;
-
-            var reports = orderItems.Select(item => new
-            {
-                ProductName = item.Product.ProductName,
-                product_price = item.Product.Cost + " VND",
-                volume = item.RealVolume,
-                MeasureUnit = item.Product.MeasureUnit,
-                total = item.Total + " VND",
-                orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy"),
-                ImageData = user.SellerDetail.ImageData != null
-                ? Convert.ToBase64String(user.SellerDetail.ImageData)
-                : string.Empty  // Provide a fallback if ImageData is null
-            }).ToList();
-
-            var parameters = new Dictionary<string, string>
-                {
-                    { "StoreNamePM", "Cửa hàng vlxd: " + user.SellerDetail.BusinessName },
-                    { "StoreAddressPM", "Địa chỉ: " + user.SellerDetail.BusinessAddress },
-                    { "StorePhonePM", "Số điện thoại: " + user.UserDetail.Phone },
-                    { "DateRangePM", "Từ ngày: " + orderItems.First().Order.OrderDate.ToString("dd-MM-yyyy")
-                                     + " đến ngày: " + orderItems.Last().Order.OrderDate.ToString("dd-MM-yyyy") },
-                    { "CustomerPM", "Tên khách hàng: " + report.Customer.Name },
-                    { "CustomerAddressPM", "Địa chỉ: " + report.Customer.Address },
-                    { "TotalQuantityPM", "Tổng số lượng: " + totalQuantity },
-                    { "TotalPricePM", "Tổng giá: " + totalCost + " VND" }
-                };
-
             try
             {
-                var path = Path.Combine(this._webHostEnvironment.ContentRootPath, "Reports", "OrderReport.rdlc");
-                string mimetype = "";
-                int extension = 1;
-                LocalReport localReport = new LocalReport(path);
+                User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+                int sellerId = user.Id == 0
+                    ? HttpContext.Session.GetCustomObjectFromSession<int>("sellerId")
+                    : user.Id;
 
-                localReport.AddDataSource("DataSet1", reports);
+                user = _userService.GetUserById(sellerId);
+                Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
+                string dateRange = HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
+                List<ExportOrderItem> orderItems = _itemService.GetExportOrderItems(dateRange, report.Customer.Id, user.Id);
 
-                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
+                int totalQuantity = orderItems.Sum(item => item.RealVolume);
+                decimal totalCost = orderItems.Sum(item => item.Total);
 
-                return File(result.MainStream, "application/pdf");
+                byte[] imageBytes = user.SellerDetail.ImageData;
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    Document document = new Document(PageSize.A4, 10, 10, 10, 10);
+                    PdfWriter.GetInstance(document, stream);
+
+                    document.Open();
+
+                    // Set Vietnamese font
+                    string fontPath = Path.Combine(_webHostEnvironment.WebRootPath, "fonts", "arial-unicode-ms-regular.ttf");
+                    BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    Font font = new Font(bf, 12, Font.NORMAL);
+                    Font boldFont = new Font(bf, 14, Font.BOLD);
+
+                    // Header Information with Store Name, Address, and Phone Number
+                    PdfPTable headerTable = new PdfPTable(2) { WidthPercentage = 100 };
+                    headerTable.SetWidths(new float[] { 70, 30 });
+
+                    // Store Name (Left)
+                    headerTable.AddCell(new PdfPCell(new Phrase("Cửa hàng vlxd:", boldFont))
+                    {
+                        Border = Rectangle.NO_BORDER
+                    });
+                    headerTable.AddCell(new PdfPCell(new Phrase("Số điện thoại:", boldFont))
+                    {
+                        Border = Rectangle.NO_BORDER,
+                        HorizontalAlignment = Element.ALIGN_RIGHT
+                    });
+
+                    // Store Name Value (Left)
+                    headerTable.AddCell(new PdfPCell(new Phrase(user.SellerDetail.BusinessName, font))
+                    {
+                        Border = Rectangle.NO_BORDER
+                    });
+                    headerTable.AddCell(new PdfPCell(new Phrase(user.UserDetail.Phone, font))
+                    {
+                        Border = Rectangle.NO_BORDER,
+                        HorizontalAlignment = Element.ALIGN_RIGHT
+                    });
+
+                    // Store Address (Địa chỉ) in Between
+                    headerTable.AddCell(new PdfPCell(new Phrase($"Địa chỉ: {user.SellerDetail.BusinessAddress}", font))
+                    {
+                        Border = Rectangle.NO_BORDER,
+                        Colspan = 2, // Span across both columns
+                        HorizontalAlignment = Element.ALIGN_LEFT,
+                        PaddingTop = 5 // Optional: Adjust padding
+                    });
+
+                    document.Add(headerTable);
+                    document.Add(new Paragraph("\nBảng tổng kết", boldFont) { Alignment = Element.ALIGN_CENTER });
+                    document.Add(new Paragraph("\n"));
+
+                    // Customer Information
+                    document.Add(new Paragraph($"Tên khách hàng: {report.Customer.Name}", font));
+                    document.Add(new Paragraph($"Địa chỉ: {report.Customer.Address}", font));
+                    document.Add(new Paragraph($"Từ ngày: {orderItems.First().Order.OrderDate:dd-MM-yyyy} đến ngày: {orderItems.Last().Order.OrderDate:dd-MM-yyyy}", font));
+                    document.Add(new Paragraph("\n"));
+
+                    // Order Items Table
+                    PdfPTable table = new PdfPTable(6) { WidthPercentage = 100 };
+                    table.SetWidths(new float[] { 15, 25, 15, 15, 15, 15 });
+
+                    // Table Header
+                    string[] headers = { "Ngày đặt", "Sản phẩm", "Giá", "Đơn vị tính", "Số lượng", "Tổng tiền" };
+                    foreach (var header in headers)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(header, boldFont));
+                        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        table.AddCell(cell);
+                    }
+
+                    // Table Content
+                    foreach (var item in orderItems)
+                    {
+                        table.AddCell(new PdfPCell(new Phrase(item.Order.OrderDate.ToString("dd-MM-yyyy"), font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Product.ProductName, font)));
+                        table.AddCell(new PdfPCell(new Phrase($"{item.Product.Cost} VND", font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Product.MeasureUnit, font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.RealVolume.ToString(), font)));
+                        table.AddCell(new PdfPCell(new Phrase($"{item.Total} VND", font)));
+                    }
+
+                    document.Add(table);
+                    document.Add(new Paragraph("\n"));
+
+                    // Footer with Summary
+                    PdfPTable footerTable = new PdfPTable(2) { WidthPercentage = 100 };
+                    footerTable.SetWidths(new float[] { 50, 50 });
+
+                    footerTable.AddCell(new PdfPCell(new Phrase($"Tổng số lượng: {totalQuantity}", boldFont)) { Border = Rectangle.NO_BORDER });
+                    footerTable.AddCell(new PdfPCell(new Phrase($"Tổng giá: {totalCost} VND", boldFont)) { Border = Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT });
+
+                    document.Add(footerTable);
+
+                    // "Thông tin thanh toán" and "Chữ ký xác nhận" side-by-side layout
+                    PdfPTable signatureTable = new PdfPTable(2) { WidthPercentage = 100 };
+                    signatureTable.SetWidths(new float[] { 50, 50 });
+
+                    PdfPCell leftCell = new PdfPCell();
+                    leftCell.Border = Rectangle.NO_BORDER;
+
+                    // Add "Thông tin thanh toán" and Image in the Left Cell
+                    leftCell.AddElement(new Paragraph("\nThông tin thanh toán", boldFont));
+                    if (imageBytes != null)
+                    {
+                        Image image = Image.GetInstance(imageBytes);
+                        image.ScaleToFit(180f, 150f);  // Adjusted size to fit better
+                        image.Alignment = Image.ALIGN_LEFT;
+                        leftCell.AddElement(image);
+                    }
+
+                    // Add Signature Placeholder in the Right Cell
+                    PdfPCell rightCell = new PdfPCell(new Paragraph("Chữ ký xác nhận:.................................", font))
+                    {
+                        Border = Rectangle.NO_BORDER,
+                        HorizontalAlignment = Element.ALIGN_RIGHT,
+                        PaddingTop = 40  // Adjust padding for better alignment
+                    };
+
+                    signatureTable.AddCell(leftCell);
+                    signatureTable.AddCell(rightCell);
+
+                    document.Add(signatureTable);
+
+                    document.Close();
+
+                    byte[] pdfBytes = stream.ToArray();
+                    return File(pdfBytes, "application/pdf", "OrderReport.pdf");
+                }
             }
             catch (Exception ex)
             {
