@@ -32,18 +32,15 @@
                         <span asp-validation-for="MeasureUnit" class="text-danger"></span>
                     </div>
                 </div>
-@*                 <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3">
                     <div class="form-group">
-                        <label for="topSelectCustomer" class="form-label">Chọn danh mục sản phẩm</label>
-                        <select asp-for="@Model.CategoryId" class="form-select select2" required>
-                            <option value="">Chọn mặt hàng</option>
-                            @foreach (var category in ViewBag.Categories)
-                            {
-                                <option value="@category.Value">@category.Text</option>
-                            }
+                        <label asp-for="@Model.CategoryId" class="control-label">Chọn danh mục sản phẩm</label>
+                        <select asp-for="@Model.CategoryId" class="form-select select2" asp-items="ViewBag.Categories" required>
+                            <option value="">-- Chọn danh mục sản phẩm --</option>
                         </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
-                </div> *@
+                </div>
                 <div class="col-md-6 mb-3">
                     <div class="form-group">
                         <label asp-for="Cost" class="required">Giá bán</label>

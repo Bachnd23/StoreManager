@@ -1,5 +1,6 @@
 ﻿using COCOApp.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace COCOApp.Repositories.Implementation
 {
@@ -95,6 +96,16 @@ namespace COCOApp.Repositories.Implementation
             }
             return query
                 .Count();
+        }
+
+        public List<Category> GetCategories(int sellerId)
+        {
+            var query = _context.Categories.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(p => p.SellerId == sellerId);
+            }
+            return query.ToList();
         }
     }
 }
