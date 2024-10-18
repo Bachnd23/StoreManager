@@ -108,9 +108,10 @@ function generateCategoriesTable(data) {
 
     // Iterate over the category results and create table rows
     $.each(data.categoryResults, function (index, category) {
+        const UpdatedAtFormatted = new Date(category.updatedAt).toLocaleString();
         const row = $('<tr>');
         row.append($('<td>').text(category.categoryName));
-        row.append($('<td>').text(category.updatedAt));
+        row.append($('<td>').text(UpdatedAtFormatted));
         if (category.status) {
             row.append($('<td>').text('Đã kích hoạt'));
         } else {

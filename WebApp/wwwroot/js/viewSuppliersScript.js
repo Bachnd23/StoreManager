@@ -106,11 +106,12 @@ function generateSuppliersTable(data) {
 
     // Iterate over the user results and create table rows
     $.each(data.supplierResults, function (index, supplier) {
+        const UpdatedAtFormatted = new Date(supplier.updatedAt).toLocaleString();
         const row = $('<tr>');
         row.append($('<td>').text(supplier.name));
         row.append($('<td>').text(supplier.address));
         row.append($('<td>').text(supplier.phone));
-        row.append($('<td>').text(supplier.updatedAt));
+        row.append($('<td>').text(UpdatedAtFormatted));
         if (supplier.status) {
             row.append($('<td>').text('Đã kích hoạt'));
         } else {
