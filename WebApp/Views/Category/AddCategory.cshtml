@@ -13,7 +13,6 @@
     <meta name="description" content="">
 </head>
 <body>
-
     <div class="content">
         <!-- Form Start -->
         <div class="container-fluid pt-4 px-4">
@@ -23,7 +22,8 @@
                     <li class="breadcrumb-item active" aria-current="page">Thêm danh mục</li>
                 </ol>
             </nav>
-            <form asp-controller="Category" asp-action="AddCategory" method="post" class="bg-light rounded p-4 shadow-sm">
+            @*<form asp-controller="Category" asp-action="AddCategory" method="post" class="bg-light rounded p-4 shadow-sm">*@
+            <form id="registerForm" asp-action="AddCategory" method="post" class="bg-light rounded p-4 shadow-sm">
                 <div class="row">
                     <div class="col">
                         <div>
@@ -47,6 +47,16 @@
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label asp-for="Status" class="required">Trạng thái</label>
+                                    <select asp-for="Status" class="form-select">
+                                        <option value="true">Đã kích hoạt</option>
+                                        <option value="false">Chưa kích hoạt</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="w-100"></div>
@@ -57,6 +67,7 @@
                         </div>
                     </div>
                 </div>
+                @Html.AntiForgeryToken()
             </form>
         </div>
         <!-- Form End -->
