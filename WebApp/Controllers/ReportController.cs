@@ -4,9 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using Document = iTextSharp.text.Document;
+using iText.IO.Font;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf;
+using iText.Layout.Element;
+using iText.Layout;
+using iText.IO.Image;
+using iText.Kernel.Colors;
+using iText.Layout.Borders;
+using iText.Layout.Properties;
 
 namespace COCOApp.Controllers
 {
@@ -128,9 +134,7 @@ namespace COCOApp.Controllers
             try
             {
                 User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-                int sellerId = user.Id == 0
-                    ? HttpContext.Session.GetCustomObjectFromSession<int>("sellerId")
-                    : user.Id;
+                int sellerId = user.Id == 0 ? HttpContext.Session.GetCustomObjectFromSession<int>("sellerId") : user.Id;
 
                 user = _userService.GetUserById(sellerId);
                 Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
@@ -139,133 +143,42 @@ namespace COCOApp.Controllers
 
                 int totalQuantity = orderItems.Sum(item => item.RealVolume);
                 decimal totalCost = orderItems.Sum(item => item.Total);
-
                 byte[] imageBytes = user.SellerDetail.ImageData;
 
                 using (MemoryStream stream = new MemoryStream())
                 {
-                    Document document = new Document(PageSize.A4, 10, 10, 10, 10);
-                    PdfWriter.GetInstance(document, stream);
+                    PdfWriter writer = new PdfWriter(stream);
+                    PdfDocument pdf = new PdfDocument(writer);
+                    Document document = new Document(pdf, iText.Kernel.Geom.PageSize.A4);
+                    document.SetMargins(20, 20, 20, 20);  // Improved margins
 
-                    document.Open();
-
-                    // Set Vietnamese font
+                    // Font Setup
                     string fontPath = Path.Combine(_webHostEnvironment.WebRootPath, "fonts", "arial-unicode-ms-regular.ttf");
-                    BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                    Font font = new Font(bf, 12, Font.NORMAL);
-                    Font boldFont = new Font(bf, 14, Font.BOLD);
+                    PdfFont font = PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H);
+                    PdfFont boldFont = PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H);
 
-                    // Header Information with Store Name, Address, and Phone Number
-                    PdfPTable headerTable = new PdfPTable(2) { WidthPercentage = 100 };
-                    headerTable.SetWidths(new float[] { 70, 30 });
-
-                    // Store Name (Left)
-                    headerTable.AddCell(new PdfPCell(new Phrase("Cửa hàng vlxd:", boldFont))
-                    {
-                        Border = Rectangle.NO_BORDER
-                    });
-                    headerTable.AddCell(new PdfPCell(new Phrase("Số điện thoại:", boldFont))
-                    {
-                        Border = Rectangle.NO_BORDER,
-                        HorizontalAlignment = Element.ALIGN_RIGHT
-                    });
-
-                    // Store Name Value (Left)
-                    headerTable.AddCell(new PdfPCell(new Phrase(user.SellerDetail.BusinessName, font))
-                    {
-                        Border = Rectangle.NO_BORDER
-                    });
-                    headerTable.AddCell(new PdfPCell(new Phrase(user.UserDetail.Phone, font))
-                    {
-                        Border = Rectangle.NO_BORDER,
-                        HorizontalAlignment = Element.ALIGN_RIGHT
-                    });
-
-                    // Store Address (Địa chỉ) in Between
-                    headerTable.AddCell(new PdfPCell(new Phrase($"Địa chỉ: {user.SellerDetail.BusinessAddress}", font))
-                    {
-                        Border = Rectangle.NO_BORDER,
-                        Colspan = 2, // Span across both columns
-                        HorizontalAlignment = Element.ALIGN_LEFT,
-                        PaddingTop = 5 // Optional: Adjust padding
-                    });
-
-                    document.Add(headerTable);
-                    document.Add(new Paragraph("\nBảng tổng kết", boldFont) { Alignment = Element.ALIGN_CENTER });
-                    document.Add(new Paragraph("\n"));
-
-                    // Customer Information
-                    document.Add(new Paragraph($"Tên khách hàng: {report.Customer.Name}", font));
-                    document.Add(new Paragraph($"Địa chỉ: {report.Customer.Address}", font));
-                    document.Add(new Paragraph($"Từ ngày: {orderItems.First().Order.OrderDate:dd-MM-yyyy} đến ngày: {orderItems.Last().Order.OrderDate:dd-MM-yyyy}", font));
+                    // Header
+                    AddHeader(document, user, font, boldFont);
+                    // Title: "Bảng tổng kết"
+                    document.Add(new Paragraph("\nBảng tổng kết")
+                        .SetFont(boldFont)
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .SetFontSize(16)  // Slightly larger font for title
+                        .SetMarginBottom(10));  // Add spacing below the title
+                    // Customer Information and Date Range
+                    document.Add(new Paragraph($"Tên khách hàng: {report.Customer.Name}").SetFont(font));
+                    document.Add(new Paragraph($"Địa chỉ: {report.Customer.Address}").SetFont(font));
+                    document.Add(new Paragraph($"Từ ngày: {orderItems.First().Order.OrderDate:dd-MM-yyyy} đến ngày: {orderItems.Last().Order.OrderDate:dd-MM-yyyy}").SetFont(font));
                     document.Add(new Paragraph("\n"));
 
                     // Order Items Table
-                    PdfPTable table = new PdfPTable(6) { WidthPercentage = 100 };
-                    table.SetWidths(new float[] { 15, 25, 15, 15, 15, 15 });
-
-                    // Table Header
-                    string[] headers = { "Ngày đặt", "Sản phẩm", "Giá", "Đơn vị tính", "Số lượng", "Tổng tiền" };
-                    foreach (var header in headers)
-                    {
-                        PdfPCell cell = new PdfPCell(new Phrase(header, boldFont));
-                        cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                        table.AddCell(cell);
-                    }
-
-                    // Table Content
-                    foreach (var item in orderItems)
-                    {
-                        table.AddCell(new PdfPCell(new Phrase(item.Order.OrderDate.ToString("dd-MM-yyyy"), font)));
-                        table.AddCell(new PdfPCell(new Phrase(item.Product.ProductName, font)));
-                        table.AddCell(new PdfPCell(new Phrase($"{item.Product.Cost} VND", font)));
-                        table.AddCell(new PdfPCell(new Phrase(item.Product.MeasureUnit, font)));
-                        table.AddCell(new PdfPCell(new Phrase(item.RealVolume.ToString(), font)));
-                        table.AddCell(new PdfPCell(new Phrase($"{item.Total} VND", font)));
-                    }
-
-                    document.Add(table);
-                    document.Add(new Paragraph("\n"));
+                    AddOrderItemsTable(document, orderItems, font, boldFont);
 
                     // Footer with Summary
-                    PdfPTable footerTable = new PdfPTable(2) { WidthPercentage = 100 };
-                    footerTable.SetWidths(new float[] { 50, 50 });
+                    AddFooter(document, totalQuantity, totalCost, font, boldFont);
 
-                    footerTable.AddCell(new PdfPCell(new Phrase($"Tổng số lượng: {totalQuantity}", boldFont)) { Border = Rectangle.NO_BORDER });
-                    footerTable.AddCell(new PdfPCell(new Phrase($"Tổng giá: {totalCost} VND", boldFont)) { Border = Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT });
-
-                    document.Add(footerTable);
-
-                    // "Thông tin thanh toán" and "Chữ ký xác nhận" side-by-side layout
-                    PdfPTable signatureTable = new PdfPTable(2) { WidthPercentage = 100 };
-                    signatureTable.SetWidths(new float[] { 50, 50 });
-
-                    PdfPCell leftCell = new PdfPCell();
-                    leftCell.Border = Rectangle.NO_BORDER;
-
-                    // Add "Thông tin thanh toán" and Image in the Left Cell
-                    leftCell.AddElement(new Paragraph("\nThông tin thanh toán", boldFont));
-                    if (imageBytes != null)
-                    {
-                        Image image = Image.GetInstance(imageBytes);
-                        image.ScaleToFit(180f, 150f);  // Adjusted size to fit better
-                        image.Alignment = Image.ALIGN_LEFT;
-                        leftCell.AddElement(image);
-                    }
-
-                    // Add Signature Placeholder in the Right Cell
-                    PdfPCell rightCell = new PdfPCell(new Paragraph("Chữ ký xác nhận:.................................", font))
-                    {
-                        Border = Rectangle.NO_BORDER,
-                        HorizontalAlignment = Element.ALIGN_RIGHT,
-                        PaddingTop = 40  // Adjust padding for better alignment
-                    };
-
-                    signatureTable.AddCell(leftCell);
-                    signatureTable.AddCell(rightCell);
-
-                    document.Add(signatureTable);
+                    // Payment Info and Signature
+                    AddSignatureSection(document, imageBytes, font, boldFont);
 
                     document.Close();
 
@@ -281,6 +194,81 @@ namespace COCOApp.Controllers
             }
         }
 
+        // Header Section
+        private void AddHeader(Document document, User user, PdfFont font, PdfFont boldFont)
+        {
+            Table headerTable = new Table(UnitValue.CreatePercentArray(new float[] { 70, 30 })).UseAllAvailableWidth();
+            headerTable.AddCell(CreateCell("Cửa hàng:", boldFont, TextAlignment.LEFT, Border.NO_BORDER));
+            headerTable.AddCell(CreateCell("Số điện thoại:", boldFont, TextAlignment.RIGHT, Border.NO_BORDER));
+            headerTable.AddCell(CreateCell(user.SellerDetail.BusinessName, font, TextAlignment.LEFT, Border.NO_BORDER));
+            headerTable.AddCell(CreateCell(user.UserDetail.Phone, font, TextAlignment.RIGHT, Border.NO_BORDER));
+            headerTable.AddCell(CreateCell($"Địa chỉ: {user.SellerDetail.BusinessAddress}", font, TextAlignment.LEFT, Border.NO_BORDER, colspan: 2));
+            document.Add(headerTable);
+        }
 
+        // Order Items Table
+        private void AddOrderItemsTable(Document document, List<ExportOrderItem> orderItems, PdfFont font, PdfFont boldFont)
+        {
+            Table table = new Table(UnitValue.CreatePercentArray(new float[] { 15, 25, 15, 15, 15, 15 })).UseAllAvailableWidth();
+
+            // Header Row
+            string[] headers = { "Ngày đặt", "Sản phẩm", "Giá", "Đơn vị tính", "Số lượng", "Tổng tiền" };
+            foreach (var header in headers)
+            {
+                table.AddHeaderCell(new Cell().Add(new Paragraph(header).SetFont(boldFont))
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .SetTextAlignment(TextAlignment.CENTER));
+            }
+
+            // Data Rows
+            foreach (var item in orderItems)
+            {
+                table.AddCell(CreateCell(item.Order.OrderDate.ToString("dd-MM-yyyy"), font));
+                table.AddCell(CreateCell(item.Product.ProductName, font));
+                table.AddCell(CreateCell($"{item.Product.Cost} VND", font));
+                table.AddCell(CreateCell(item.Product.MeasureUnit, font));
+                table.AddCell(CreateCell(item.RealVolume.ToString(), font));
+                table.AddCell(CreateCell($"{item.Total} VND", font));
+            }
+
+            document.Add(table);
+        }
+
+        // Footer with Summary
+        private void AddFooter(Document document, int totalQuantity, decimal totalCost, PdfFont font, PdfFont boldFont)
+        {
+            Table footerTable = new Table(UnitValue.CreatePercentArray(new float[] { 50, 50 })).UseAllAvailableWidth();
+            footerTable.AddCell(CreateCell($"Tổng số lượng: {totalQuantity}", boldFont, TextAlignment.LEFT));
+            footerTable.AddCell(CreateCell($"Tổng giá: {totalCost} VND", boldFont, TextAlignment.RIGHT));
+            document.Add(footerTable);
+        }
+
+        // Signature Section
+        private void AddSignatureSection(Document document, byte[] imageBytes, PdfFont font, PdfFont boldFont)
+        {
+            Table signatureTable = new Table(UnitValue.CreatePercentArray(new float[] { 50, 50 })).UseAllAvailableWidth();
+            Cell leftCell = new Cell().SetBorder(Border.NO_BORDER).Add(new Paragraph("Thông tin thanh toán").SetFont(boldFont));
+            if (imageBytes != null)
+            {
+                Image image = new Image(ImageDataFactory.Create(imageBytes)).ScaleToFit(180, 150);
+                leftCell.Add(image);
+            }
+            signatureTable.AddCell(leftCell);
+
+            Cell rightCell = new Cell().SetBorder(Border.NO_BORDER)
+                .Add(new Paragraph("Chữ ký xác nhận:.................................").SetFont(font))
+                .SetTextAlignment(TextAlignment.RIGHT).SetPaddingTop(40);
+            signatureTable.AddCell(rightCell);
+
+            document.Add(signatureTable);
+        }
+
+        // Helper to Create Cells
+        private Cell CreateCell(string content, PdfFont font, TextAlignment alignment = TextAlignment.LEFT, Border border = null, int colspan = 1)
+        {
+            var cell = new Cell(1, colspan).Add(new Paragraph(content).SetFont(font)).SetTextAlignment(alignment);
+            if (border != null) cell.SetBorder(border);
+            return cell;
+        }
     }
 }
