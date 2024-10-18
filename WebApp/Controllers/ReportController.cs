@@ -5,6 +5,7 @@ using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using AspNetCore.Reporting;
+using AspNetCore.Reporting.ReportExecutionService;
 
 namespace COCOApp.Controllers
 {
@@ -17,7 +18,7 @@ namespace COCOApp.Controllers
         private readonly UserDetailsService _userDetailsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ReportController(ExportOrderService orderService,UserService userService, ReportService reportService, ExportOrderItemService itemService, UserDetailsService userDetailsService, IWebHostEnvironment webHostEnvironment)
+        public ReportController(ExportOrderService orderService, UserService userService, ReportService reportService, ExportOrderItemService itemService, UserDetailsService userDetailsService, IWebHostEnvironment webHostEnvironment)
         {
             _orderService = orderService;
             _userService = userService;
@@ -117,36 +118,24 @@ namespace COCOApp.Controllers
         [Authorize(Roles = "Admin,Seller")]
         public async Task<IActionResult> Print(List<ReportDetail> reportDetails)
         {
-            // Check if the model is valid
             if (reportDetails == null || !reportDetails.Any())
             {
                 ModelState.AddModelError("", "No details provided.");
                 return RedirectToAction("ViewCreate");
             }
+
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            int sellerId = user.Id;
-            if (sellerId == 0)
-            {
-                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
-            }
+            int sellerId = user.Id == 0
+                ? HttpContext.Session.GetCustomObjectFromSession<int>("sellerId")
+                : user.Id;
+
             user = _userService.GetUserById(sellerId);
             Report report = _reportService.GetReportById(reportDetails[0].ReportId, user.Id);
-            string dateRange= HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
+            string dateRange = HttpContext.Session.GetCustomObjectFromSession<string>("dateRange");
             List<ExportOrderItem> orderItems = _itemService.GetExportOrderItems(dateRange, report.Customer.Id, user.Id);
 
-            string mimetype = "";
-            int extension = 1;
-            var path = $"{this._webHostEnvironment.ContentRootPath}\\Reports\\OrderReport.rdlc";
-
-            int totalQuantity = 0;
-            decimal totalCost = 0;
-            for (int i = 0; i < orderItems.Count(); i++)
-            {
-                ExportOrderItem orderItem = orderItems[i];
-                orderItem.Product.Cost = reportDetails[0].Product.Cost;
-                totalQuantity += orderItem.RealVolume;
-                totalCost += orderItem.Total;
-            }
+            int totalQuantity = orderItems.Sum(item => item.RealVolume);
+            decimal totalCost = orderItems.Sum(item => item.Total);
 
             byte[] imageBytes = user.SellerDetail.ImageData;
 
@@ -156,30 +145,47 @@ namespace COCOApp.Controllers
                 product_price = item.Product.Cost + " VND",
                 volume = item.RealVolume,
                 MeasureUnit = item.Product.MeasureUnit,
-                total = item.Total+" VND",
+                total = item.Total + " VND",
                 orderDate = item.Order.OrderDate.ToString("dd-MM-yyyy"),
-                ImageData= imageBytes
+                ImageData = user.SellerDetail.ImageData != null
+                ? Convert.ToBase64String(user.SellerDetail.ImageData)
+                : string.Empty  // Provide a fallback if ImageData is null
             }).ToList();
 
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("StoreNamePM", "Cửa hàng vlxd: " + user.SellerDetail.BusinessName);
-            parameters.Add("StoreAddressPM", "Địa chỉ: " + user.SellerDetail.BusinessAddress);
-            parameters.Add("StorePhonePM", "Số điện thoại: " + user.UserDetail.Phone);
-            parameters.Add("DateRangePM", "Từ ngày: " + orderItems[0].Order.OrderDate.ToString("dd-MM-yyyy") + " đến ngày: " + orderItems[orderItems.Count - 1].Order.OrderDate.ToString("dd-MM-yyyy"));
-            parameters.Add("CustomerPM", "Tên khách hàng: " + report.Customer.Name);
-            parameters.Add("CustomerAddressPM", "Địa chỉ: " + report.Customer.Address);
-            parameters.Add("TotalQuantityPM", "Tổng số lượng: " + totalQuantity);
-            parameters.Add("TotalPricePM", "Tổng giá: " + totalCost + " VND");
+            var parameters = new Dictionary<string, string>
+                {
+                    { "StoreNamePM", "Cửa hàng vlxd: " + user.SellerDetail.BusinessName },
+                    { "StoreAddressPM", "Địa chỉ: " + user.SellerDetail.BusinessAddress },
+                    { "StorePhonePM", "Số điện thoại: " + user.UserDetail.Phone },
+                    { "DateRangePM", "Từ ngày: " + orderItems.First().Order.OrderDate.ToString("dd-MM-yyyy")
+                                     + " đến ngày: " + orderItems.Last().Order.OrderDate.ToString("dd-MM-yyyy") },
+                    { "CustomerPM", "Tên khách hàng: " + report.Customer.Name },
+                    { "CustomerAddressPM", "Địa chỉ: " + report.Customer.Address },
+                    { "TotalQuantityPM", "Tổng số lượng: " + totalQuantity },
+                    { "TotalPricePM", "Tổng giá: " + totalCost + " VND" }
+                };
 
-            // Create the LocalReport object
-            LocalReport localReport = new LocalReport(path);
+            try
+            {
+                var path = Path.Combine(this._webHostEnvironment.ContentRootPath, "Reports", "OrderReport.rdlc");
+                string mimetype = "";
+                int extension = 1;
+                LocalReport localReport = new LocalReport(path);
 
-            localReport.AddDataSource("DataSet1", reports);
+                localReport.AddDataSource("DataSet1", reports);
 
-            // Execute the report
-            var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
+                var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimetype);
 
-            return File(result.MainStream, "application/pdf");
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating report: {ex.Message}");
+                ModelState.AddModelError("", "Failed to generate report.");
+                return RedirectToAction("ViewCreate");
+            }
         }
+
+
     }
 }
