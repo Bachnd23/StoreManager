@@ -139,24 +139,27 @@
                             <a href="~/Customer/ViewList" class="nav-item nav-link @(activePage == "2" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-th me-2"></i>Quản lý khách hàng
                             </a>
-                            <a href="~/Product/ViewList" class="nav-item nav-link @(activePage == "3" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Supplier/ViewList" class="nav-item nav-link @(activePage == "3" ? "active" : "")" name="sidebaritem">
+                                <i class="fa fa-th me-2"></i>Nhà cung cấp của tôi
+                            </a>
+                            <a href="~/Product/ViewList" class="nav-item nav-link @(activePage == "4" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-keyboard me-2"></i>Quản lý sản phẩm
                             </a>
-                            <a href="~/Order/ViewList" class="nav-item nav-link @(activePage == "4" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Order/ViewList" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-shopping-cart me-2"></i>Quản lý đơn hàng xuất
                             </a>
-                            <a href="~/ImportOrder/ViewList" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
+                            <a href="~/ImportOrder/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-table me-2"></i>Quản lý đơn hàng nhập
                             </a>
-                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "7" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-file me-2"></i>Tổng kết
                             </a>
-                            <a href="~/Category/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Category/ViewList" class="nav-item nav-link @(activePage == "8" ? "active" : "")" name="sidebaritem">
                                 <i class="fa fa-file me-2"></i>Quản lý danh mục
                             </a>
                             @if (user!=null&&user.Role == 1)
                             {
-                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "7" ? "active" : "")" name="sidebaritem">
+                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "9" ? "active" : "")" name="sidebaritem">
                                     <i class="fa fa-user me-2"></i>Danh sách người dùng
                                 </a>
                             }
