@@ -16,6 +16,10 @@ namespace COCOApp.Services
         {
             return _categoryRepository.GetCategories();
         }
+        public List<Category> GetCategories(int sellerId)
+        {
+            return _categoryRepository.GetCategories(sellerId);
+        }
 
         public List<Category> GetCategories(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
         {

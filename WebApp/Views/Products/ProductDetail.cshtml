@@ -47,6 +47,15 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
+                                <label asp-for="@Model.CategoryId" class="control-label">Chọn danh mục sản phẩm</label>
+                                <select asp-for="@Model.CategoryId" class="form-select select2" asp-items="ViewBag.Categories" disabled>
+                                    <option value="">-- Chọn danh mục sản phẩm --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
                                 <label asp-for="Status" class="required">Trạng thái</label>
                                 <select asp-for="Status" class="form-select" disabled>
                                     @if (Model.Status)
