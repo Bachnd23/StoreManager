@@ -23,8 +23,8 @@
                     <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa danh mục</li>
                 </ol>
             </nav>
-            <form asp-action="EditCategory" method="post">
-                <input asp-for="Id"  class="form-control" hidden>
+            <form id="registerForm" asp-action="EditCategory" method="post">
+                <input class="form-control" name="id" value="@Model.Id" hidden>
                 <div class="row">
                     <div class="col">
                         <div>
@@ -48,6 +48,24 @@
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="mb-3">
+                                <div class="form-group">
+                                    <label asp-for="Status" class="required">Trạng thái</label>
+                                    <select asp-for="Status" class="form-select">
+                                        @if (Model.Status)
+                                        {
+                                            <option value="true" selected>Đã kích hoạt</option>
+                                            <option value="false">Chưa kích hoạt</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="true">Đã kích hoạt</option>
+                                            <option value="false" selected>Chưa kích hoạt</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="w-100"></div>
@@ -58,10 +76,16 @@
                         </div>
                     </div>
                 </div>
+                @Html.AntiForgeryToken()
             </form>
         </div>
         <!-- Form End -->
     </div>
     <!-- Content End -->
+    @section Scripts {
+        <script>
+            var pageNumber = @currentPage;
+        </script>
+    }
 </body>
 </html>

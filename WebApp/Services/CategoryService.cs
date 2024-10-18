@@ -16,10 +16,14 @@ namespace COCOApp.Services
         {
             return _categoryRepository.GetCategories();
         }
-
-        public List<Category> GetCategories(string nameQuery, int pageNumber, int pageSize, int sellerId)
+        public List<Category> GetCategories(int sellerId)
         {
-            return _categoryRepository.GetCategories(nameQuery, pageNumber, pageSize, sellerId);
+            return _categoryRepository.GetCategories(sellerId);
+        }
+
+        public List<Category> GetCategories(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
+        {
+            return _categoryRepository.GetCategories(nameQuery, pageNumber, pageSize, sellerId, statusId);
         }
 
         public Category GetCategoryById(int categoryId, int sellerId)
@@ -37,9 +41,9 @@ namespace COCOApp.Services
             _categoryRepository.EditCategory(categoryId, category);
         }
 
-        public int GetTotalCategories(string nameQuery, int sellerId)
+        public int GetTotalCategories(string nameQuery, int sellerId, int statusId)
         {
-            return _categoryRepository.GetTotalCategories(nameQuery, sellerId);
+            return _categoryRepository.GetTotalCategories(nameQuery, sellerId, statusId);
         }
     }
 }

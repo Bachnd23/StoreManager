@@ -5,6 +5,7 @@ using System.Diagnostics;
 using COCOApp.Helpers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace COCOApp.Controllers
 {
@@ -48,6 +49,17 @@ namespace COCOApp.Controllers
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
+                // Get the categories and convert them to SelectListItems
+                var categories = _categoryService.GetCategories(user.Id)
+                                  .Select(c => new SelectListItem
+                                  {
+                                      Value = c.Id.ToString(),
+                                      Text = c.CategoryName
+                                  })
+                                  .ToList();
+
+                // Pass the categories to the view via ViewBag
+                ViewBag.Categories = new SelectList(categories, "Value", "Text");
                 return View("/Views/Products/ProductDetail.cshtml", model);
             }
             else
@@ -64,6 +76,17 @@ namespace COCOApp.Controllers
             ViewData["PageNumber"] = pageNumber;
             if (model != null)
             {
+                // Get the categories and convert them to SelectListItems
+                var categories = _categoryService.GetCategories(user.Id)
+                                  .Select(c => new SelectListItem
+                                  {
+                                      Value = c.Id.ToString(),
+                                      Text = c.CategoryName
+                                  })
+                                  .ToList();
+
+                // Pass the categories to the view via ViewBag
+                ViewBag.Categories = new SelectList(categories, "Value", "Text");
                 return View("/Views/Products/EditProduct.cshtml", model);
             }
             else
@@ -80,6 +103,18 @@ namespace COCOApp.Controllers
         [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewAdd()
         {
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            // Get the categories and convert them to SelectListItems
+            var categories = _categoryService.GetCategories(user.Id)
+                              .Select(c => new SelectListItem
+                              {
+                                  Value = c.Id.ToString(),
+                                  Text = c.CategoryName
+                              })
+                              .ToList();
+
+            // Pass the categories to the view via ViewBag
+            ViewBag.Categories = new SelectList(categories, "Value", "Text");
             return View("/Views/Products/AddProduct.cshtml");
         }
         [Authorize(Roles = "Admin,Seller")]
@@ -115,6 +150,7 @@ namespace COCOApp.Controllers
                 Cost = model.Cost,
                 Status = model.Status,
                 SellerId = sellerId,
+                CategoryId = model.CategoryId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
@@ -169,6 +205,7 @@ namespace COCOApp.Controllers
                 Cost = model.Cost,
                 Status = model.Status,
                 SellerId = oldProduct.SellerId,
+                CategoryId = model.CategoryId,
                 UpdatedAt = DateTime.Now
             };
 

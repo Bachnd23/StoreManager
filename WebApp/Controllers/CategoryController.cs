@@ -2,6 +2,7 @@
 using COCOApp.Hubs;
 using COCOApp.Models;
 using COCOApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
@@ -20,13 +21,13 @@ namespace COCOApp.Controllers
         }
         private const int PageSize = 10;
 
-
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
-        public IActionResult GetList(string nameQuery, int pageNumber = 1)
+        public IActionResult GetList(string nameQuery, int statusId, int pageNumber = 1)
         {
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            var categories = _categoryService.GetCategories(nameQuery, pageNumber, PageSize, user.Id);
-            var totalCategories = _categoryService.GetTotalCategories(nameQuery, user.Id);
+            var categories = _categoryService.GetCategories(nameQuery, pageNumber, PageSize, user.Id, statusId);
+            var totalCategories = _categoryService.GetTotalCategories(nameQuery, user.Id, statusId);
 
             var response = new
             {
@@ -37,7 +38,7 @@ namespace COCOApp.Controllers
 
             return Json(response);
         }
-
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult GetCategory(int categoryId, int pageNumber = 1)
         {
@@ -53,16 +54,20 @@ namespace COCOApp.Controllers
                 return View("/Views/Category/ListCategorys.cshtml");
             }
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewList(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/Category/ListCategorys.cshtml");
         }
+        [Authorize(Roles = "Admin,Seller")]
         public IActionResult ViewAdd(int pageNumber = 1)
         {
             ViewData["PageNumber"] = pageNumber;
             return View("/Views/Category/AddCategory.cshtml");
         }
+
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IActionResult ViewEdit(int categoryId, int pageNumber = 1)
         {
@@ -80,12 +85,12 @@ namespace COCOApp.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> AddCategory(Category model)
         {
-            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
-            //model.SellerId = user.Id;
+            
 
             if (!ModelState.IsValid)
             {
@@ -96,8 +101,10 @@ namespace COCOApp.Controllers
                 Debug.WriteLine(errorMessages);
 
                 // Return the same view with validation errors
-                return View("/Views/Categories/AddCategory.cshtml", model);
+                return View("/Views/Category/AddCategory.cshtml", model);
             }
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            //model.SellerId = user.Id;
             int sellerId = user.Id;
             if (sellerId == 0)
             {
@@ -109,6 +116,10 @@ namespace COCOApp.Controllers
             {
                 CategoryName = model.CategoryName,
                 Description = model.Description,
+                Status = model.Status,
+                SellerId = sellerId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             // Use the service to insert the product
@@ -124,7 +135,7 @@ namespace COCOApp.Controllers
             return RedirectToAction("ViewList");
         }
 
-
+        [Authorize(Roles = "Admin,Seller")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditCategory(Category model)
@@ -138,7 +149,7 @@ namespace COCOApp.Controllers
                 Debug.WriteLine(errorMessages);
 
                 // Return the same view with validation errors
-                return View("/Views/Categories/EditCategory.cshtml", model);
+                return View("/Views/Category/EditCategory.cshtml", model);
             }
 
             User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
@@ -148,6 +159,10 @@ namespace COCOApp.Controllers
             {
                 CategoryName = model.CategoryName,
                 Description = model.Description,
+                Status = model.Status,
+                SellerId = oldCategory.SellerId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             // Use the service to edit the product

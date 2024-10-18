@@ -46,13 +46,14 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(p => p.SellerId == sellerId);
             }
-            if (!string.IsNullOrEmpty(nameQuery))
-            {
-                query = query.Where(c => c.ProductName.Contains(nameQuery));
-            }
             query = query
                 .Include(i => i.InventoryManagement)
-                .Include(c => c.Category)
+                .Include(c => c.Category);
+            if (!string.IsNullOrEmpty(nameQuery))
+            {
+                query = query.Where(c => c.ProductName.Contains(nameQuery)||c.Category.CategoryName.Contains(nameQuery));
+            }
+            query = query
                 .OrderByDescending(p => p.Id);
             return query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
@@ -69,11 +70,12 @@ namespace COCOApp.Repositories
             {
                 query = query.Where(p => p.SellerId == sellerId);
             }
+            query = query.Include(i => i.InventoryManagement).Include(c => c.Category);
             if (!string.IsNullOrEmpty(nameQuery))
             {
-                query = query.Where(c => c.ProductName.Contains(nameQuery));
+                query = query.Where(c => c.ProductName.Contains(nameQuery) || c.Category.CategoryName.Contains(nameQuery));
             }
-            return query.Include(i => i.InventoryManagement).Include(c => c.Category).Count();
+            return query.Count();
         }
 
         public void AddProduct(Product product)
@@ -91,6 +93,7 @@ namespace COCOApp.Repositories
                 existingProduct.ProductName = product.ProductName;
                 existingProduct.Cost = product.Cost;
                 existingProduct.MeasureUnit = product.MeasureUnit;
+                existingProduct.CategoryId = product.CategoryId;
                 existingProduct.Status = product.Status;
                 existingProduct.SellerId = product.SellerId;
                 existingProduct.UpdatedAt = product.UpdatedAt;
