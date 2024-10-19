@@ -104,10 +104,14 @@ function generateOrdersTable(data) {
     // Iterate over the user results and create table rows
     $.each(data.orderResults, function (index, order) {
         console.log("Processing order:", order);
+        const orderDateFormatted = new Date(order.orderDate).toLocaleDateString();
+        const updatedAtFormatted = order.updatedAt
+            ? new Date(order.updatedAt).toLocaleString()
+            : 'N/A';
         const row = $('<tr>');
         row.append($('<td>').text(order.supplier ? order.supplier.name : 'N/A'));
-        row.append($('<td>').text(order.updatedAt ? order.updatedAt : 'N/A'));
-        row.append($('<td>').text(order.orderDate));
+        row.append($('<td>').text(updatedAtFormatted));
+        row.append($('<td>').text(orderDateFormatted));
 
         // Correct status logic
         // if (order.complete) {
