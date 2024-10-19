@@ -10,7 +10,7 @@ namespace COCOApp.Models.Validations
         [Range(1, 10000, ErrorMessage = "Số lượng phải lớn hơn không và nhỏ hơn hoặc bằng 10000.")]
         public int Volume { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Số lượng thực phải là một số không âm và nhỏ hơn hoặc bằng 100.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Số lượng thực phải là một số không âm")]
         [RealVolumeValidation("Volume", ErrorMessage = "Số lượng thực phải nhỏ hơn hoặc bằng số lượng.")]
         public int RealVolume { get; set; }
 
