@@ -23,11 +23,14 @@ namespace COCOApp.Services
             return _customerRepository.GetCustomers(nameQuery, pageNumber, pageSize, sellerId, statusId);
         }
 
-        public Customer GetCustomerById(int customerId, int sellerId)
+        public Customer GetCustomerByIdForSeller(int customerId, int sellerId)
         {
-            return _customerRepository.GetCustomerById(customerId, sellerId);
+            return _customerRepository.GetCustomerByIdForSeller(customerId, sellerId);
         }
-
+        public Customer GetCustomerById(int customerId)
+        {
+            return _customerRepository.GetCustomerById(customerId);
+        }
         public int GetTotalCustomers(string nameQuery, int sellerId, int statusId)
         {
             return _customerRepository.GetTotalCustomers(nameQuery, sellerId, statusId);

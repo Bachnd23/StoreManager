@@ -6,7 +6,8 @@ namespace COCOApp.Repositories
     {
         List<Customer> GetCustomers();
         List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId);
-        Customer GetCustomerById(int customerId, int sellerId);
+        Customer GetCustomerByIdForSeller(int customerId, int sellerId);
+        Customer GetCustomerById(int customerId);
         int GetTotalCustomers(string nameQuery, int sellerId, int statusId);
         void AddCustomer(Customer customer);
         void EditCustomer(int customerId, Customer customer);

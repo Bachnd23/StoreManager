@@ -41,13 +41,18 @@ namespace COCOApp.Repositories
             return query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
 
-        public Customer GetCustomerById(int customerId, int sellerId)
+        public Customer GetCustomerByIdForSeller(int customerId, int sellerId)
         {
             var query = _context.Customers.AsQueryable();
             if (sellerId > 0)
             {
                 query = query.Where(c => c.SellerId == sellerId);
             }
+            return customerId > 0 ? query.FirstOrDefault(u => u.Id == customerId) : null;
+        }
+        public Customer GetCustomerById(int customerId)
+        {
+            var query = _context.Customers.AsQueryable();
             return customerId > 0 ? query.FirstOrDefault(u => u.Id == customerId) : null;
         }
 
