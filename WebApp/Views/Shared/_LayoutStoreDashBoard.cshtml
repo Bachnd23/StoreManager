@@ -96,30 +96,32 @@
     }
     <header>
         <!-- Navbar Start -->
-        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-            <div class="navbar-nav align-items-center ms-auto">
-                @if (user != null)
-                {
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="~/img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">@user.Username</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="~/User/ViewProfile" class="dropdown-item">Thông tin cá nhân</a>
-                            <a href="~/User/Logout" class="dropdown-item">Đăng xuất</a>
+        <nav class="navbar navbar-expand-lg bg-light navbar-light sticky-top px-4 py-0 shadow">
+            <div class="container-fluid">
+                <div class="navbar-nav align-items-center ms-auto">
+                    @if (user != null)
+                    {
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img class="rounded-circle me-lg-2" src="~/img/user.jpg" alt="User" style="width: 40px; height: 40px;">
+                                <span class="d-none d-lg-inline-flex">@user.Username</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                                <a href="~/User/ViewProfile" class="dropdown-item">Thông tin cá nhân</a>
+                                <a href="~/User/Logout" class="dropdown-item">Đăng xuất</a>
+                            </div>
                         </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="nav-item">
-                        <a href="~/Home/ViewSignIn" class="nav-link">Đăng nhập</a>
-                    </div>
-                    <div class="nav-item">
-                        <a href="~/Home/ViewRegisterStore" class="nav-link">Đăng ký</a>
-                    </div>
-                }
+                    }
+                    else
+                    {
+                        <div class="nav-item">
+                            <a href="~/Home/ViewSignIn" class="nav-link">Đăng nhập</a>
+                        </div>
+                        <div class="nav-item">
+                            <a href="~/Home/ViewRegisterStore" class="nav-link">Đăng ký</a>
+                        </div>
+                    }
+                </div>
             </div>
         </nav>
         <!-- Navbar End -->
@@ -129,37 +131,37 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="sidebar pe-4 pb-3">
-                    <nav class="navbar bg-light navbar-light ps-0 pe-0">
+                    <nav class="navbar bg-light navbar-light ps-0 pe-0 shadow-sm">
                         <a href="#" class="navbar-brand mx-4 mb-3">
                             <h3 class="text-primary">
                                 <i class="fa me-2"></i>DEVIMS
                             </h3>
                         </a>
                         <div class="navbar-nav" id="sidebar">
-                            <a href="~/Customer/ViewList" class="nav-item nav-link @(activePage == "2" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Customer/ViewList" class="nav-item nav-link @(activePage == "2" ? "active" : "")" title="Quản lý khách hàng">
                                 <i class="fa fa-th me-2"></i>Quản lý khách hàng
                             </a>
-                            <a href="~/Supplier/ViewList" class="nav-item nav-link @(activePage == "3" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Supplier/ViewList" class="nav-item nav-link @(activePage == "3" ? "active" : "")" title="Nhà cung cấp của tôi">
                                 <i class="fa fa-th me-2"></i>Nhà cung cấp của tôi
                             </a>
-                            <a href="~/Product/ViewList" class="nav-item nav-link @(activePage == "4" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Product/ViewList" class="nav-item nav-link @(activePage == "4" ? "active" : "")" title="Quản lý sản phẩm">
                                 <i class="fa fa-keyboard me-2"></i>Quản lý sản phẩm
                             </a>
-                            <a href="~/Order/ViewList" class="nav-item nav-link @(activePage == "5" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Order/ViewList" class="nav-item nav-link @(activePage == "5" ? "active" : "")" title="Quản lý đơn hàng xuất">
                                 <i class="fa fa-shopping-cart me-2"></i>Quản lý đơn hàng xuất
                             </a>
-                            <a href="~/ImportOrder/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" name="sidebaritem">
+                            <a href="~/ImportOrder/ViewList" class="nav-item nav-link @(activePage == "6" ? "active" : "")" title="Quản lý đơn hàng nhập">
                                 <i class="fa fa-table me-2"></i>Quản lý đơn hàng nhập
                             </a>
-                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "7" ? "active" : "")" name="sidebaritem">
+                            <a href="~/Report/ViewCreate" class="nav-item nav-link @(activePage == "7" ? "active" : "")" title="Tổng kết">
                                 <i class="fa fa-file me-2"></i>Tổng kết
                             </a>
-                            <a href="~/Category/ViewList" class="nav-item nav-link @(activePage == "8" ? "active" : "")" name="sidebaritem">
-                                <i class="fa fa-file me-2"></i>Quản lý danh mục
+                            <a href="~/Category/ViewList" class="nav-item nav-link @(activePage == "8" ? "active" : "")" title="Quản lý danh mục">
+                                <i class="fa fa-tags me-2"></i>Quản lý danh mục
                             </a>
-                            @if (user!=null&&user.Role == 1)
+                            @if (user != null && user.Role == 1)
                             {
-                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "9" ? "active" : "")" name="sidebaritem">
+                                <a href="~/User/ViewList" class="nav-item nav-link @(activePage == "9" ? "active" : "")" title="Danh sách người dùng">
                                     <i class="fa fa-user me-2"></i>Danh sách người dùng
                                 </a>
                             }
@@ -168,12 +170,13 @@
                 </div>
             </div>
             <div class="col-md-9 p-0 main-content">
-                <main role="main">
+                <main role="main" class="p-4">
                     @RenderBody()
                 </main>
             </div>
         </div>
     </div>
+
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

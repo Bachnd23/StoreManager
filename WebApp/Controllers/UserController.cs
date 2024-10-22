@@ -381,7 +381,7 @@ namespace COCOApp.Controllers
                 return View("/Views/User/ForgotPassword.cshtml");
             }
             var subject = "Yêu cầu đổi mật khẩu";
-            string link = $"<a href='https://cocoapp.unitech.icu/User/ViewChangePassword?email={toEmail}'>Bấm vào đây</a>";
+            string link = $"<a href='http://connectco.online/User/ViewChangePassword?email={toEmail}'>Bấm vào đây</a>";
             String htmlMessage = "<html><body>" + "<p>Chúng tôi vừa nhận được yêu cầu đổi mật khẩu cho " + toEmail
                 + "</p>" + "<p>Vui lòng " + link + " để thay đổi mật khẩu của bạn.</p>"
                 + "<p>Vì sự bảo mật của bạn, link trên sẽ hết hạn trong 24 giờ hoặc ngay sau khi bạn thay đổi mật khẩu.</p>"
