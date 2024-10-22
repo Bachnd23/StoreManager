@@ -14,18 +14,15 @@
             </ol>
         </nav>
         <div class="row g-4">
-            <div class="col-sm-12 col-xl-12">
-                <div class="bg-light rounded h-100 p-4">
-                    <div>
-                        <h4 class="mb-4">Danh sách khách hàng</h4>
-                    </div>
-                    <div class="row g-4 input-group">
+            <div class="col-12">
+                <div class="bg-light rounded shadow-sm h-100 p-4">
+                    <h4 class="mb-4">Danh sách khách hàng</h4>
+                    <div class="row g-4">
                         <div class="col-sm-4">
-                            <input class="form-control border-0 nameQuery" type="search" name="nameQuery" placeholder="Tìm kiếm ...">
+                            <input class="form-control" type="search" name="nameQuery" placeholder="Tìm kiếm ...">
                         </div>
                         <div class="col-sm-2">
-                            <select class="form-select form-select-sm mb-3 form-control statusId"
-                                    aria-label=".form-select-sm example" name="statusId">
+                            <select class="form-select" name="statusId">
                                 <option value="0" selected>Trạng thái</option>
                                 <option value="1">Đã kích hoạt</option>
                                 <option value="2">Chưa kích hoạt</option>
@@ -34,13 +31,13 @@
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary" onclick="search()">Tìm</button>
                         </div>
+                        <div class="col-sm-2 text-end">
+                            <a href="~/Customer/ViewAdd" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Thêm mới
+                            </a>
+                        </div>
                     </div>
-                    <div class="g-4 input-group flex-nowrap justify-content-end">
-                        <a href="~/Customer/ViewAdd" class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div>
+                    <div class="table-responsive mt-4">
                         <table class="table table-striped w-100 resultTable">
                             <thead>
                                 <tr>
@@ -57,18 +54,24 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="g-4 input-group flex-nowrap justify-content-end paginationContainer">
-                        <div class="input-group flex-nowrap justify-content-end pe-3">
-                            <div class="pageNumber">1</div> /
-                            <div class="totalPages"></div>&nbsp;trang
+                    <div class="d-flex justify-content-between align-items-center mt-4 paginationContainer">
+                        <div class="pageInfo">
+                            <span class="pageNumber">1</span> / <span class="totalPages"></span> trang
                         </div>
-                        <a onclick="prevPage()" class="prevPage pe-1"><i class="fas fa-chevron-left"></i></a>
-                        <a onclick="nextPage()" class="nextPage ps-1 pe-3"><i class="fas fa-chevron-right"></i></a>
+                        <div>
+                            <a onclick="prevPage()" class="prevPage pe-1" aria-label="Previous Page">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                            <a onclick="nextPage()" class="nextPage ps-1" aria-label="Next Page">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     @section Scripts {
         <script>
             var pageNumber = @currentPage;
