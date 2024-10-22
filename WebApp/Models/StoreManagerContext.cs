@@ -117,7 +117,7 @@ namespace COCOApp.Models
                     .HasColumnName("orderDate");
 
                 entity.Property(e => e.OrderTotal)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("orderTotal");
 
                 entity.Property(e => e.SellerId).HasColumnName("seller_id");
@@ -140,7 +140,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ExportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ExportOr__022945F6EB7D6FD6");
+                    .HasName("PK__ExportOr__022945F662CF8FF3");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -151,7 +151,7 @@ namespace COCOApp.Models
                     .HasColumnName("created_at");
 
                 entity.Property(e => e.ProductPrice)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("product_price");
 
                 entity.Property(e => e.RealVolume).HasColumnName("real_volume");
@@ -161,7 +161,7 @@ namespace COCOApp.Models
                 entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.Total)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("total");
 
                 entity.Property(e => e.UpdatedAt)
@@ -203,7 +203,7 @@ namespace COCOApp.Models
                     .HasColumnName("orderDate");
 
                 entity.Property(e => e.OrderTotal)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("orderTotal");
 
                 entity.Property(e => e.SellerId).HasColumnName("seller_id");
@@ -228,7 +228,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ImportOrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__ImportOr__022945F6BDB61594");
+                    .HasName("PK__ImportOr__022945F6A2D92149");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -239,7 +239,7 @@ namespace COCOApp.Models
                     .HasColumnName("created_at");
 
                 entity.Property(e => e.ProductCost)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("product_cost");
 
                 entity.Property(e => e.RealVolume).HasColumnName("real_volume");
@@ -268,7 +268,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<InventoryManagement>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__Inventor__47027DF5DAD2BDF8");
+                    .HasName("PK__Inventor__47027DF5F23F5CF4");
 
                 entity.ToTable("InventoryManagement");
 
@@ -296,7 +296,7 @@ namespace COCOApp.Models
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
 
                 entity.Property(e => e.Cost)
-                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnType("money")
                     .HasColumnName("cost");
 
                 entity.Property(e => e.CreatedAt)
@@ -329,7 +329,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ProductDetail>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__ProductD__47027DF55E4584FF");
+                    .HasName("PK__ProductD__47027DF549180E65");
 
                 entity.Property(e => e.ProductId)
                     .ValueGeneratedNever()
@@ -358,7 +358,7 @@ namespace COCOApp.Models
 
                 entity.Property(e => e.SellerId).HasColumnName("seller_id");
 
-                entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.TotalPrice).HasColumnType("money");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
@@ -378,7 +378,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<ReportDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ReportId, e.ProductId })
-                    .HasName("PK__ReportDe__33EB5B8761A95742");
+                    .HasName("PK__ReportDe__33EB5B8728F61476");
 
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
 
@@ -388,7 +388,7 @@ namespace COCOApp.Models
                     .HasColumnType("date")
                     .HasColumnName("orderDate");
 
-                entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.TotalPrice).HasColumnType("money");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ReportDetails)
@@ -406,7 +406,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<SellerDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__SellerDe__B9BE370F326A84EC");
+                    .HasName("PK__SellerDe__B9BE370FAA15084D");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
@@ -459,7 +459,7 @@ namespace COCOApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E616409760BEE")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164E7767BDC")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -505,7 +505,7 @@ namespace COCOApp.Models
             modelBuilder.Entity<UserDetail>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__UserDeta__B9BE370F933EFEF7");
+                    .HasName("PK__UserDeta__B9BE370FB6532316");
 
                 entity.Property(e => e.UserId)
                     .ValueGeneratedNever()
