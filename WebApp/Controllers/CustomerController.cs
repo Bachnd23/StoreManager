@@ -218,8 +218,8 @@ namespace COCOApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportFromExcel(IFormFile excelFile)
         {
-            //try
-            //{
+            try
+            {
                 // Ensure a file is uploaded
                 if (excelFile == null || excelFile.Length <= 0)
                 {
@@ -270,14 +270,14 @@ namespace COCOApp.Controllers
                 }
                 HttpContext.Session.SetString("SuccessMsg", "Nhập thành công!");
                 return RedirectToAction("ViewList");
-    //    }
-    //        catch (Exception ex)
-    //        {
-    //            // Log the error (optional: log ex.Message to a file or logging system)
-    //            ModelState.AddModelError("", "An error occurred while processing the file: " + ex.Message);
-    //            HttpContext.Session.SetString("ErrorMsg", "File lỗi hoặc không đúng!");
-    //            return RedirectToAction("ViewList");
-    //}
+        }
+            catch (Exception ex)
+            {
+                // Log the error (optional: log ex.Message to a file or logging system)
+                ModelState.AddModelError("", "An error occurred while processing the file: " + ex.Message);
+                HttpContext.Session.SetString("ErrorMsg", "File lỗi hoặc không đúng!");
+                return RedirectToAction("ViewList");
+    }
 }
     }
 
