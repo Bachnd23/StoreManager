@@ -187,40 +187,19 @@ namespace COCOApp.Repositories
             }
         }
 
-        public async Task<bool> CheckPasswordResetTokenAsync(string email)
+        public async Task<bool> CheckPasswordResetTokenAsync(string email, string resetToken)
         {
-            var tokenExpiration = _httpContextAccessor.HttpContext.Request.Cookies["PasswordResetTokenExpiration"];
-            var tokenFromCookie = _httpContextAccessor.HttpContext.Request.Cookies["PasswordResetToken"];
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-            if (tokenExpiration != null && tokenFromCookie != null)
+            if (user != null && user.ResetPasswordToken == resetToken)
             {
-                if (DateTime.TryParse(tokenExpiration, out DateTime expirationTime))
-                {
-                    if (DateTime.UtcNow <= expirationTime)
-                    {
-                        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-                        if (user != null && user.ResetPasswordToken == tokenFromCookie)
-                        {
-                            Console.WriteLine("Password reset token is valid and matches the database.");
-                            return true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Password reset token does not match or user not found.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Password reset token has expired.");
-                    }
-                }
+                Console.WriteLine("Password reset token is valid and matches the database.");
+                return true;
             }
             else
             {
-                Console.WriteLine("No password reset token found.");
+                return false;
             }
-            return false;
         }
         public async Task UpdateRemembermeTokenAsync(String username)
         {

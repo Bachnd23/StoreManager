@@ -75,9 +75,9 @@ namespace COCOApp.Services
             await _userRepository.UpdateUserPasswordResetTokenAsync(email);
         }
 
-        public async Task<bool> CheckPasswordResetTokenAsync(string email)
+        public async Task<bool> CheckPasswordResetTokenAsync(string email, string resetToken)
         {
-            return await _userRepository.CheckPasswordResetTokenAsync(email);
+            return await _userRepository.CheckPasswordResetTokenAsync(email,resetToken);
         }
         public async Task UpdateRememberMeTokenAsync(string username)
         {

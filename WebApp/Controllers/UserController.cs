@@ -137,9 +137,9 @@ namespace COCOApp.Controllers
             }
         }
 
-        public async Task<IActionResult> ViewChangePassword(string email)
+        public async Task<IActionResult> ViewChangePassword(string email,string resetToken)
         {
-            if (await _userService.CheckPasswordResetTokenAsync(email))
+            if (await _userService.CheckPasswordResetTokenAsync(email, resetToken))
             {
                 User user = _userService.GetActiveUserByEmail(email);
                 return View("/Views/User/ChangePassword.cshtml", user);
@@ -380,25 +380,16 @@ namespace COCOApp.Controllers
                 HttpContext.Session.SetString("ErrorMsg", "Tài khoản không tồn tại!");
                 return View("/Views/User/ForgotPassword.cshtml");
             }
+            await _userService.UpdateUserPasswordResetTokenAsync(toEmail);
+
             var subject = "Yêu cầu đổi mật khẩu";
-            string link = $"<a href='http://connectco.online/User/ViewChangePassword?email={toEmail}'>Bấm vào đây</a>";
+            string link = $"<a href='http://connectco.online/User/ViewChangePassword?email={toEmail}&resetToken={user.ResetPasswordToken}'>Bấm vào đây</a>";
             String htmlMessage = "<html><body>" + "<p>Chúng tôi vừa nhận được yêu cầu đổi mật khẩu cho " + toEmail
                 + "</p>" + "<p>Vui lòng " + link + " để thay đổi mật khẩu của bạn.</p>"
                 + "<p>Vì sự bảo mật của bạn, link trên sẽ hết hạn trong 24 giờ hoặc ngay sau khi bạn thay đổi mật khẩu.</p>"
                 + "<p>Cảm ơn vì đã sử dụng!<br/>CoCo Team.</p>" + "</body></html>";
 
-            // Create a list of tasks to showcase asynchronous execution
-            var tasks = new List<Task>
-                {
-                    // Example of sending an email asynchronously
-                    _emailService.SendEmailAsync(toEmail, subject, htmlMessage),
-
-                    // Example of performing another asynchronous operation (e.g., database update)
-                    _userService.UpdateUserPasswordResetTokenAsync(toEmail)
-                };
-
-            // Await all tasks to complete
-            await Task.WhenAll(tasks);
+            await _emailService.SendEmailAsync(toEmail, subject, htmlMessage);
             HttpContext.Session.SetString("SuccessMsg", "Yêu cầu được chấp nhận, vui lòng kiểm tra email của bạn!");
             return RedirectToAction("ViewSignIn", "Home");
         }
