@@ -18,6 +18,15 @@ namespace COCOApp.Repositories
         {
             return _context.Customers.AsQueryable().ToList();
         }
+        public List<Customer> GetCustomers(int sellerId)
+        {
+            var query = _context.Customers.AsQueryable();
+            if (sellerId > 0)
+            {
+                query = query.Where(c => c.SellerId == sellerId);
+            }
+            return query.ToList();
+        }
 
         public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
         {

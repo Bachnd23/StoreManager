@@ -17,7 +17,10 @@ namespace COCOApp.Services
         {
             return _customerRepository.GetCustomers();
         }
-
+        public List<Customer> GetCustomers(int sellerId)
+        {
+            return _customerRepository.GetCustomers(sellerId);
+        }
         public List<Customer> GetCustomers(string nameQuery, int pageNumber, int pageSize, int sellerId, int statusId)
         {
             return _customerRepository.GetCustomers(nameQuery, pageNumber, pageSize, sellerId, statusId);

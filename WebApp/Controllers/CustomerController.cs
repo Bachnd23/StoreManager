@@ -178,7 +178,13 @@ namespace COCOApp.Controllers
         public IActionResult ExportToExcel()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            var customers = _customerService.GetCustomers();
+            User user = HttpContext.Session.GetCustomObjectFromSession<User>("user");
+            int sellerId = user.Id;
+            if (sellerId == 0)
+            {
+                sellerId = HttpContext.Session.GetCustomObjectFromSession<int>("sellerId");
+            }
+            var customers = _customerService.GetCustomers(sellerId);
 
             using (var package = new ExcelPackage())
             {
